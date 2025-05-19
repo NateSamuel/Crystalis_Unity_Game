@@ -1,16 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public enum HallwayDirection { Undefined, Left, Right, Top, Bottom };
 
 public static class HallwayDirectionExtension {
 
+    private static Color yellow = new Color(1,1,0,1);
+    private static Color magenta = new Color(1,0,1,1);
+    private static Color cyan = new Color(0,1,1,1);
+    private static Color green = new Color(0,1,0,1);
     private static readonly Dictionary<HallwayDirection, Color> DirectionToColorMap = new Dictionary<HallwayDirection, Color> {
-        {HallwayDirection.Left, Color.yellow},
-        {HallwayDirection.Right, Color.magenta},
-        {HallwayDirection.Top, Color.cyan},
-        {HallwayDirection.Bottom, Color.green},
+        {HallwayDirection.Left, yellow},
+        {HallwayDirection.Right, magenta},
+        {HallwayDirection.Top, cyan},
+        {HallwayDirection.Bottom, green},
     };
 
     public static Color GetColor(this HallwayDirection direction) {
@@ -18,9 +23,14 @@ public static class HallwayDirectionExtension {
 
     }
 
+    public static Dictionary<Color, HallwayDirection> GetColorToDirectionMap()
+    {
+        return DirectionToColorMap.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
+    }
+
     public static HallwayDirection GetOppositeDirection(this HallwayDirection direction) {
         Dictionary<HallwayDirection, HallwayDirection> oppositeDirectionMap = new Dictionary<HallwayDirection, HallwayDirection> {
-            { HallwayDirection.Left, HallwayDirection.Right},
+            {HallwayDirection.Left, HallwayDirection.Right},
             {HallwayDirection.Right, HallwayDirection.Left},
             {HallwayDirection.Top, HallwayDirection.Bottom},
             {HallwayDirection.Bottom, HallwayDirection.Top},
