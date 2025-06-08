@@ -166,7 +166,7 @@ public class LayoutGeneratorRooms : MonoBehaviour
         levelLayoutDisplay.transform.localScale = new Vector3(level.Width * scale, level.Length * scale, 1);
         float xPos = level.Width * scale / 2.0f - scale;
         float zPos = level.Length * scale / 2.0f - scale;
-        levelLayoutDisplay.transform.position = new Vector3(xPos, 0.1f, zPos);
+        levelLayoutDisplay.transform.position = new Vector3(xPos, 100f, zPos);
         layoutTexture.FillWithColor(Color.black);
         foreach (Room room in level.Rooms) {
             if(room.LayoutTexture != null) {
@@ -237,6 +237,21 @@ public class LayoutGeneratorRooms : MonoBehaviour
         RectInt roomCandidateRect = roomTemplate.GenerateRoomCandidateRect(random);
 
         Hallway selectedExit = SelectHallwayCandidate(roomCandidateRect, roomTemplate, selectedEntryway);
+        if (selectedExit == null && availableRooms.Count > 0)
+        {
+            // try to get another room if available
+            for (int r = 0; r < availableRooms.Count; r++)
+            {
+                roomTemplate = availableRooms.Keys.ElementAt(random.Next(0, availableRooms.Count));
+                roomCandidateRect = roomTemplate.GenerateRoomCandidateRect(random);
+                selectedExit = SelectHallwayCandidate(roomCandidateRect, roomTemplate, selectedEntryway);
+
+                if (selectedExit != null)
+                {
+                    break;
+                }
+            }
+        }
         if (selectedExit == null) { return null;}
         int distance = random.Next(levelConfig.MinHallwayLength, levelConfig.MaxHallwayLength + 1);
         Vector2Int roomCandidatePosition = CalculateRoomPosition(selectedEntryway, roomCandidateRect.width, roomCandidateRect.height, distance, selectedExit.StartPosition);
