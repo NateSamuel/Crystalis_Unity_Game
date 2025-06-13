@@ -556,7 +556,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff591a8bec791b549be7beb162d37945, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerTransform: {fileID: 0}
+  playerTransform: {fileID: 4971955846477629925, guid: 07b3f9cb92b664f4fb988fbe756136a0,
+    type: 3}
   rotationSpeed: 5
   toggleInterval: 1
   facingThePlayer: 0
