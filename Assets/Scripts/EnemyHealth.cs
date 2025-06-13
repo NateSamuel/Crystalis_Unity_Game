@@ -24,6 +24,7 @@ public class EnemyHealth : MonoBehaviour
         if (healthSlider != null)
         {
             healthSlider.value = enemyHealthCurrent;
+            Debug.Log("Enemy health" + enemyHealthCurrent);
         }
 
         if (enemyHealthCurrent < 0)

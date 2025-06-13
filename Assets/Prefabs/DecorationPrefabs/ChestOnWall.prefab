@@ -95,6 +95,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4369267703049902054}
+  - component: {fileID: 5725708686904509361}
   m_Layer: 0
   m_Name: ChestOnWall
   m_TagString: Untagged
@@ -118,3 +119,18 @@ Transform:
   - {fileID: 1671886240770064842}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5725708686904509361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9062933767987920157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f84075a997c77df49833df46aa4752dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTransform: {fileID: 4971955846477629925, guid: 07b3f9cb92b664f4fb988fbe756136a0,
+    type: 3}
+  collectionRange: 3
