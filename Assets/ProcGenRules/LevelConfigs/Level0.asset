@@ -17,17 +17,17 @@ MonoBehaviour:
   roomTemplates:
   - name: Small Room
     numberOfRooms: 6
-    roomWidthMin: 3
-    roomWidthMax: 5
-    roomLengthMin: 3
-    roomLengthMax: 5
+    roomWidthMin: 7
+    roomWidthMax: 9
+    roomLengthMin: 7
+    roomLengthMax: 9
     layoutTexture: {fileID: 0}
   - name: Large Room
     numberOfRooms: 2
     roomWidthMin: 10
-    roomWidthMax: 10
+    roomWidthMax: 15
     roomLengthMin: 10
-    roomLengthMax: 10
+    roomLengthMax: 15
     layoutTexture: {fileID: 0}
   - name: Special Room 1
     numberOfRooms: 1
@@ -65,7 +65,7 @@ MonoBehaviour:
     roomLengthMax: 10
     layoutTexture: {fileID: 2800000, guid: 28a4ade9947fd494a86dfcdb81092068, type: 3}
   doorDistanceFromEdge: 1
-  minHallwayLength: 3
-  maxHallwayLength: 5
-  maxRoomCount: 20
-  minRoomDistance: 1
+  minHallwayLength: 5
+  maxHallwayLength: 8
+  maxRoomCount: 17
+  minRoomDistance: 5
