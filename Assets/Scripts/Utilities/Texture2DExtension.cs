@@ -124,7 +124,41 @@ public static class Texture2DExtension
         texture.Apply();
     }
 
-    public static void DrawLine(this Texture2D texture, Vector2Int p0, Vector2Int p1, Color color)
+    // public static void DrawLine(this Texture2D texture, Vector2Int p0, Vector2Int p1, Color color)
+    // {
+    //     int dx = Mathf.Abs(p1.x - p0.x);
+    //     int dy = Mathf.Abs(p1.y - p0.y);
+    //     int sx = (p0.x < p1.x) ? 1 : -1;
+    //     int sy = (p0.y < p1.y) ? 1 : -1;
+    //     int err = dx - dy;
+
+    //     while (p0 != p1)
+    //     {
+    //         texture.SetPixel(p0.x, p0.y, color);
+
+    //         int e2 = 2 * err;
+
+    //         if (e2 > -dy && e2 < dx)
+    //         {
+    //             texture.SetPixel(p0.x + sx, p0.y, color);
+    //         }
+
+    //         if (e2 > -dy)
+    //         {
+    //             err -= dy;
+    //             p0.x += sx;
+    //         }
+    //         if (e2 < dx)
+    //         {
+    //             err += dx;
+    //             p0.y += sy;
+    //         }
+    //     }
+
+    //     texture.SetPixel(p0.x, p0.y, color);
+    //     texture.Apply();
+    // }
+    public static void DrawLine(this Texture2D texture, Vector2Int p0, Vector2Int p1, int thickness, Color color)
     {
         int dx = Mathf.Abs(p1.x - p0.x);
         int dy = Mathf.Abs(p1.y - p0.y);
@@ -134,13 +168,13 @@ public static class Texture2DExtension
 
         while (p0 != p1)
         {
-            texture.SetPixel(p0.x, p0.y, color);
+            DrawThickPixel(texture, p0, thickness, color);
 
             int e2 = 2 * err;
 
             if (e2 > -dy && e2 < dx)
             {
-                texture.SetPixel(p0.x + sx, p0.y, color);
+                DrawThickPixel(texture, new Vector2Int(p0.x + sx, p0.y), thickness, color);
             }
 
             if (e2 > -dy)
@@ -155,8 +189,20 @@ public static class Texture2DExtension
             }
         }
 
-        texture.SetPixel(p0.x, p0.y, color);
+        DrawThickPixel(texture, p0, thickness, color);
         texture.Apply();
+    }
+
+    private static void DrawThickPixel(Texture2D texture, Vector2Int center, int thickness, Color color)
+    {
+        int radius = thickness / 2;
+        for (int dx = -radius; dx <= radius; dx++)
+        {
+            for (int dy = -radius; dy <= radius; dy++)
+            {
+                texture.SetPixel(center.x + dx, center.y + dy, color);
+            }
+        }
     }
 
 }

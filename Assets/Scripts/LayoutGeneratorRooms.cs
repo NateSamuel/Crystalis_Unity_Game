@@ -178,7 +178,8 @@ public class LayoutGeneratorRooms : MonoBehaviour
         }
 
         //Array.ForEach(level.Rooms, room => layoutTexture.DrawRectangle(room.Area, Color.white));
-        Array.ForEach(level.Hallways, hallway => layoutTexture.DrawLine(hallway.StartPositionAbsolute, hallway.EndPositionAbsolute, Color.white));
+        //Array.ForEach(level.Hallways, hallway => layoutTexture.DrawLine(hallway.StartPositionAbsolute, hallway.EndPositionAbsolute, Color.white));
+        Array.ForEach(level.Hallways, hallway => layoutTexture.DrawLine(hallway.StartPositionAbsolute, hallway.EndPositionAbsolute, 2, Color.white));
         layoutTexture.ConvertToBlackAndWhite();
         if (isDebug) {
             layoutTexture.DrawRectangle(roomCandidateRect, Color.blue);

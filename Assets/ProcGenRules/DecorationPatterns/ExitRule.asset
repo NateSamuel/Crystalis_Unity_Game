@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: ExitRule
   m_EditorClassIdentifier: 
   roomTypes: 4
-  prefab: {fileID: 3746266260667995864, guid: 9bb29851509202c4faed171c1f79adb4, type: 3}
-  prefabRotation: 0
+  prefab: {fileID: 4373146969149600183, guid: 36a2ce9042ef5f1428bde442fafc6f9d, type: 3}
+  prefabRotation: 180
   placement:
     array: 02000000
     width: 1
     height: 1
   fill:
-    array: 03000000
+    array: 06000000
     width: 1
     height: 1
-  centerHorizontally: 1
+  centerHorizontally: 0
   centerVertically: 1
