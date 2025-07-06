@@ -67,5 +67,6 @@ MonoBehaviour:
   doorDistanceFromEdge: 1
   minHallwayLength: 5
   maxHallwayLength: 8
-  maxRoomCount: 17
+  maxRoomCount: 8
+  initialMaxRoomCount: 4
   minRoomDistance: 5

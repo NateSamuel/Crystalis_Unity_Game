@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using Random = System.Random;
 
+//Design by Barbara Reichart lecture series, 2024
 [ExecuteAlways]
 [DisallowMultipleComponent]
 public class SharedLevelData : MonoBehaviour

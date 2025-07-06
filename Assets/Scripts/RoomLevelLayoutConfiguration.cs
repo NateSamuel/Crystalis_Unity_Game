@@ -4,6 +4,9 @@ using System;
 using UnityEngine;
 using System.Linq;
 
+//Design by Student and Barbara Reichart lecture series, 2024
+
+//Design by Barbara Reichart lecture series, 2024
 [CreateAssetMenu(fileName = "Room Level Layout", menuName = "Custom/Procedural Generation/RoomLevelLayoutConfiguration")]
 public class RoomLevelLayoutConfiguration : ScriptableObject
 {
@@ -16,7 +19,8 @@ public class RoomLevelLayoutConfiguration : ScriptableObject
     [SerializeField] int minHallwayLength = 3;
     [SerializeField] int maxHallwayLength = 5;
 
-    [SerializeField] int maxRoomCount = 10;
+    [SerializeField] int maxRoomCount = 4;
+    [SerializeField] int initialMaxRoomCount = 4;
     [SerializeField] int minRoomDistance = 1;
 
     public int Width{ get => width; }
@@ -26,7 +30,23 @@ public class RoomLevelLayoutConfiguration : ScriptableObject
     public int DoorDistanceFromEdge{ get => doorDistanceFromEdge ; }
     public int MinHallwayLength{ get => minHallwayLength; }
     public int MaxHallwayLength{ get => maxHallwayLength; }
-    public int MaxRoomCount{ get => maxRoomCount; }
+
+    public int MaxRoomCount
+    {
+        get => maxRoomCount;
+        set => maxRoomCount = value;
+    }
+    public int InitialMaxRoomCount
+    {
+        get => initialMaxRoomCount;
+        set => initialMaxRoomCount = value;
+    }
+    public void ResetMaxRoomCount()
+    {
+        maxRoomCount = initialMaxRoomCount;
+    }
+
+    //Design by Barbara Reichart lecture series, 2024
     public int MinRoomDistance{ get => minRoomDistance; }
 
     public Dictionary<RoomTemplate, int> GetAvailableRooms()

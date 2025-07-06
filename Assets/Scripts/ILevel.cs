@@ -1,5 +1,5 @@
 
-
+//Design by Barbara Reichart lecture series, 2024
 public interface ILevel
 {
     int Length { get; }

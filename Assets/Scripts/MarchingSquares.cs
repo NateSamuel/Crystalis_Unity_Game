@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Design by Barbara Reichart lecture series, 2024
+
 public class MarchingSquares : MonoBehaviour
 {
     [SerializeField] Texture2D levelTexture;
     [SerializeField] GameObject generatedLevel;
     [SerializeField] Tileset tileset;
-    //[SerializeField] int scale = 1;
 
 
     [ContextMenu("Create Level Geometry")]
@@ -30,9 +31,7 @@ public class MarchingSquares : MonoBehaviour
                 tile.transform.position = new Vector3(x * scale, 0, y * scale);
                 string name = "x" + x + "y" + y + "tileIndex" + tileIndex;
                 tile.name = name;
-                //line += tileIndex.ToString("00") + " ";
             }
-            //Debug.Log(line);
         }
     }
 

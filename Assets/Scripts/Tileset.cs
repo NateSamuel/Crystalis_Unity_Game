@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-
 using UnityEngine;
+
+//Design by Barbara Reichart lecture series, 2024
 
 [CreateAssetMenu(fileName = "Tileset", menuName = "Custom/Procedural Generation/Tileset")]
 public class Tileset : ScriptableObject

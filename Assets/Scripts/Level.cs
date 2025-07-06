@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//Design by Barbara Reichart lecture series, 2024
 public class Level
 {
     int width;
@@ -9,7 +9,6 @@ public class Level
     List<Room> rooms;
     List<Hallway> hallways;
 
-    //public int Width { get { return width;}}
     public int Width => width;
     public int Length => length;
 
@@ -25,9 +24,6 @@ public class Level
         hallways = new List<Hallway> ();
     }
 
-    // public void AddRoom(Room newRoom) {
-    //     rooms.Add(newRoom);
-    // }
     public void AddRoom(Room newRoom) => rooms.Add(newRoom);
     public void AddHallway(Hallway hallway) => hallways.Add(hallway);
 

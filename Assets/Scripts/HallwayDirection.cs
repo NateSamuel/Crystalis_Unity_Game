@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-
+//Design by Barbara Reichart lecture series, 2024
 public enum HallwayDirection { Undefined, Left, Right, Top, Bottom };
 
 public static class HallwayDirectionExtension {

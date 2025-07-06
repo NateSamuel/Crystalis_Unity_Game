@@ -5,8 +5,16 @@ public class CharacterTreasure : MonoBehaviour
 {
     
     int crystals = 0;
-    public TextMeshProUGUI treasureText;
-
+    private TextMeshProUGUI treasureText;
+    void Start()
+    {
+        GameObject treasureTextObject = GameObject.Find("PlayerTreasureText");
+        treasureText = treasureTextObject.GetComponent<TextMeshProUGUI>();
+        if (treasureText != null)
+        {
+            treasureText.text = "Crystals: " + crystals;
+        }
+    }
     public void ApplyTreasure()
     {
         crystals += 2;

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//Design by Barbara Reichart lecture series, 2024
 public class TextureBasedLevel : ILevel
 {
     Texture2D levelTexture;
@@ -23,10 +24,7 @@ public class TextureBasedLevel : ILevel
             return true;
         }
         Color pixel = levelTexture.GetPixel(x, y);
-        // if (Color.black.Equals(pixel))
-        // {
-        //     return true;
-        // }
+
         return Color.black.Equals(pixel) ? true : false;
     }
 

@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+//Design by Barbara Reichart lecture series, 2024
 [Serializable]
 public class RuleAvailability
 {
@@ -16,7 +17,7 @@ public class RuleAvailability
     }
 }
 
-
+//Design by Barbara Reichart lecture series, 2024
 public class RoomDecorator : MonoBehaviour
 {
     [SerializeField] GameObject parent;
@@ -51,7 +52,6 @@ public class RoomDecorator : MonoBehaviour
         }
 
         TileType[,] levelDecorated = InitializeDecoratorArray();
-        //DecorateRoom(levelDecorated, level.Rooms[0], decorationsTransform);
         foreach(Room room in level.Rooms)
         {
             DecorateRoom(levelDecorated, room, decorationsTransform);
@@ -59,8 +59,6 @@ public class RoomDecorator : MonoBehaviour
 
         GenerateTextureFromTileType(levelDecorated);
 
-        //GameObject testGameObject = new GameObject("Test Child");
-        //testGameObject.transform.SetParent(decorationsTransform);
     }
     private void DecorateRoom(TileType[,] levelDecorated, Room room, Transform decorationsTransform)
     {

@@ -5,11 +5,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
 
+//Design by Barbara Reichart lecture series, 2024
 public class LayoutGeneratorRooms : MonoBehaviour
 {
     
     [SerializeField] int seed = Environment.TickCount;
-    [SerializeField] RoomLevelLayoutConfiguration levelConfig;
+    [SerializeField] private RoomLevelLayoutConfiguration levelConfig;
+    public RoomLevelLayoutConfiguration LevelConfig => levelConfig;
     [SerializeField] GameObject levelLayoutDisplay;
 
     [SerializeField] List<Hallway> openDoorways;
@@ -48,29 +50,6 @@ public class LayoutGeneratorRooms : MonoBehaviour
 
         return level;
 
-
-        
-        //UseUpRoomTemplate(startRoomTemplate);
-        //Debug.Log(roomRect);
-
-        //Room room = new Room(roomRect);
-        // Room secondRoom = ConstructAdjacentRoom(selectedEntryway);
-
-        // level.AddRoom(secondRoom);
-        // level.AddHallway(selectedEntryway);
-        // Room testRoom1 = new Room(new RectInt(3, 6, 6,10));
-        // Room testRoom2 = new Room(new RectInt(15, 4, 10, 12));
-        // Hallway testHallway = new Hallway(HallwayDirection.Right, new Vector2Int(6,3), testRoom1);
-        // testHallway.EndPosition = new Vector2Int(0, 5);
-        // testHallway.EndRoom = testRoom2;
-
-        // level.AddRoom(testRoom1);
-        // level.AddRoom(testRoom2);
-        // level.AddHallway(testHallway);
-        // Debug.Log(HallwayDirection.Left.GetOppositeDirection());
-
-
-        // DrawLayout(roomRect);
     }
     void AssignRoomTypes()
     {
@@ -142,13 +121,11 @@ public class LayoutGeneratorRooms : MonoBehaviour
 
         RectInt roomSize = roomTemplate.GenerateRoomCandidateRect(random);
 
-        //int roomWidth = random.Next(roomTemplate.RoomWidthMin, roomTemplate.RoomWidthMax);
         int roomWidth = roomSize.width;
         int availableWidthX = level.Width/2 - roomWidth;
         int randomX = random.Next(0,availableWidthX);
         int roomX = randomX + (level.Width/4);
 
-        //int roomLength = random.Next(roomTemplate.RoomLengthMin,roomTemplate.RoomLengthMax);
         int roomLength = roomSize.height;
         int availableLengthY = level.Length/2 - roomLength;
         int randomY = random.Next(0,availableLengthY);
@@ -177,8 +154,6 @@ public class LayoutGeneratorRooms : MonoBehaviour
             Debug.Log(room.Area + "" + room.Connectedness + " " + room.Type);
         }
 
-        //Array.ForEach(level.Rooms, room => layoutTexture.DrawRectangle(room.Area, Color.white));
-        //Array.ForEach(level.Hallways, hallway => layoutTexture.DrawLine(hallway.StartPositionAbsolute, hallway.EndPositionAbsolute, Color.white));
         Array.ForEach(level.Hallways, hallway => layoutTexture.DrawLine(hallway.StartPositionAbsolute, hallway.EndPositionAbsolute, 2, Color.white));
         layoutTexture.ConvertToBlackAndWhite();
         if (isDebug) {
@@ -195,7 +170,7 @@ public class LayoutGeneratorRooms : MonoBehaviour
     }
 
     Hallway SelectHallwayCandidate(RectInt roomCandidateRect, RoomTemplate roomTemplate, Hallway entryway) {
-        //Room room = new Room(roomCandidateRect);
+
         Room room = CreateNewRoom(roomCandidateRect, roomTemplate, false);
         List<Hallway> candidates = room.CalculateAllPossibleDoorways(room.Area.width, room.Area.height, levelConfig.DoorDistanceFromEdge);
         HallwayDirection requiredDirection = entryway.StartDirection.GetOppositeDirection();
@@ -229,18 +204,12 @@ public class LayoutGeneratorRooms : MonoBehaviour
     Room ConstructAdjacentRoom(Hallway selectedEntryway) 
     {
 
-        // RectInt roomCandidateRect = new RectInt {
-        //     width = random.Next(roomTemplate.RoomWidthMin, roomTemplate.RoomWidthMax),
-        //     height = random.Next(roomTemplate.RoomLengthMin, roomTemplate.RoomLengthMax)
-        // };
-
         RoomTemplate roomTemplate = availableRooms.Keys.ElementAt(random.Next(0, availableRooms.Count));
         RectInt roomCandidateRect = roomTemplate.GenerateRoomCandidateRect(random);
 
         Hallway selectedExit = SelectHallwayCandidate(roomCandidateRect, roomTemplate, selectedEntryway);
         if (selectedExit == null && availableRooms.Count > 0)
         {
-            // try to get another room if available
             for (int r = 0; r < availableRooms.Count; r++)
             {
                 roomTemplate = availableRooms.Keys.ElementAt(random.Next(0, availableRooms.Count));
@@ -261,7 +230,6 @@ public class LayoutGeneratorRooms : MonoBehaviour
         {
             return null;
         }
-        //UseUpRoomTemplate(roomTemplate);
         Room newRoom = CreateNewRoom(roomCandidateRect, roomTemplate);
         selectedEntryway.EndRoom = newRoom;
         selectedEntryway.EndPosition = selectedExit.StartPosition;

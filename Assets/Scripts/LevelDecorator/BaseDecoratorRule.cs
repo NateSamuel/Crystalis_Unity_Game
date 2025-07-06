@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//Design by Barbara Reichart lecture series, 2024
 public abstract class BaseDecoratorRule : ScriptableObject
 {
     [SerializeField, EnumFlags] RoomType roomTypes;

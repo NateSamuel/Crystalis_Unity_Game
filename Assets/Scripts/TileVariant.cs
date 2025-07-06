@@ -4,6 +4,8 @@ using UnityEngine;
 using System;
 using Random = System.Random;
 
+//Design by Barbara Reichart lecture series, 2024
+
 [Serializable]
 public class TileVariant
 {

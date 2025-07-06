@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Design by Barbara Reichart lecture series, 2024
+
 public class Hallway
 {
     Vector2Int startPosition;

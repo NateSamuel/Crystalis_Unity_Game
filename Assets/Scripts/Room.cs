@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Flags = System.FlagsAttribute;
+//Design by Barbara Reichart lecture series, 2024
 
 [Flags]
 public enum RoomType
@@ -70,10 +71,6 @@ public class Room
 
     List<Hallway> CalculateAllPossibleDoorwayPositions(Texture2D layoutTexture) {
         List<Hallway> possibleHallwayPositions = new List<Hallway>();
-        //Hallway testHallway = new Hallway(HallwayDirection.Bottom, Vector2Int.zero);
-        //Hallway testHallway2 = new Hallway(HallwayDirection.Left, Vector2Int.zero);
-        //possibleHallwayPositions.Add(testHallway);
-        //possibleHallwayPositions.Add(testHallway2);
 
         int width = layoutTexture.width;
         int height = layoutTexture.height;

@@ -209,6 +209,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f84075a997c77df49833df46aa4752dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerTransform: {fileID: 4971955846477629925, guid: 07b3f9cb92b664f4fb988fbe756136a0,
+  playerTransform: {fileID: 6546471485912513661, guid: df9f91a73bb1f044a9e46c9df6b26c0c,
     type: 3}
   collectionRange: 10

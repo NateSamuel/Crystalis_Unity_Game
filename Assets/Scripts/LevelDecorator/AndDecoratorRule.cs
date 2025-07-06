@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 
+//Design by Barbara Reichart lecture series, 2024
+
 [Serializable]
 [CreateAssetMenu(fileName = "AndDecoratorRule", menuName = "Custom/Procedural Generation/AndDecoratorRule")]
 public class AndDecoratorRule : BaseDecoratorRule

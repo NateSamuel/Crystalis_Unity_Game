@@ -6,42 +6,32 @@ public class DirectedAgent : MonoBehaviour
     NavMeshAgent agent;
     Animator animator;
 
-    public float rotationSpeed = 600f;
+    public float moveSpeed = 3.5f;
+    public float rotationSpeed = 200f;
 
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-
         agent.updateRotation = false;
-    }
-
-    public void MoveToLocation(Vector3 targetPoint)
-    {
-        agent.destination = targetPoint;
-        agent.isStopped = false;
+        agent.updatePosition = false;
     }
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            transform.Rotate(Vector3.up, -rotationSpeed * Time.deltaTime);
-        }
-        else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
-        }
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
 
-        if (agent.velocity.sqrMagnitude > 0.1f)
-        {
-            Quaternion lookRotation = Quaternion.LookRotation(agent.velocity.normalized);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
-        }
+        transform.Rotate(Vector3.up, horizontal * rotationSpeed * Time.deltaTime);
 
-        Vector3 velocity = agent.velocity;
-        Vector3 localVelocity = transform.InverseTransformDirection(velocity);
-        float speed = localVelocity.z;
-        animator.SetFloat("forwardSpeed", speed);
+        Vector3 direction = transform.forward * vertical;
+        Vector3 movement = direction * moveSpeed * Time.deltaTime;
+
+        agent.Move(movement);
+
+        transform.position = agent.nextPosition;
+
+        float inputMagnitude = new Vector2(horizontal, vertical).magnitude;
+        animator.SetFloat("forwardSpeed", inputMagnitude);
     }
 }

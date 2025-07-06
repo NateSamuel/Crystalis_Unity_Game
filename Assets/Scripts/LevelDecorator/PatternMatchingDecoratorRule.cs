@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
 
+//Design by Barbara Reichart lecture series, 2024
 [Serializable]
 [CreateAssetMenu(fileName = "DecoratorRule", menuName = "Custom/Procedural Generation/Pattern Decorator Rule")]
 public class PatternMatchingDecoratorRule : BaseDecoratorRule

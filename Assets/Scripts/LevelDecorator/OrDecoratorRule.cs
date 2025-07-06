@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
 
+//Design by Barbara Reichart lecture series, 2024
 [Serializable]
 [CreateAssetMenu(fileName = "OrDecoratorRule", menuName = "Custom/Procedural Generation/OrDecoratorRule")]
 public class OrDecoratorRule : BaseDecoratorRule
