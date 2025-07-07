@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
 
-//Design by Barbara Reichart lecture series, 2024
+//Initial design by Barbara Reichart lecture series, 2024, edits by student
 public class LayoutGeneratorRooms : MonoBehaviour
 {
     
@@ -33,7 +33,7 @@ public class LayoutGeneratorRooms : MonoBehaviour
 
         RectInt roomRect = GetStartRoomRect(startRoomTemplate);
 
-        Room room = CreateNewRoom(roomRect, startRoomTemplate);
+        Room room = CreateNewRoom(roomRect, startRoomTemplate, 0);
         List<Hallway> hallways = room.CalculateAllPossibleDoorways(room.Area.width, room.Area.height, levelConfig.DoorDistanceFromEdge);
 
         hallways.ForEach((h) => h.StartRoom = room);
@@ -81,8 +81,16 @@ public class LayoutGeneratorRooms : MonoBehaviour
             .OrderByDescending(room => room.Connectedness)
             .OrderByDescending(room => room.Area.width * room.Area.height)
             .FirstOrDefault();
-        bossRoom.Type = RoomType.Boss;
-        emptyRooms.Remove(bossRoom);
+        //student debug addition
+        if (bossRoom != null)
+        {
+            bossRoom.Type = RoomType.Boss;
+            emptyRooms.Remove(bossRoom);
+        }
+        else
+        {
+            Debug.LogWarning("No available room to assign as Boss room.");
+        }
         emptyRooms = emptyRooms.OrderBy(room => random.Next()).ToList();
         RoomType[] typesToAssign = { RoomType.Prison, RoomType.Library, RoomType.Kitchen };
         List<Room> roomsToAssign = emptyRooms.Take(typesToAssign.Length).ToList();
@@ -133,7 +141,34 @@ public class LayoutGeneratorRooms : MonoBehaviour
 
         return new RectInt(roomX, roomY, roomWidth, roomLength);
     }
+    //student creation
+    Texture2D TintTexture(Texture2D original, Color tint)
+    {
+        Texture2D tinted = new Texture2D(original.width, original.height);
 
+        for (int y = 0; y < original.height; y++)
+        {
+            for (int x = 0; x < original.width; x++)
+            {
+                Color pixel = original.GetPixel(x, y);
+
+                // Step 1: Make anything not black pure white (preserve alpha)
+                if (pixel.r > 0.01f || pixel.g > 0.01f || pixel.b > 0.01f)
+                {
+                    pixel = new Color(1f, 1f, 1f, pixel.a);
+                }
+
+                // Step 2: Apply tint only to white areas
+                Color tintedPixel = pixel * tint;
+                tintedPixel.a = pixel.a;
+
+                tinted.SetPixel(x, y, tintedPixel);
+            }
+        }
+
+        tinted.Apply();
+        return tinted;
+    }
     void DrawLayout(Hallway selectedEntryway = null, RectInt roomCandidateRect = new RectInt(), bool isDebug = false){
         var renderer = levelLayoutDisplay.GetComponent<Renderer>();
         var layoutTexture = (Texture2D) renderer.sharedMaterial.mainTexture;
@@ -145,17 +180,26 @@ public class LayoutGeneratorRooms : MonoBehaviour
         float zPos = level.Length * scale / 2.0f - scale;
         levelLayoutDisplay.transform.position = new Vector3(xPos, 100f, zPos);
         layoutTexture.FillWithColor(Color.black);
-        foreach (Room room in level.Rooms) {
-            if(room.LayoutTexture != null) {
-                layoutTexture.DrawTexture(room.LayoutTexture, room.Area);
-            } else {
-                layoutTexture.DrawRectangle(room.Area, Color.white);
-            }
-            Debug.Log(room.Area + "" + room.Connectedness + " " + room.Type);
-        }
 
-        Array.ForEach(level.Hallways, hallway => layoutTexture.DrawLine(hallway.StartPositionAbsolute, hallway.EndPositionAbsolute, 2, Color.white));
-        layoutTexture.ConvertToBlackAndWhite();
+        //student creation
+        foreach (Hallway hallway in level.Hallways)
+        {
+            int levelDelta = hallway.LevelDelta;
+            Color hallwayColor = LayoutColorMap.GetHallwayColorByLevelDelta(levelDelta);
+            layoutTexture.DrawLine(hallway.StartPositionAbsolute, hallway.EndPositionAbsolute, 2, hallwayColor);
+        }
+        foreach (Room room in level.Rooms) {
+            if (room.LayoutTexture != null) {
+                Texture2D tinted = TintTexture(room.LayoutTexture, LayoutColorMap.RoomLevel(room.VerticalLevel));
+                layoutTexture.DrawTexture(tinted, room.Area);
+            } else {
+                layoutTexture.DrawRectangle(room.Area, LayoutColorMap.RoomLevel(room.VerticalLevel));
+            }
+            Debug.Log(room.Area + " " + room.Connectedness + " " + room.Type);
+        }
+        //Array.ForEach(level.Hallways, hallway => layoutTexture.DrawLine(hallway.StartPositionAbsolute, hallway.EndPositionAbsolute, 2, Color.blue));
+        
+        //layoutTexture.ConvertToBlackAndWhite();
         if (isDebug) {
             layoutTexture.DrawRectangle(roomCandidateRect, Color.blue);
             openDoorways.ForEach(hallway => layoutTexture.SetPixel(hallway.StartPositionAbsolute.x, hallway.StartPositionAbsolute.y, hallway.StartDirection.GetColor()));
@@ -171,7 +215,7 @@ public class LayoutGeneratorRooms : MonoBehaviour
 
     Hallway SelectHallwayCandidate(RectInt roomCandidateRect, RoomTemplate roomTemplate, Hallway entryway) {
 
-        Room room = CreateNewRoom(roomCandidateRect, roomTemplate, false);
+        Room room = CreateNewRoom(roomCandidateRect, roomTemplate, 0, false);
         List<Hallway> candidates = room.CalculateAllPossibleDoorways(room.Area.width, room.Area.height, levelConfig.DoorDistanceFromEdge);
         HallwayDirection requiredDirection = entryway.StartDirection.GetOppositeDirection();
         List<Hallway> filteredHallwayCandidates = candidates.Where(hallwayCandidate => hallwayCandidate.StartDirection == requiredDirection).ToList();
@@ -230,7 +274,13 @@ public class LayoutGeneratorRooms : MonoBehaviour
         {
             return null;
         }
-        Room newRoom = CreateNewRoom(roomCandidateRect, roomTemplate);
+        //student work
+        int verticalLevel = random.Next(0, 3);
+        Room newRoom = CreateNewRoom(roomCandidateRect, roomTemplate, verticalLevel, true);
+
+
+
+
         selectedEntryway.EndRoom = newRoom;
         selectedEntryway.EndPosition = selectedExit.StartPosition;
         return newRoom;
@@ -296,17 +346,27 @@ public class LayoutGeneratorRooms : MonoBehaviour
         return false;
     }
 
-    Room CreateNewRoom(RectInt roomCandidateRect, RoomTemplate roomTemplate, bool useUp = true) {
-        if (useUp){
+    Room CreateNewRoom(RectInt roomCandidateRect, RoomTemplate roomTemplate, int verticalLevel, bool useUp = true)
+    {
+        if (useUp)
+        {
             UseUpRoomTemplate(roomTemplate);
         }
-        
-        if(roomTemplate.LayoutTexture == null) {
-            return new Room(roomCandidateRect);
+
+        Room room;
+
+        if (roomTemplate.LayoutTexture == null)
+        {
+            room = new Room(roomCandidateRect, verticalLevel);
         }
-        else {
-            return new Room(roomCandidateRect.x, roomCandidateRect.y, roomTemplate.LayoutTexture);
+        else
+        {
+            room = new Room(roomCandidateRect.x, roomCandidateRect.y, roomTemplate.LayoutTexture, verticalLevel);
         }
+
+        room.VerticalLevel = verticalLevel;
+
+        return room;
     }
 
 }

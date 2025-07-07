@@ -25,15 +25,21 @@ public class Room
     public Texture2D LayoutTexture { get; }
     public RoomType Type { get; set;} = RoomType.Default;
     public int Connectedness => hallways.Count;
+    //student work
+    public int VerticalLevel { get; set; } = 0;
 
-    public Room (RectInt area){
+    public Room(RectInt area, int verticalLevel)
+    {
         this.area = area;
+        this.VerticalLevel = verticalLevel;
         hallways = new List<Hallway>();
     }
-    internal Room(int x, int y, Texture2D layoutTexture) {
+    internal Room(int x, int y, Texture2D layoutTexture, int verticalLevel)
+    {
         area = new RectInt(x, y, layoutTexture.width, layoutTexture.height);
         LayoutTexture = layoutTexture;
         hallways = new List<Hallway>();
+        VerticalLevel = verticalLevel;
     }
 
     public List <Hallway> CalculateAllPossibleDoorways(int width, int length, int minDistanceFromEdge) {
