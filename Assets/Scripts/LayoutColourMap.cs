@@ -9,9 +9,9 @@ public static class LayoutColorMap {
 
     static Dictionary<int, Color> levelDeltaColors = new Dictionary<int, Color>
     {
-        { -2, new Color(0.3f, 0.0f, 0.3f) }, // down 2
-        { -1, Color.red }, // down 1
-        {  0, Color.blue },                 // flat
+        { -2, Color.blue },                 // down 2
+        { -1, Color.red },                  // down 1
+        {  0, Color.gray },                 // flat
         {  1, Color.yellow },               // up 1
         {  2, Color.cyan },                 // up 2
     };
@@ -24,9 +24,9 @@ public static class LayoutColorMap {
     public static Color RoomLevel(int level) {
         switch(level) {
             case 0: return Color.white;
-            case 1: return new Color(0.7f, 0.7f, 0.7f);
-            case 2: return new Color(0.4f, 0.4f, 0.4f);
-            default: return Color.gray;
+            case 1: return Color.magenta;
+            case 2: return Color.green;
+            default: return Color.white;
         }
     }
 }

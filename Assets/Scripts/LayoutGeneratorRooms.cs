@@ -186,7 +186,7 @@ public class LayoutGeneratorRooms : MonoBehaviour
         {
             int levelDelta = hallway.LevelDelta;
             Color hallwayColor = LayoutColorMap.GetHallwayColorByLevelDelta(levelDelta);
-            layoutTexture.DrawLine(hallway.StartPositionAbsolute, hallway.EndPositionAbsolute, 2, hallwayColor);
+            layoutTexture.DrawLine(hallway.StartPositionAbsolute, hallway.EndPositionAbsolute, 1, hallwayColor);
         }
         foreach (Room room in level.Rooms) {
             if (room.LayoutTexture != null) {
