@@ -37,7 +37,7 @@ public class MarchingSquares : MonoBehaviour
                 };
 
                 int highestLevel = Mathf.Max(levels[0], levels[1], levels[2], levels[3]);
-                float heightOffset = highestLevel * 3f;
+                float heightOffset = highestLevel * 12f;
 
                 GameObject tile = Instantiate(prefab, generatedLevel.transform);
                 tile.transform.localScale = scaleVector;
