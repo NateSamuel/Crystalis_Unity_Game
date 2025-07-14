@@ -28,6 +28,7 @@ public class MarchingSquares : MonoBehaviour
                 if (prefab == null) { continue; }
 
                 //student creation
+                
                 int[] levels = new int[]
                 {
                     level.GetVerticalLevel(x, y),
@@ -46,14 +47,27 @@ public class MarchingSquares : MonoBehaviour
             }
         }
     }
-
+    //student creation/edit
     int CalculateTileIndex(ILevel level, int x, int y)
     {
+        bool nearHallway = 
+            level.IsHallwayEdge(x, y + 1) ||
+            level.IsHallwayEdge(x + 1, y + 1) ||
+            level.IsHallwayEdge(x, y) ||
+            level.IsHallwayEdge(x + 1, y);
+
+        if (nearHallway)
+        {
+            return 0;
+        }
+
+        
         int topLeft = level.IsBlocked(x, y + 1) ? 1 : 0;
         int topRight = level.IsBlocked(x + 1, y + 1) ? 1 : 0;
         int bottomLeft = level.IsBlocked(x, y) ? 1 : 0;
         int bottomRight = level.IsBlocked(x + 1, y) ? 1 : 0;
         int tileIndex = topLeft + topRight * 2 + bottomLeft * 4 + bottomRight * 8;
+
         return tileIndex;
     }
 }

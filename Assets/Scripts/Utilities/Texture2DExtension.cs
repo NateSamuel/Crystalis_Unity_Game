@@ -134,28 +134,30 @@ public static class Texture2DExtension
 
         while (p0 != p1)
         {
+            // Draw current pixel
             DrawThickPixel(texture, p0, thickness, color);
 
+            // Exit if we're about to reach the last pixel
+            Vector2Int next = new Vector2Int(p0.x, p0.y);
             int e2 = 2 * err;
-
-            if (e2 > -dy && e2 < dx)
-            {
-                DrawThickPixel(texture, new Vector2Int(p0.x + sx, p0.y), thickness, color);
-            }
 
             if (e2 > -dy)
             {
                 err -= dy;
-                p0.x += sx;
+                next.x += sx;
             }
             if (e2 < dx)
             {
                 err += dx;
-                p0.y += sy;
+                next.y += sy;
             }
+
+            if (next == p1)
+                break;  // Exit before reaching final pixel
+
+            p0 = next;
         }
 
-        DrawThickPixel(texture, p0, thickness, color);
         texture.Apply();
     }
 

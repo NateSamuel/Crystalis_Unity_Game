@@ -182,12 +182,7 @@ public class LayoutGeneratorRooms : MonoBehaviour
         layoutTexture.FillWithColor(Color.black);
 
         //student creation
-        foreach (Hallway hallway in level.Hallways)
-        {
-            int levelDelta = hallway.LevelDelta;
-            Color hallwayColor = LayoutColorMap.GetHallwayColorByLevelDelta(levelDelta);
-            layoutTexture.DrawLine(hallway.StartPositionAbsolute, hallway.EndPositionAbsolute, 1, hallwayColor);
-        }
+
         foreach (Room room in level.Rooms) {
             if (room.LayoutTexture != null) {
                 Texture2D tinted = TintTexture(room.LayoutTexture, LayoutColorMap.RoomLevel(room.VerticalLevel));
@@ -196,6 +191,15 @@ public class LayoutGeneratorRooms : MonoBehaviour
                 layoutTexture.DrawRectangle(room.Area, LayoutColorMap.RoomLevel(room.VerticalLevel));
             }
             Debug.Log(room.Area + " " + room.Connectedness + " " + room.Type);
+        }
+
+        foreach (Hallway hallway in level.Hallways)
+        {
+            int levelDelta = hallway.LevelDelta;
+            Color hallwayColor = LayoutColorMap.GetHallwayColorByLevelDelta(levelDelta);
+            layoutTexture.DrawLine(hallway.StartPositionAbsolute, hallway.EndPositionAbsolute, 1, hallwayColor);
+            layoutTexture.SetPixel(hallway.StartPositionAbsolute.x, hallway.StartPositionAbsolute.y, Color.red);
+            layoutTexture.SetPixel(hallway.EndPositionAbsolute.x, hallway.EndPositionAbsolute.y, new Color(0.87f, 0.63f, 0.87f));
         }
         //Array.ForEach(level.Hallways, hallway => layoutTexture.DrawLine(hallway.StartPositionAbsolute, hallway.EndPositionAbsolute, 2, Color.blue));
         

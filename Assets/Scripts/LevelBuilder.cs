@@ -5,6 +5,7 @@ public class LevelBuilder : MonoBehaviour
 {
     [SerializeField] LayoutGeneratorRooms layoutGeneratorRooms;
     [SerializeField] MarchingSquares marchingSquares;
+    [SerializeField] HallwayDetector hallwayDetector;
     [SerializeField] NavMeshSurface navMeshSurface;
     [SerializeField] RoomDecorator roomDecorator;
     //Design by Barbara Reichart lecture series, 2024
@@ -47,12 +48,15 @@ public class LevelBuilder : MonoBehaviour
 
         layoutGeneratorRooms.LevelConfig.MaxRoomCount = Mathf.Min(
             layoutGeneratorRooms.LevelConfig.MaxRoomCount + 1,
-            20
+            6
         );
+
+        hallwayDetector.DetectHallway();
 
         //Design by Barbara Reichart lecture series, 2024
         marchingSquares.CreateLevelGeometry();
         roomDecorator.PlaceItems(level);
+        ParentHallwaysToNavMeshSurface();
         navMeshSurface.BuildNavMesh();
 
         Room startRoom = level.playerStartRoom;
@@ -76,5 +80,15 @@ public class LevelBuilder : MonoBehaviour
     {
         int scale = SharedLevelData.Instance.Scale;
         return new Vector3((levelPosition.x-1) * scale, 0, (levelPosition.y-1) * scale);
+    }
+    //student creation
+    public void ParentHallwaysToNavMeshSurface()
+    {
+        GameObject[] hallways = GameObject.FindGameObjectsWithTag("Hallway"); 
+
+        foreach (var hallway in hallways)
+        {
+            hallway.transform.SetParent(navMeshSurface.transform);
+        }
     }
 }
