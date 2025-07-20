@@ -12,6 +12,7 @@ public class EnemyMovement : MonoBehaviour
     public float detectionRange = 20f;
     public float attackRange = 5f;
     private EnemyAttack attackScript;
+    public Texture2D levelHeightTexture;
 
 
 
@@ -83,7 +84,19 @@ public class EnemyMovement : MonoBehaviour
     Vector3 GridToWorldPosition(Vector2Int gridPos)
     {
         int scale = SharedLevelData.Instance.Scale;
-        return new Vector3(gridPos.x * scale, 0, gridPos.y * scale);
+
+        int texX = Mathf.Clamp(gridPos.x, 0, levelHeightTexture.width - 1);
+        int texY = Mathf.Clamp(gridPos.y, 0, levelHeightTexture.height - 1);
+
+        Color pixel = levelHeightTexture.GetPixel(texX, texY);
+
+        float yHeight = 0f;
+        if (ColorsApproximatelyEqual(pixel, LayoutColorMap.RoomLevel(1)))
+            yHeight = 12f;
+        else if (ColorsApproximatelyEqual(pixel, LayoutColorMap.RoomLevel(2)))
+            yHeight = 24f;
+
+        return new Vector3(gridPos.x * scale, yHeight, gridPos.y * scale);
     }
 
     Vector2Int WorldToGridPosition(Vector3 worldPos)
@@ -93,6 +106,11 @@ public class EnemyMovement : MonoBehaviour
         int gridY = Mathf.RoundToInt(worldPos.z / scale);
         return new Vector2Int(gridX, gridY);
     }
-
+    private bool ColorsApproximatelyEqual(Color a, Color b, float tolerance = 0.05f)
+    {
+        return Mathf.Abs(a.r - b.r) < tolerance &&
+            Mathf.Abs(a.g - b.g) < tolerance &&
+            Mathf.Abs(a.b - b.b) < tolerance;
+    }
 
 }
