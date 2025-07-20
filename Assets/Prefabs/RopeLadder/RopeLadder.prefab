@@ -4578,7 +4578,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2470977556958211995}
-  - component: {fileID: 246152889519820836}
   m_Layer: 0
   m_Name: RopeLadder
   m_TagString: Hallway
@@ -4620,20 +4619,6 @@ Transform:
   - {fileID: 7541123245265104591}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &246152889519820836
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4373146969149600183}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50559ad90b27f0f46b61ee8d985fa7cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerTransform: {fileID: 0}
-  collectionRange: 3
 --- !u!1 &4530764001101994959
 GameObject:
   m_ObjectHideFlags: 0

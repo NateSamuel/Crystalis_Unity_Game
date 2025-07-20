@@ -14,6 +14,7 @@ public class PatternMatchingDecoratorRule : BaseDecoratorRule
     [SerializeField] Array2DWrapper<TileType> fill;
     [SerializeField] bool centerHorizontally = false;
     [SerializeField] bool centerVertically = false;
+    [SerializeField] private Texture2D levelHeightTexture;
 
     internal override bool CanBeApplied(TileType[,] levelDecorated, Room room)
     {
@@ -47,9 +48,18 @@ public class PatternMatchingDecoratorRule : BaseDecoratorRule
         Vector3 currentRotation = decoration.transform.eulerAngles;
         decoration.transform.eulerAngles = currentRotation + new Vector3(0, prefabRotation, 0);
         
-        Vector3 center = new Vector3(occurrence.x + placement.Width / 2.0f, 0, occurrence.y + placement.Height/ 2.0f);
+        //student
+        int centerX = Mathf.RoundToInt(occurrence.x + placement.Width / 2.0f);
+        int centerY = Mathf.RoundToInt(occurrence.y + placement.Height / 2.0f);
+        Color pixel = levelHeightTexture.GetPixel(centerX, centerY);
+
+        float yHeight = 0f;
+        if (ColorsApproximatelyEqual(pixel, LayoutColorMap.RoomLevel(1))) yHeight = 6f;
+        else if (ColorsApproximatelyEqual(pixel, LayoutColorMap.RoomLevel(2))) yHeight = 12f;
+
+        Vector3 center = new Vector3(centerX, yHeight, centerY);
         int scale = SharedLevelData.Instance.Scale;
-        decoration.transform.position = (center + new Vector3(-1,0,-1)) * scale;
+        decoration.transform.position = (center + new Vector3(-1, 0, -1)) * scale;
         
         decoration.transform.localScale = Vector3.one * scale;
 
@@ -94,5 +104,12 @@ public class PatternMatchingDecoratorRule : BaseDecoratorRule
             }
         }
         return true;
+    }
+    //student
+    private bool ColorsApproximatelyEqual(Color a, Color b, float tolerance = 0.05f)
+    {
+        return Mathf.Abs(a.r - b.r) < tolerance &&
+            Mathf.Abs(a.g - b.g) < tolerance &&
+            Mathf.Abs(a.b - b.b) < tolerance;
     }
 }

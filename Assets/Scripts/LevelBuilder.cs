@@ -8,6 +8,7 @@ public class LevelBuilder : MonoBehaviour
     [SerializeField] HallwayDetector hallwayDetector;
     [SerializeField] NavMeshSurface navMeshSurface;
     [SerializeField] RoomDecorator roomDecorator;
+    [SerializeField] private Texture2D levelHeightTexture;
     //Design by Barbara Reichart lecture series, 2024
     void Start()
     {
@@ -75,12 +76,29 @@ public class LevelBuilder : MonoBehaviour
             playerNavMeshAgent.Warp(playerPosition);
         }
     }
-    //Design by Barbara Reichart lecture series, 2024
+    //student creation
     Vector3 LevelPositionToWorldPosition(Vector2 levelPosition)
     {
         int scale = SharedLevelData.Instance.Scale;
-        return new Vector3((levelPosition.x-1) * scale, 0, (levelPosition.y-1) * scale);
+
+        int texX = Mathf.Clamp((int)levelPosition.x, 0, levelHeightTexture.width - 1);
+        int texY = Mathf.Clamp((int)levelPosition.y, 0, levelHeightTexture.height - 1);
+
+        Color pixel = levelHeightTexture.GetPixel(texX, texY);
+
+        float yHeight = 0f;
+
+        if (ColorsApproximatelyEqual(pixel, LayoutColorMap.RoomLevel(1)))
+            yHeight = 12f;
+        else if (ColorsApproximatelyEqual(pixel, LayoutColorMap.RoomLevel(2)))
+            yHeight = 24f;
+
+        float worldX = (levelPosition.x - 1) * scale;
+        float worldZ = (levelPosition.y - 1) * scale;
+
+        return new Vector3(worldX, yHeight, worldZ);
     }
+
     //student creation
     public void ParentHallwaysToNavMeshSurface()
     {
@@ -90,5 +108,11 @@ public class LevelBuilder : MonoBehaviour
         {
             hallway.transform.SetParent(navMeshSurface.transform);
         }
+    }
+    private bool ColorsApproximatelyEqual(Color a, Color b, float tolerance = 0.05f)
+    {
+        return Mathf.Abs(a.r - b.r) < tolerance &&
+            Mathf.Abs(a.g - b.g) < tolerance &&
+            Mathf.Abs(a.b - b.b) < tolerance;
     }
 }
