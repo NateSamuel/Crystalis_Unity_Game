@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dc5c4b20a3a9da4888df668f2fe32bd, type: 3}
   m_Name: EnemyRule
   m_EditorClassIdentifier: 
-  roomTypes: 233
+  roomTypes: 225
   prefab: {fileID: 901973414610251797, guid: 843375d30b472c04abe31dd0be597531, type: 3}
   prefabRotation: 0
   placement:

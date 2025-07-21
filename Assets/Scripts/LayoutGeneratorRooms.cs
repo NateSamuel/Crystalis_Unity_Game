@@ -53,6 +53,7 @@ public class LayoutGeneratorRooms : MonoBehaviour
     }
     void AssignRoomTypes()
     {
+        //assigns exit room first
         List<Room> borderRooms = level.Rooms.Where(room => room.Connectedness == 1).ToList();
         if(borderRooms.Count < 2)
         {
@@ -68,19 +69,17 @@ public class LayoutGeneratorRooms : MonoBehaviour
             .OrderByDescending(room => Vector2.Distance(randomStartRoom.Area.center, room.Area.center))
             .FirstOrDefault();
         farthestRoom.Type = RoomType.Exit;
+
+        //assigns boss room next
         borderRooms.Remove(farthestRoom);
-
-        List<Room> treasureRooms = borderRooms.OrderBy(r => random.Next()).Take(3).ToList();
-        borderRooms.RemoveAll(room => treasureRooms.Contains(room));
-        treasureRooms.ForEach(room => room.Type = RoomType.Treasure);
-
         List<Room> emptyRooms = level.Rooms.Where(room => room.Type.HasFlag(RoomType.Default)).ToList();
 
         Room bossRoom = emptyRooms
             .OrderByDescending(room => Vector2.Distance(randomStartRoom.Area.center, room.Area.center))
-            .OrderByDescending(room => room.Connectedness)
-            .OrderByDescending(room => room.Area.width * room.Area.height)
+            .ThenByDescending(room => room.Connectedness)
+            .ThenByDescending(room => room.Area.width * room.Area.height)
             .FirstOrDefault();
+
         //student debug addition
         if (bossRoom != null)
         {
@@ -91,6 +90,12 @@ public class LayoutGeneratorRooms : MonoBehaviour
         {
             Debug.LogWarning("No available room to assign as Boss room.");
         }
+        //assigns treasure rooms next
+        List<Room> treasureRooms = borderRooms.OrderBy(r => random.Next()).Take(3).ToList();
+        borderRooms.RemoveAll(room => treasureRooms.Contains(room));
+        treasureRooms.ForEach(room => room.Type = RoomType.Treasure);
+        
+        //assigns other room types finally
         emptyRooms = emptyRooms.OrderBy(room => random.Next()).ToList();
         RoomType[] typesToAssign = { RoomType.Prison, RoomType.Library, RoomType.Kitchen };
         List<Room> roomsToAssign = emptyRooms.Take(typesToAssign.Length).ToList();
