@@ -110,7 +110,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.30999994}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3968480710238094896
@@ -749,9 +749,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: 5a33263857d10904b895925e6b8bc18a, type: 3}
+    - target: {fileID: 5866666021909216657, guid: d5a3f722a0700e344a60886c37d7a8ba,
+        type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 2b5b475141753454e9fde21d77841d80, type: 2}
+      objectReference: {fileID: 9100000, guid: 3b5f2a89b494b964cb3add4e01edda1d, type: 2}
     - target: {fileID: 5866666021909216657, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
       propertyPath: m_WarningMessage
@@ -808,16 +813,18 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 3034897098615689929, guid: d5a3f722a0700e344a60886c37d7a8ba, type: 3}
+    - {fileID: 1082271958561512970, guid: d5a3f722a0700e344a60886c37d7a8ba, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8892445260955442628}
+      addedObject: {fileID: 3755519564136360904}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3755519564136360904}
+      addedObject: {fileID: 8892445260955442628}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
@@ -939,12 +946,12 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 5a33263857d10904b895925e6b8bc18a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.01
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 5a33263857d10904b895925e6b8bc18a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.17
+      value: -0.06
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 5a33263857d10904b895925e6b8bc18a,
         type: 3}
@@ -986,7 +993,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ganfaul M Aure
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: 5a33263857d10904b895925e6b8bc18a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
