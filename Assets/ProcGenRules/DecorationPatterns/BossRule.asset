@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BossRule
   m_EditorClassIdentifier: 
   roomTypes: 8
-  prefab: {fileID: 901973414610251797, guid: feb5d7a501bfb354abc6152c9119597d, type: 3}
+  prefab: {fileID: 901973414610251797, guid: b6db269127e9807449cef03189ca05ec, type: 3}
   prefabRotation: 0
   placement:
     array: 
@@ -23,6 +23,6 @@ MonoBehaviour:
     array: 
     width: 0
     height: 0
-  centerHorizontally: 0
-  centerVertically: 0
+  centerHorizontally: 1
+  centerVertically: 1
   levelHeightTexture: {fileID: 2800000, guid: 8ff5832bb55ad244fa2cfeacb4a17032, type: 3}

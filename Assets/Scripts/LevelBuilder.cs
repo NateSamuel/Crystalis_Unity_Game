@@ -1,5 +1,7 @@
 using UnityEngine;
 using Unity.AI.Navigation;
+using System.Collections;
+
 //This pages' design is by both student and Barbara Reichart lecture series, 2024
 public class LevelBuilder : MonoBehaviour
 {
@@ -27,55 +29,148 @@ public class LevelBuilder : MonoBehaviour
     [ContextMenu("Generate")]
     public void Generate()
     {
-        //Design by Student
+        StartCoroutine(GenerateLevelRoutine());
+    }
+
+    private IEnumerator GenerateLevelRoutine()
+    {
         Level level = null;
         int attempts = 0;
         int maxAttempts = 5;
         int maxRooms = layoutGeneratorRooms.LevelConfig.MaxRoomCount;
 
-        // Tries to regenerate until the room count requirement is met
         do
         {
             level = layoutGeneratorRooms.GenerateLevel();
             attempts++;
-
         } while ((level.Rooms == null || level.Rooms.Length < maxRooms) && attempts < maxAttempts);
 
-        if (level == null || level.Rooms.Length < layoutGeneratorRooms.LevelConfig.MaxRoomCount)
+        if (level == null || level.Rooms.Length < maxRooms)
         {
             Debug.LogWarning("Level generation failed after " + attempts + " attempts.");
-            return;
+            yield break;
         }
 
-        layoutGeneratorRooms.LevelConfig.MaxRoomCount = Mathf.Min(
-            layoutGeneratorRooms.LevelConfig.MaxRoomCount + 1,
-            6
-        );
+        layoutGeneratorRooms.LevelConfig.MaxRoomCount = Mathf.Min(maxRooms + 1, 6);
 
         hallwayDetector.DetectHallway();
-
-        //Design by Barbara Reichart lecture series, 2024
         marchingSquares.CreateLevelGeometry();
         roomDecorator.PlaceItems(level);
+
         ParentHallwaysToNavMeshSurface();
         navMeshSurface.BuildNavMesh();
 
+        // ✅ Wait for NavMesh to finish building
+        yield return new WaitForEndOfFrame(); 
+        yield return new WaitForSeconds(0.1f); // Optional: extra safety buffer
+
+        PlaceEnemiesOnNavMesh();
+        PlaceBossesOnNavMesh();
+        MovePlayerToStart(level);
+    }
+    private void PlaceEnemiesOnNavMesh()
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy1");
+        GameObject[] enemyPositions = GameObject.FindGameObjectsWithTag("Enemy1Pos");
+
+        int enemyCount = Mathf.Min(enemies.Length, enemyPositions.Length);
+
+        for (int i = 0; i < enemyCount; i++)
+        {
+            GameObject enemy = enemies[i];
+            GameObject enemyPos = enemyPositions[i];
+
+            Vector2Int gridPos = WorldToGridPosition(enemyPos.transform.position);
+            Vector3 correctedWorldPos = LevelPositionToWorldPosition(gridPos);
+
+            if (UnityEngine.AI.NavMesh.SamplePosition(correctedWorldPos, out UnityEngine.AI.NavMeshHit hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
+            {
+                var agent = enemy.GetComponent<UnityEngine.AI.NavMeshAgent>();
+                if (agent != null)
+                {
+                    bool warped = agent.Warp(hit.position);
+                    Debug.Log(warped
+                        ? $"✅ {enemy.name} warped to {hit.position}"
+                        : $"❌ {enemy.name} failed to warp to {hit.position}");
+                    if (warped)
+                    {
+                        var logic = enemy.GetComponent<EnemyMovement>();
+                        if (logic != null)
+                            logic.Initialize();
+                    }
+
+                    if (!agent.isOnNavMesh)
+                        Debug.LogError($"❌ {enemy.name} still not on NavMesh at {agent.transform.position}");
+                }
+            }
+            else
+            {
+                Debug.LogError($"❌ No NavMesh near enemy spawn point: {correctedWorldPos}");
+            }
+        }
+    }
+    private void PlaceBossesOnNavMesh()
+    {
+        GameObject[] bossPositions = GameObject.FindGameObjectsWithTag("Boss1Pos");
+        GameObject[] bosses = GameObject.FindGameObjectsWithTag("Boss1");
+
+        int bossCount = Mathf.Min(bosses.Length, bossPositions.Length);
+
+        for (int i = 0; i < bossCount; i++)
+        {
+            GameObject boss = bosses[i];
+            GameObject bossPos = bossPositions[i];
+
+            Vector2Int gridPos = WorldToGridPosition(bossPos.transform.position);
+            Vector3 correctedWorldPos = LevelPositionToWorldPosition(gridPos);
+
+            if (UnityEngine.AI.NavMesh.SamplePosition(correctedWorldPos, out UnityEngine.AI.NavMeshHit hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
+            {
+                var agent = boss.GetComponent<UnityEngine.AI.NavMeshAgent>();
+                if (agent != null)
+                {
+                    bool warped = agent.Warp(hit.position);
+                    Debug.Log(warped
+                        ? $"✅ Boss {boss.name} warped to {hit.position}"
+                        : $"❌ Boss {boss.name} failed to warp.");
+                    if (warped)
+                    {
+                        var logic = boss.GetComponent<EnemyMovement>();
+                        if (logic != null)
+                            logic.Initialize();
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogError($"❌ No NavMesh near boss spawn point: {correctedWorldPos}");
+            }
+        }
+    }
+
+    private void MovePlayerToStart(Level level)
+    {
         Room startRoom = level.playerStartRoom;
         Vector2 roomCenter = startRoom.Area.center;
         Vector3 playerPosition = LevelPositionToWorldPosition(roomCenter);
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        UnityEngine.AI.NavMeshAgent playerNavMeshAgent = player.GetComponent<UnityEngine.AI.NavMeshAgent>();
+        UnityEngine.AI.NavMeshAgent agent = player.GetComponent<UnityEngine.AI.NavMeshAgent>();
 
-        if (playerNavMeshAgent == null)
+        if (agent != null)
         {
-            player.transform.position = playerPosition;
+            bool warped = agent.Warp(playerPosition);
+            Debug.Log(warped
+                ? $"✅ Player warped to start at {playerPosition}"
+                : $"❌ Player failed to warp to start at {playerPosition}");
         }
         else
         {
-            playerNavMeshAgent.Warp(playerPosition);
+            player.transform.position = playerPosition;
+            Debug.Log("ℹ️ Player moved to start room (no NavMeshAgent)");
         }
     }
+
     //student creation
     Vector3 LevelPositionToWorldPosition(Vector2 levelPosition)
     {
@@ -97,6 +192,14 @@ public class LevelBuilder : MonoBehaviour
         float worldZ = (levelPosition.y - 1) * scale;
 
         return new Vector3(worldX, yHeight, worldZ);
+    }
+
+    Vector2Int WorldToGridPosition(Vector3 worldPos)
+    {
+        int scale = SharedLevelData.Instance.Scale;
+        int gridX = Mathf.RoundToInt(worldPos.x / scale);
+        int gridY = Mathf.RoundToInt(worldPos.z / scale);
+        return new Vector2Int(gridX, gridY);
     }
 
     //student creation

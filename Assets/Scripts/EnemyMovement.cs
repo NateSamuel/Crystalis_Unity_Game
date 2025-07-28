@@ -1,116 +1,170 @@
+// using UnityEngine;
+// using UnityEngine.AI;
+
+// public class EnemyMovement : MonoBehaviour
+// {
+//     public Vector2Int[] patrolGridPoints;
+//     private int currentPatrolIndex = 0;
+
+//     public float moveSpeed = 2f;
+//     public Transform playerTransform;
+//     public float detectionRange = 20f;
+//     public float attackRange = 5f;
+
+//     private EnemyAttack attackScript;
+//     private NavMeshAgent agent;
+
+//     void Start()
+//     {
+//         agent = GetComponent<NavMeshAgent>();
+
+//         if (agent != null)
+//         {
+//             agent.speed = moveSpeed;
+
+//             // Only set patrol destination don't warp or move enemy now
+//             if (patrolGridPoints != null && patrolGridPoints.Length > 0)
+//             {
+//                 Vector3 firstPatrolPos = GridToWorldPosition(patrolGridPoints[0]);
+//                 agent.SetDestination(SnapToNavMesh(firstPatrolPos));
+//             }
+//         }
+
+//         attackScript = GetComponent<EnemyAttack>();
+//         if (attackScript == null)
+//             Debug.LogWarning("EnemyAttack script not found!");
+
+//         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+//         playerTransform = playerObject != null ? playerObject.transform : null;
+
+//         if (playerTransform == null)
+//             Debug.LogWarning("Player not found! Make sure Player GameObject is tagged 'Player'.");
+//     }
+
+//     void Update()
+//     {
+//         if (agent == null || !agent.isOnNavMesh)
+//             return;
+
+//         if (playerTransform != null)
+//         {
+//             float distanceToPlayer = Vector3.Distance(
+//                 new Vector3(transform.position.x, 0, transform.position.z),
+//                 new Vector3(playerTransform.position.x, 0, playerTransform.position.z)
+//             );
+
+//             if (distanceToPlayer <= detectionRange)
+//             {
+//                 agent.SetDestination(playerTransform.position);
+//                 attackScript?.AttackPlayer();
+
+//                 if (distanceToPlayer <= attackRange)
+//                     attackScript?.IsAbleToHitPlayer();
+//                 else
+//                     attackScript?.IsNotAbleToHitPlayer();
+
+//                 return;
+//             }
+//             else
+//             {
+//                 attackScript?.DontAttackPlayer();
+//                 attackScript?.IsNotAbleToHitPlayer();
+//             }
+//         }
+
+//         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+//         {
+//             currentPatrolIndex = (currentPatrolIndex + 1) % patrolGridPoints.Length;
+//             Vector3 nextPatrolPos = GridToWorldPosition(patrolGridPoints[currentPatrolIndex]);
+//             agent.SetDestination(SnapToNavMesh(nextPatrolPos));
+//         }
+//     }
+
+//     Vector3 GridToWorldPosition(Vector2Int gridPos)
+//     {
+//         int scale = SharedLevelData.Instance.Scale;
+
+//         // Approximate height if you want perfect accuracy, pass in the level height texture or centralize the logic.
+//         float yHeight = transform.position.y; // Keep Y constant for patrol
+//         return new Vector3(gridPos.x * scale, yHeight, gridPos.y * scale);
+//     }
+
+//     Vector3 SnapToNavMesh(Vector3 position)
+//     {
+//         if (NavMesh.SamplePosition(position, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
+//             return hit.position;
+
+//         return position;
+//     }
+// }
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyMovement : MonoBehaviour
 {
-    public TileType[,] grid;
-    public float moveSpeed = 2f;
-    public Vector2Int gridPosition;
-    Vector2Int currentTargetTile;
-    int patrolDirection = -1;
+    private NavMeshAgent agent;
+    private bool isInitialized = false;
+    private bool canMove = true;
 
-    public Transform playerTransform;
-    public float detectionRange = 20f;
-    public float attackRange = 5f;
-    private EnemyAttack attackScript;
-    public Texture2D levelHeightTexture;
+    public Transform[] patrolPoints;
+    private int currentPointIndex = 0;
 
-
-
-    void Start()
+    public void Initialize()
     {
-        gridPosition = WorldToGridPosition(transform.position);
-        currentTargetTile = gridPosition + new Vector2Int(patrolDirection, 0);
-        attackScript = GetComponent<EnemyAttack>();
-        if (attackScript == null)
-        {
-            Debug.LogWarning("EnemyAttack script not found!");
-        }
         
-        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-        if (playerObject != null)
+        Debug.Log($"{name}: 🔁 Initialize() called!");
+        agent = GetComponent<NavMeshAgent>();
+        agent.SetDestination(agent.transform.position + transform.forward * 5f);
+        if (agent == null)
         {
-            playerTransform = playerObject.transform;
-        }
-        else
-        {
-            Debug.LogWarning("Player not found! Make sure Player GameObject is tagged 'Player'.");
+            Debug.LogError($"{name}: No NavMeshAgent found.");
+            return;
         }
 
-        
+        if (!agent.isOnNavMesh)
+        {
+            Debug.LogError($"{name}: Agent is not on NavMesh at position {transform.position}");
+            return;
+        }
+        Debug.Log($"{name}: isOnNavMesh = {agent.isOnNavMesh}, enabled = {agent.enabled}");
 
+        agent.speed = 3.5f;
+        agent.acceleration = 8f;
+
+        if (patrolPoints != null && patrolPoints.Length > 0)
+        {
+            agent.SetDestination(patrolPoints[currentPointIndex].position);
+        }
+
+        isInitialized = true;
+        Debug.Log($"✅ {name} initialized and on NavMesh.");
     }
 
     void Update()
     {
-        
-        Vector3 targetWorldPos = GridToWorldPosition(currentTargetTile);
-        transform.position = Vector3.MoveTowards(transform.position, targetWorldPos, moveSpeed * Time.deltaTime);
+        if (!isInitialized || patrolPoints == null || patrolPoints.Length == 0 || agent.pathPending)
+            return;
 
-        if (Vector3.Distance(transform.position, targetWorldPos) < 0.05f)
+        if (!agent.hasPath || agent.remainingDistance < 0.5f)
         {
-            transform.position = targetWorldPos;
-            gridPosition = currentTargetTile;
-            patrolDirection *= -1;
-            currentTargetTile = gridPosition + new Vector2Int(patrolDirection, 0);
+            currentPointIndex = (currentPointIndex + 1) % patrolPoints.Length;
+            agent.SetDestination(patrolPoints[currentPointIndex].position);
         }
+    }
 
-        
-        if (playerTransform != null)
+    void OnDrawGizmos()
+    {
+        Gizmos.color = canMove ? Color.green : Color.red;
+        Gizmos.DrawSphere(transform.position + Vector3.up * 1f, 0.3f);
+
+        if (patrolPoints != null)
         {
-            Vector3 enemyPosFlat = new Vector3(transform.position.x, 0, transform.position.z);
-            Vector3 playerPosFlat = new Vector3(playerTransform.position.x, 0, playerTransform.position.z);
-
-            float distanceToPlayer = Vector3.Distance(enemyPosFlat, playerPosFlat);
-            if (distanceToPlayer <= detectionRange)
+            Gizmos.color = Color.blue;
+            foreach (var point in patrolPoints)
             {
-                
-                attackScript?.AttackPlayer();
-                if(distanceToPlayer <= attackRange)
-                {
-                    attackScript?.IsAbleToHitPlayer();
-                }
-                else{
-                    attackScript?.IsNotAbleToHitPlayer();
-                }
-            }
-
-            else{
-                attackScript?.DontAttackPlayer();
-                attackScript?.IsNotAbleToHitPlayer();
+                if (point != null)
+                    Gizmos.DrawSphere(point.position, 0.2f);
             }
         }
     }
-
-    Vector3 GridToWorldPosition(Vector2Int gridPos)
-    {
-        int scale = SharedLevelData.Instance.Scale;
-
-        int texX = Mathf.Clamp(gridPos.x, 0, levelHeightTexture.width - 1);
-        int texY = Mathf.Clamp(gridPos.y, 0, levelHeightTexture.height - 1);
-
-        Color pixel = levelHeightTexture.GetPixel(texX, texY);
-
-        float yHeight = 0f;
-        if (ColorsApproximatelyEqual(pixel, LayoutColorMap.RoomLevel(1)))
-            yHeight = 12f;
-        else if (ColorsApproximatelyEqual(pixel, LayoutColorMap.RoomLevel(2)))
-            yHeight = 24f;
-
-        return new Vector3(gridPos.x * scale, yHeight, gridPos.y * scale);
-    }
-
-    Vector2Int WorldToGridPosition(Vector3 worldPos)
-    {
-        int scale = SharedLevelData.Instance.Scale;
-        int gridX = Mathf.RoundToInt(worldPos.x / scale);
-        int gridY = Mathf.RoundToInt(worldPos.z / scale);
-        return new Vector2Int(gridX, gridY);
-    }
-    private bool ColorsApproximatelyEqual(Color a, Color b, float tolerance = 0.05f)
-    {
-        return Mathf.Abs(a.r - b.r) < tolerance &&
-            Mathf.Abs(a.g - b.g) < tolerance &&
-            Mathf.Abs(a.b - b.b) < tolerance;
-    }
-
 }

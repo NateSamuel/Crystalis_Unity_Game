@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Enemy1
   - Hallway
+  - Enemy1Pos
+  - Boss1Pos
+  - Boss1
   layers:
   - Default
   - TransparentFX

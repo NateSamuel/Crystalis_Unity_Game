@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EnemyRule
   m_EditorClassIdentifier: 
   roomTypes: 225
-  prefab: {fileID: 901973414610251797, guid: 843375d30b472c04abe31dd0be597531, type: 3}
+  prefab: {fileID: 901973414610251797, guid: bd4da3f83e10bca4a830b4df6a505eab, type: 3}
   prefabRotation: 0
   placement:
     array: 020000000200000002000000020000000200000002000000020000000200000002000000

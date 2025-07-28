@@ -405,13 +405,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.01
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
@@ -818,6 +833,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: 7286041351157961850}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d5a3f722a0700e344a60886c37d7a8ba,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 1357475970801606222}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
@@ -827,10 +846,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1187294093399180014}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d5a3f722a0700e344a60886c37d7a8ba,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7417591145181927583}
   m_SourcePrefab: {fileID: 100100000, guid: d5a3f722a0700e344a60886c37d7a8ba, type: 3}
 --- !u!4 &562849512188603055 stripped
 Transform:
@@ -844,6 +859,28 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 19454601082015044}
   m_PrefabAsset: {fileID: 0}
+--- !u!195 &7286041351157961850
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 901973414610251797}
+  m_Enabled: 1
+  m_AgentTypeID: -1372625422
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!114 &1357475970801606222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -856,13 +893,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10e564dc5d8d2404d87c112884866b92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2
-  gridPosition: {x: 0, y: 0}
-  playerTransform: {fileID: 4971955846477629925, guid: 07b3f9cb92b664f4fb988fbe756136a0,
-    type: 3}
-  detectionRange: 20
-  attackRange: 5
-  levelHeightTexture: {fileID: 2800000, guid: 8ff5832bb55ad244fa2cfeacb4a17032, type: 3}
 --- !u!114 &476297890755670642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -896,26 +926,3 @@ MonoBehaviour:
   facingThePlayer: 0
   facingAngleThreshold: 5
   hitPlayerCooldown: 2
---- !u!136 &7417591145181927583
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 901973414610251797}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
