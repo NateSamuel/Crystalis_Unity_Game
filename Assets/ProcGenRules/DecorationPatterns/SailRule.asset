@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dc5c4b20a3a9da4888df668f2fe32bd, type: 3}
   m_Name: SailRule
   m_EditorClassIdentifier: 
-  roomTypes: 249
+  roomTypes: 241
   prefab: {fileID: 3701996775972964930, guid: 7242968589e8ebb4199955164f4c9534, type: 3}
   prefabRotation: 0
   placement:

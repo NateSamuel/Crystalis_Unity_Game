@@ -1,102 +1,3 @@
-// using UnityEngine;
-// using UnityEngine.AI;
-
-// public class EnemyMovement : MonoBehaviour
-// {
-//     public Vector2Int[] patrolGridPoints;
-//     private int currentPatrolIndex = 0;
-
-//     public float moveSpeed = 2f;
-//     public Transform playerTransform;
-//     public float detectionRange = 20f;
-//     public float attackRange = 5f;
-
-//     private EnemyAttack attackScript;
-//     private NavMeshAgent agent;
-
-//     void Start()
-//     {
-//         agent = GetComponent<NavMeshAgent>();
-
-//         if (agent != null)
-//         {
-//             agent.speed = moveSpeed;
-
-//             // Only set patrol destination don't warp or move enemy now
-//             if (patrolGridPoints != null && patrolGridPoints.Length > 0)
-//             {
-//                 Vector3 firstPatrolPos = GridToWorldPosition(patrolGridPoints[0]);
-//                 agent.SetDestination(SnapToNavMesh(firstPatrolPos));
-//             }
-//         }
-
-//         attackScript = GetComponent<EnemyAttack>();
-//         if (attackScript == null)
-//             Debug.LogWarning("EnemyAttack script not found!");
-
-//         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-//         playerTransform = playerObject != null ? playerObject.transform : null;
-
-//         if (playerTransform == null)
-//             Debug.LogWarning("Player not found! Make sure Player GameObject is tagged 'Player'.");
-//     }
-
-//     void Update()
-//     {
-//         if (agent == null || !agent.isOnNavMesh)
-//             return;
-
-//         if (playerTransform != null)
-//         {
-//             float distanceToPlayer = Vector3.Distance(
-//                 new Vector3(transform.position.x, 0, transform.position.z),
-//                 new Vector3(playerTransform.position.x, 0, playerTransform.position.z)
-//             );
-
-//             if (distanceToPlayer <= detectionRange)
-//             {
-//                 agent.SetDestination(playerTransform.position);
-//                 attackScript?.AttackPlayer();
-
-//                 if (distanceToPlayer <= attackRange)
-//                     attackScript?.IsAbleToHitPlayer();
-//                 else
-//                     attackScript?.IsNotAbleToHitPlayer();
-
-//                 return;
-//             }
-//             else
-//             {
-//                 attackScript?.DontAttackPlayer();
-//                 attackScript?.IsNotAbleToHitPlayer();
-//             }
-//         }
-
-//         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
-//         {
-//             currentPatrolIndex = (currentPatrolIndex + 1) % patrolGridPoints.Length;
-//             Vector3 nextPatrolPos = GridToWorldPosition(patrolGridPoints[currentPatrolIndex]);
-//             agent.SetDestination(SnapToNavMesh(nextPatrolPos));
-//         }
-//     }
-
-//     Vector3 GridToWorldPosition(Vector2Int gridPos)
-//     {
-//         int scale = SharedLevelData.Instance.Scale;
-
-//         // Approximate height if you want perfect accuracy, pass in the level height texture or centralize the logic.
-//         float yHeight = transform.position.y; // Keep Y constant for patrol
-//         return new Vector3(gridPos.x * scale, yHeight, gridPos.y * scale);
-//     }
-
-//     Vector3 SnapToNavMesh(Vector3 position)
-//     {
-//         if (NavMesh.SamplePosition(position, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
-//             return hit.position;
-
-//         return position;
-//     }
-// }
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -109,12 +10,21 @@ public class EnemyMovement : MonoBehaviour
     public Transform[] patrolPoints;
     private int currentPointIndex = 0;
 
+    public Transform playerTransform;
+    public float detectionRange = 20f;
+    public float attackRange = 5f;
+    private bool isDead = false;
+
+    private EnemyAttack attackScript;
+    private Animator animator;
+
     public void Initialize()
     {
-        
-        Debug.Log($"{name}: 🔁 Initialize() called!");
+        isDead = false;
+        Debug.Log($"{name}: Initialize() called!");
+
         agent = GetComponent<NavMeshAgent>();
-        agent.SetDestination(agent.transform.position + transform.forward * 5f);
+        animator = GetComponent<Animator>();
         if (agent == null)
         {
             Debug.LogError($"{name}: No NavMeshAgent found.");
@@ -126,29 +36,109 @@ public class EnemyMovement : MonoBehaviour
             Debug.LogError($"{name}: Agent is not on NavMesh at position {transform.position}");
             return;
         }
-        Debug.Log($"{name}: isOnNavMesh = {agent.isOnNavMesh}, enabled = {agent.enabled}");
 
         agent.speed = 3.5f;
         agent.acceleration = 8f;
-
+        agent.stoppingDistance = 3f;
+        
         if (patrolPoints != null && patrolPoints.Length > 0)
         {
-            agent.SetDestination(patrolPoints[currentPointIndex].position);
+            for (int i = 0; i < patrolPoints.Length; i++)
+            {
+                var point = patrolPoints[i];
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(point.position, out hit, 2f, NavMesh.AllAreas))
+                {
+                    patrolPoints[i].position = hit.position;
+                    Debug.Log($"Patrol point {i} snapped to NavMesh at {hit.position}");
+                }
+                else
+                {
+                    Debug.LogError($"Patrol point {i} is not near a NavMesh surface.");
+                }
+            }
+
+            // Set first destination
+            agent.SetDestination(patrolPoints[0].position);
+        }
+        else
+        {
+            Debug.LogError($"{name}: No patrol points assigned!");
         }
 
         isInitialized = true;
-        Debug.Log($"✅ {name} initialized and on NavMesh.");
+        Debug.Log($" {name} initialized and on NavMesh.");
+
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject != null)
+        {
+            playerTransform = playerObject.transform;
+        }
+        else
+        {
+            Debug.LogWarning("Player not found! Make sure Player GameObject is tagged 'Player'.");
+        }
+        attackScript = GetComponent<EnemyAttack>();
+        attackScript?.SetDead(false);
+        
     }
 
     void Update()
     {
-        if (!isInitialized || patrolPoints == null || patrolPoints.Length == 0 || agent.pathPending)
+        if (isDead || !isInitialized || patrolPoints == null || patrolPoints.Length == 0 || agent.pathPending)
             return;
 
         if (!agent.hasPath || agent.remainingDistance < 0.5f)
         {
             currentPointIndex = (currentPointIndex + 1) % patrolPoints.Length;
             agent.SetDestination(patrolPoints[currentPointIndex].position);
+        }
+
+        if (playerTransform != null)
+        {
+
+            Vector3 enemyPosFlat = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            Vector3 playerPosFlat = new Vector3(playerTransform.position.x, playerTransform.position.y, playerTransform.position.z);
+
+            float distanceToPlayer = Vector3.Distance(enemyPosFlat, playerPosFlat);
+
+            if (distanceToPlayer <= detectionRange)
+            {
+                if (distanceToPlayer > agent.stoppingDistance)
+                {
+                    agent.isStopped = false;
+                    agent.SetDestination(playerTransform.position);
+                }
+                else
+                {
+                    agent.isStopped = true;
+                }
+
+                attackScript?.AttackPlayer();
+
+                if (distanceToPlayer <= attackRange)
+                {
+                    attackScript?.IsAbleToHitPlayer();
+                }
+                else
+                {
+                    attackScript?.IsNotAbleToHitPlayer();
+                }
+            }
+            else
+            {
+                agent.isStopped = false;
+                attackScript?.DontAttackPlayer();
+                attackScript?.IsNotAbleToHitPlayer();
+            }
+        }
+        if (animator != null)
+        {
+            Vector3 velocity = agent.velocity;
+            velocity.y = 0f;
+
+            float forwardSpeed = velocity.magnitude / agent.speed;
+            animator.SetFloat("forwardSpeed", forwardSpeed, 0.1f, Time.deltaTime);
         }
     }
 
@@ -165,6 +155,15 @@ public class EnemyMovement : MonoBehaviour
                 if (point != null)
                     Gizmos.DrawSphere(point.position, 0.2f);
             }
+        }
+    }
+    public void DisableEnemy()
+    {
+        isDead = true;
+        if (agent != null)
+        {
+            agent.isStopped = true;
+            agent.ResetPath();
         }
     }
 }

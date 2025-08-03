@@ -16,7 +16,8 @@ public class EnemyAttack : MonoBehaviour
     private Animator animator;
     private bool hasPunched = false;
     private CharacterHealth characterHealth;
-    
+    private bool isDead = false;
+
     void Start()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -30,38 +31,10 @@ public class EnemyAttack : MonoBehaviour
     
     void Update()
     {
-        
-        if(isAttacking)
+        if (isDead) return;
+        if(isAbleToHit)
         {
-            toggleTimer -= Time.deltaTime;
-            if (toggleTimer <= 0f)
-            {
-                isRotating = !isRotating;
-                toggleTimer = toggleInterval;
-            }
-
-            if (isRotating && playerTransform != null)
-            {
-                Vector3 direction = playerTransform.position - transform.position;
-                direction.y = 0f;
-
-                if (direction != Vector3.zero)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(direction);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-
-                    float angle = Quaternion.Angle(transform.rotation, targetRotation);
-                    facingThePlayer = angle < facingAngleThreshold;
-                }
-            }
-            else{
-
-                facingThePlayer = false;
-            }
-            if(facingThePlayer)
-            {
-                HitPlayer();
-            }
+            HitPlayer();
         }
 
     }
@@ -97,5 +70,11 @@ public class EnemyAttack : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         hasPunched = false;
+    }
+    public void SetDead(bool value)
+    {
+        isDead = value;
+        isAbleToHit = false;
+        isAttacking = false;
     }
 }

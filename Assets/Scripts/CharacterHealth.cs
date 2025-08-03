@@ -9,7 +9,8 @@ public class CharacterHealth : MonoBehaviour
     private int characterHealthCurrent;
     private TextMeshProUGUI healthText;
     private TextMeshProUGUI deathMessageText;
-    
+    public GameObject spellEffectPrefab;
+    public Transform castPoint;
 
     void Start()
     {
@@ -27,8 +28,6 @@ public class CharacterHealth : MonoBehaviour
         {
             deathMessageText.text = " ";
         }
-
-
     }
 
     public void CharacterDamageTaken(int damageAmount)
@@ -70,4 +69,21 @@ public class CharacterHealth : MonoBehaviour
         }
     }
 
+    public void AddHealth(int healthBoostAmount)
+    {
+        if (spellEffectPrefab != null && castPoint != null)
+        {
+            GameObject effect = Instantiate(spellEffectPrefab, castPoint.position, castPoint.rotation);
+            Destroy(effect, 1f);
+        }
+        int addedHealth = healthBoostAmount + characterHealthCurrent;
+        if (addedHealth < 100)
+        {
+            characterHealthCurrent = addedHealth;
+        }
+        else{
+            characterHealthCurrent = 100;
+        }
+        UpdateHealthUI();
+    }
 }

@@ -4,7 +4,7 @@ using TMPro;
 public class CharacterTreasure : MonoBehaviour
 {
     
-    int crystals = 0;
+    public int crystals = 0;
     private TextMeshProUGUI treasureText;
     void Start()
     {
@@ -15,10 +15,18 @@ public class CharacterTreasure : MonoBehaviour
             treasureText.text = "Crystals: " + crystals;
         }
     }
-    public void ApplyTreasure()
+    public void ApplyTreasure(int treasureAmount)
     {
-        crystals += 2;
+        crystals += treasureAmount;
         UpdateTreasureUI();
+    }
+    public void RemoveTreasure(int treasureAmount)
+    {
+        if (crystals >= treasureAmount)
+        {
+            crystals -= treasureAmount;
+            UpdateTreasureUI();
+        }
     }
     void UpdateTreasureUI()
     {

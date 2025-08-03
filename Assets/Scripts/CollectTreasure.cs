@@ -6,6 +6,7 @@ public class CollectTreasure : MonoBehaviour
     Vector3 spawnPosition;
     public float collectionRange = 3f;
     private CharacterTreasure charTreasureScript;
+    public int treasureAmount = 6;
 
     
     void Start()
@@ -35,7 +36,7 @@ public class CollectTreasure : MonoBehaviour
     }
     void PlayerCanCollect()
     {
-        charTreasureScript?.ApplyTreasure();
+        charTreasureScript?.ApplyTreasure(treasureAmount);
         Destroy(gameObject);
     }
 }
