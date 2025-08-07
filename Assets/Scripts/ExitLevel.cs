@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using TMPro;
 
@@ -11,15 +12,12 @@ public class ExitLevel : MonoBehaviour
     private TextMeshProUGUI levelText;
 
     
-    void Start()
+    IEnumerator Start()
     {
+        yield return null;
+
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-        GameObject textObject = GameObject.Find("LevelText");
-        levelText = textObject.GetComponent<TextMeshProUGUI>();
-        levelBuilder = FindObjectOfType<LevelBuilder>();
-        currentLevel = FindObjectOfType<CurrentLevel>();
-        
-        
+
         if (playerObject != null)
         {
             playerTransform = playerObject.transform;
@@ -28,6 +26,13 @@ public class ExitLevel : MonoBehaviour
         {
             Debug.LogWarning("Player not found!");
         }
+
+        GameObject textObject = GameObject.Find("LevelText");
+        if (textObject != null)
+            levelText = textObject.GetComponent<TextMeshProUGUI>();
+
+        levelBuilder = FindAnyObjectByType<LevelBuilder>();
+        currentLevel = FindAnyObjectByType<CurrentLevel>();
 
         spawnPosition = transform.position;
     }
@@ -50,7 +55,7 @@ public class ExitLevel : MonoBehaviour
             
             if (levelText != null)
             {
-                levelText.text = "Level: " + currentLevel.currentLevelNumber;
+                levelText.text = "Level " + currentLevel.currentLevelNumber;
             }
         }
     }

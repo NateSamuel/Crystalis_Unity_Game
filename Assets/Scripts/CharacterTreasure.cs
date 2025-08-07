@@ -12,7 +12,7 @@ public class CharacterTreasure : MonoBehaviour
         treasureText = treasureTextObject.GetComponent<TextMeshProUGUI>();
         if (treasureText != null)
         {
-            treasureText.text = "Crystals: " + crystals;
+            treasureText.text = " " + crystals;
         }
     }
     public void ApplyTreasure(int treasureAmount)
@@ -32,7 +32,7 @@ public class CharacterTreasure : MonoBehaviour
     {
         if (treasureText != null)
         {
-            treasureText.text = "Crystals: " + crystals;
+            treasureText.text = " " + crystals;
         }
     }
 }

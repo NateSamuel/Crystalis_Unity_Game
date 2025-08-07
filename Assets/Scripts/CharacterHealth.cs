@@ -1,6 +1,8 @@
 using UnityEngine;
 using TMPro;
 using System.Collections;
+using UnityEngine.UI;
+
 
 public class CharacterHealth : MonoBehaviour
 {
@@ -8,9 +10,10 @@ public class CharacterHealth : MonoBehaviour
     public int characterHealthTotal = 100;
     private int characterHealthCurrent;
     private TextMeshProUGUI healthText;
-    private TextMeshProUGUI deathMessageText;
     public GameObject spellEffectPrefab;
     public Transform castPoint;
+    public Slider healthSlider;
+    public GameObject PlayerDeathPanel;
 
     void Start()
     {
@@ -18,15 +21,14 @@ public class CharacterHealth : MonoBehaviour
         UpdateHealthUI();
         GameObject healthTextObject = GameObject.Find("PlayerHealthText");
         healthText = healthTextObject.GetComponent<TextMeshProUGUI>();
-        GameObject deathTextObject = GameObject.Find("PlayerDeathText");
-        deathMessageText = deathTextObject.GetComponent<TextMeshProUGUI>();
         if (healthText != null)
         {
-            healthText.text = "Health: " + characterHealthTotal;
+            healthText.text = " " + characterHealthTotal;
         }
-        if (deathMessageText != null)
+        if (healthSlider != null)
         {
-            deathMessageText.text = " ";
+            healthSlider.maxValue = characterHealthTotal;
+            healthSlider.value = characterHealthCurrent;
         }
     }
 
@@ -50,10 +52,9 @@ public class CharacterHealth : MonoBehaviour
 
     IEnumerator ShowDeathMessageAndPause()
     {
-        if (deathMessageText != null)
+        if (PlayerDeathPanel != null)
         {
-            deathMessageText.gameObject.SetActive(true);
-            deathMessageText.text = "PLAYER DIED";
+            PlayerDeathPanel.SetActive(true);
         }
 
         yield return null;
@@ -65,7 +66,12 @@ public class CharacterHealth : MonoBehaviour
     {
         if (healthText != null)
         {
-            healthText.text = "Health: " + characterHealthCurrent;
+            healthText.text = " " + characterHealthCurrent;
+        }
+
+        if (healthSlider != null)
+        {
+            healthSlider.value = characterHealthCurrent;
         }
     }
 
