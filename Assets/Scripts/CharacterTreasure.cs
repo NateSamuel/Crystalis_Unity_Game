@@ -1,25 +1,24 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class CharacterTreasure : MonoBehaviour
 {
-    
     public int crystals = 0;
-    private TextMeshProUGUI treasureText;
+
+    [SerializeField] private List<TextMeshProUGUI> treasureTexts;
+
     void Start()
     {
-        GameObject treasureTextObject = GameObject.Find("PlayerTreasureText");
-        treasureText = treasureTextObject.GetComponent<TextMeshProUGUI>();
-        if (treasureText != null)
-        {
-            treasureText.text = " " + crystals;
-        }
+        UpdateTreasureUI();
     }
+
     public void ApplyTreasure(int treasureAmount)
     {
         crystals += treasureAmount;
         UpdateTreasureUI();
     }
+
     public void RemoveTreasure(int treasureAmount)
     {
         if (crystals >= treasureAmount)
@@ -28,11 +27,15 @@ public class CharacterTreasure : MonoBehaviour
             UpdateTreasureUI();
         }
     }
-    void UpdateTreasureUI()
+
+    private void UpdateTreasureUI()
     {
-        if (treasureText != null)
+        foreach (var text in treasureTexts)
         {
-            treasureText.text = " " + crystals;
+            if (text != null)
+            {
+                text.text = " " + crystals;
+            }
         }
     }
 }

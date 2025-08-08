@@ -14,15 +14,8 @@ public class CharacterAttack : MonoBehaviour
     {
         animator = GetComponent<Animator>();
     }
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Attack();
-        }
-    }
 
-    void Attack()
+    public void Attack()
     {
         animator.SetTrigger("punch");
 

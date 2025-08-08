@@ -8,6 +8,7 @@ public class MainScreenManager : MonoBehaviour
     public GameObject MainUIPanel;
     public GameObject PlayerDeathPanel;
     public GameObject PauseMenuPanel;
+    public GameObject PurchaseAbilities;
 
     void Start()
     {
@@ -16,6 +17,7 @@ public class MainScreenManager : MonoBehaviour
         MainUIPanel.SetActive(false);
         PlayerDeathPanel.SetActive(false);
         PauseMenuPanel.SetActive(false);
+        PurchaseAbilities.SetActive(false);
     }
     public void BackToEntryScreen()
     {
@@ -57,4 +59,17 @@ public class MainScreenManager : MonoBehaviour
         PauseMenuPanel.SetActive(false);
         Time.timeScale = 1f;
     }
+    public void ShowPurchaseAbilitiesPanel()
+    {
+        MainUIPanel.SetActive(false);
+        PurchaseAbilities.SetActive(true);
+        Time.timeScale = 0f;
+    }
+    public void ExitPurchaseAbilitiesPanel()
+    {
+        MainUIPanel.SetActive(true);
+        PurchaseAbilities.SetActive(false);
+        Time.timeScale = 1f;
+    }
+
 }

@@ -1,62 +1,48 @@
-using System.Collections;
 using UnityEngine;
-using TMPro;
 
 public class ExitLevel : MonoBehaviour
 {
     public Transform playerTransform;
-    Vector3 spawnPosition;
+    private Vector3 spawnPosition;
     public float collectionRange = 3f;
+
     private LevelBuilder levelBuilder;
     private CurrentLevel currentLevel;
-    private TextMeshProUGUI levelText;
 
-    
-    IEnumerator Start()
+    void Start()
     {
-        yield return null;
-
+        // Find the player in the scene
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-
         if (playerObject != null)
         {
             playerTransform = playerObject.transform;
         }
         else
         {
-            Debug.LogWarning("Player not found!");
+            Debug.LogWarning("Player not found! Make sure it's tagged as 'Player'.");
         }
 
-        GameObject textObject = GameObject.Find("LevelText");
-        if (textObject != null)
-            levelText = textObject.GetComponent<TextMeshProUGUI>();
-
+        // Grab required references
         levelBuilder = FindAnyObjectByType<LevelBuilder>();
         currentLevel = FindAnyObjectByType<CurrentLevel>();
 
         spawnPosition = transform.position;
     }
 
-    
     void Update()
     {
-        if (Vector3.Distance(spawnPosition, playerTransform.position) < collectionRange)
+        if (playerTransform != null && Vector3.Distance(spawnPosition, playerTransform.position) < collectionRange)
         {
             PlayerCanExit();
         }
     }
+
     void PlayerCanExit()
     {
         if (levelBuilder != null && currentLevel != null)
         {
-            levelBuilder.GenerateRandom();
-            currentLevel.currentLevelNumber ++;
-            Debug.Log(currentLevel.currentLevelNumber);
-            
-            if (levelText != null)
-            {
-                levelText.text = "Level " + currentLevel.currentLevelNumber;
-            }
+            levelBuilder.GenerateRandom();     // Regenerate or load new content
+            currentLevel.IncrementLevel();     // Update level and UI
         }
     }
 }
