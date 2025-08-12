@@ -31,7 +31,6 @@ public class SharedLevelData : MonoBehaviour
         else if(Instance != this)
         {
             enabled = false;
-            Debug.LogWarning("Duplicate SharedLevelData detected and disabled.", this);
         }
         Debug.Log(Instance.GetInstanceID());
         random = new Random(seed);

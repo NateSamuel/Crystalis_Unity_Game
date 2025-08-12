@@ -6,7 +6,7 @@ public class AOESpellClicked : MonoBehaviour
     private CharacterTreasure charTreasureScript;
     private Transform playerTransform;
     public int spellCost = 2;
-    public int spellDamage = 30;
+    public float spellDamage = 30f;
 
     void Start()
     {
@@ -18,15 +18,10 @@ public class AOESpellClicked : MonoBehaviour
             charTreasureScript = playerTransform.GetComponent<CharacterTreasure>();
             charAttackScript = playerTransform.GetComponent<CharacterAttack>();
         }
-        else
-        {
-            Debug.LogWarning("Player not found! Make sure Player GameObject is tagged 'Player'.");
-        }
 
     }
     public void OnButtonClick()
     {
-        Debug.Log("AOE Spell Button was clicked!");
         if (charTreasureScript.crystals >= spellCost)
         {
             charTreasureScript?.RemoveTreasure(spellCost);

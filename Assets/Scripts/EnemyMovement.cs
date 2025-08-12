@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 public class EnemyMovement : MonoBehaviour
 {
@@ -21,19 +22,16 @@ public class EnemyMovement : MonoBehaviour
     public void Initialize()
     {
         isDead = false;
-        Debug.Log($"{name}: Initialize() called!");
 
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         if (agent == null)
         {
-            Debug.LogError($"{name}: No NavMeshAgent found.");
             return;
         }
 
         if (!agent.isOnNavMesh)
         {
-            Debug.LogError($"{name}: Agent is not on NavMesh at position {transform.position}");
             return;
         }
 
@@ -50,33 +48,19 @@ public class EnemyMovement : MonoBehaviour
                 if (NavMesh.SamplePosition(point.position, out hit, 2f, NavMesh.AllAreas))
                 {
                     patrolPoints[i].position = hit.position;
-                    Debug.Log($"Patrol point {i} snapped to NavMesh at {hit.position}");
-                }
-                else
-                {
-                    Debug.LogError($"Patrol point {i} is not near a NavMesh surface.");
                 }
             }
 
             // Set first destination
             agent.SetDestination(patrolPoints[0].position);
         }
-        else
-        {
-            Debug.LogError($"{name}: No patrol points assigned!");
-        }
 
         isInitialized = true;
-        Debug.Log($" {name} initialized and on NavMesh.");
 
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject != null)
         {
             playerTransform = playerObject.transform;
-        }
-        else
-        {
-            Debug.LogWarning("Player not found! Make sure Player GameObject is tagged 'Player'.");
         }
         attackScript = GetComponent<EnemyAttack>();
         attackScript?.SetDead(false);
@@ -85,7 +69,7 @@ public class EnemyMovement : MonoBehaviour
 
     void Update()
     {
-        if (isDead || !isInitialized || patrolPoints == null || patrolPoints.Length == 0 || agent.pathPending)
+        if (isDead || !isInitialized || patrolPoints == null || patrolPoints.Length == 0 || agent.pathPending || !canMove)
             return;
 
         if (!agent.hasPath || agent.remainingDistance < 0.5f)
@@ -165,5 +149,48 @@ public class EnemyMovement : MonoBehaviour
             agent.isStopped = true;
             agent.ResetPath();
         }
+    }
+    public void Stun(float duration)
+    {
+        if (isDead) return;
+        StartCoroutine(StunCoroutine(duration));
+    }
+
+    private IEnumerator StunCoroutine(float duration)
+    {
+        canMove = false;
+        agent.isStopped = true;
+
+        if (attackScript != null)
+        {
+            attackScript.DontAttackPlayer();
+            attackScript.IsNotAbleToHitPlayer();
+        }
+
+        if (animator != null)
+            animator.SetTrigger("Stunned");
+
+        yield return new WaitForSeconds(duration);
+
+        canMove = true;
+        agent.isStopped = false;
+    }
+    public void CharacterDodges(float duration)
+    {
+        if (isDead) return;
+        StartCoroutine(DodgeCoroutine(duration));
+    }
+
+    private IEnumerator DodgeCoroutine(float duration)
+    {
+
+        if (attackScript != null)
+        {
+            attackScript.IsNotAbleToDamagePlayer();
+        }
+
+        yield return new WaitForSeconds(duration);
+
+        attackScript.IsAbleToDamagePlayer();
     }
 }

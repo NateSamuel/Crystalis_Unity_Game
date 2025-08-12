@@ -7,6 +7,7 @@ public class EnemyAttack : MonoBehaviour
     public float rotationSpeed = 0.5f;
     private bool isAttacking = false;
     private bool isAbleToHit = false;
+    private bool isAbleToDamage = true;
     public float toggleInterval = 1f;
     private float toggleTimer;
     private bool isRotating = true;
@@ -55,6 +56,14 @@ public class EnemyAttack : MonoBehaviour
     {
         isAbleToHit = false;
     }
+    public void IsAbleToDamagePlayer()
+    {
+        isAbleToDamage = true;
+    }
+    public void IsNotAbleToDamagePlayer()
+    {
+        isAbleToDamage = false;
+    }
     public void HitPlayer()
     {
         if(!hasPunched && isAbleToHit)
@@ -62,7 +71,10 @@ public class EnemyAttack : MonoBehaviour
             animator.SetTrigger("Punch");
             hasPunched = true;
             StartCoroutine(ResetPunchCooldown());
-            characterHealth.CharacterDamageTaken(10);
+            if(isAbleToDamage)
+            {
+                characterHealth.CharacterDamageTaken(10);
+            }
         }
     }
 

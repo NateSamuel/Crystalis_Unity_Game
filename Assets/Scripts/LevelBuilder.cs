@@ -48,7 +48,6 @@ public class LevelBuilder : MonoBehaviour
 
         if (level == null || level.Rooms.Length < maxRooms)
         {
-            Debug.LogWarning("Level generation failed after " + attempts + " attempts.");
             yield break;
         }
 
@@ -96,20 +95,11 @@ public class LevelBuilder : MonoBehaviour
                             agent.enabled = true;
 
                         bool warped = agent.Warp(hit.position);
-                        Debug.Log(warped
-                            ? $"{enemy.name} warped to {hit.position}"
-                            : $"{enemy.name} failed to warp.");
 
                         if (warped)
                             enemy.GetComponent<EnemyMovement>()?.Initialize();
 
-                        if (!agent.isOnNavMesh)
-                            Debug.LogError($" {enemy.name} still not on NavMesh at {agent.transform.position}");
                     }
-                }
-                else
-                {
-                    Debug.LogError($"No NavMesh near enemy spawn point: {correctedWorldPos}");
                 }
             }
             else
@@ -120,7 +110,6 @@ public class LevelBuilder : MonoBehaviour
 
                 agent?.Warp(new Vector3(0, -1000, 0));
                 enemy.GetComponent<EnemyMovement>()?.DisableEnemy();
-                Debug.Log($"{enemy.name} disabled and moved offscreen.");
             }
         }
     }
@@ -147,9 +136,7 @@ public class LevelBuilder : MonoBehaviour
                     if (!agent.enabled)
                         agent.enabled = true;
                     bool warped = agent.Warp(hit.position);
-                    Debug.Log(warped
-                        ? $"Boss {boss.name} warped to {hit.position}"
-                        : $"Boss {boss.name} failed to warp.");
+
                     if (warped)
                     {
                         var logic = boss.GetComponent<EnemyMovement>();
@@ -157,10 +144,6 @@ public class LevelBuilder : MonoBehaviour
                             logic.Initialize();
                     }
                 }
-            }
-            else
-            {
-                Debug.LogError($"No NavMesh near boss spawn point: {correctedWorldPos}");
             }
         }
     }
@@ -177,14 +160,10 @@ public class LevelBuilder : MonoBehaviour
         if (agent != null)
         {
             bool warped = agent.Warp(playerPosition);
-            Debug.Log(warped
-                ? $"Player warped to start at {playerPosition}"
-                : $"Player failed to warp to start at {playerPosition}");
         }
         else
         {
             player.transform.position = playerPosition;
-            Debug.Log("Player moved to start room (no NavMeshAgent)");
         }
     }
 

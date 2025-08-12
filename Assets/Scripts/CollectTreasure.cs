@@ -18,10 +18,6 @@ public class CollectTreasure : MonoBehaviour
             playerTransform = playerObject.transform;
             charTreasureScript = playerTransform.GetComponent<CharacterTreasure>();
         }
-        else
-        {
-            Debug.LogWarning("Player not found! Make sure Player GameObject is tagged 'Player'.");
-        }
 
         spawnPosition = transform.position;
     }

@@ -11,18 +11,12 @@ public class ExitLevel : MonoBehaviour
 
     void Start()
     {
-        // Find the player in the scene
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject != null)
         {
             playerTransform = playerObject.transform;
         }
-        else
-        {
-            Debug.LogWarning("Player not found! Make sure it's tagged as 'Player'.");
-        }
 
-        // Grab required references
         levelBuilder = FindAnyObjectByType<LevelBuilder>();
         currentLevel = FindAnyObjectByType<CurrentLevel>();
 
@@ -41,8 +35,8 @@ public class ExitLevel : MonoBehaviour
     {
         if (levelBuilder != null && currentLevel != null)
         {
-            levelBuilder.GenerateRandom();     // Regenerate or load new content
-            currentLevel.IncrementLevel();     // Update level and UI
+            levelBuilder.GenerateRandom();
+            currentLevel.IncrementLevel();
         }
     }
 }

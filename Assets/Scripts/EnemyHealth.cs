@@ -4,8 +4,8 @@ using UnityEngine.AI;
 
 public class EnemyHealth : MonoBehaviour
 {
-    public int enemyHealthTotal = 100;
-    private int enemyHealthCurrent;
+    public float enemyHealthTotal = 100f;
+    private float enemyHealthCurrent;
     private CharacterTreasure charTreasureScript;
     public Slider healthSlider;
     private Transform playerTransform;
@@ -18,10 +18,6 @@ public class EnemyHealth : MonoBehaviour
             playerTransform = playerObject.transform;
             charTreasureScript = playerTransform.GetComponent<CharacterTreasure>();
         }
-        else
-        {
-            Debug.LogWarning("Player not found! Make sure Player GameObject is tagged 'Player'.");
-        }
 
         enemyHealthCurrent = enemyHealthTotal;
         if (healthSlider != null)
@@ -31,13 +27,12 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
-    public void EnemyDamageTaken(int damageAmount)
+    public void EnemyDamageTaken(float damageAmount)
     {
         enemyHealthCurrent -= damageAmount;
         if (healthSlider != null)
         {
             healthSlider.value = enemyHealthCurrent;
-            Debug.Log("Enemy health" + enemyHealthCurrent);
         }
 
         if (enemyHealthCurrent < 0)

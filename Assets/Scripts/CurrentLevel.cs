@@ -23,9 +23,5 @@ public class CurrentLevel : MonoBehaviour
         {
             levelText.text = "Level " + currentLevelNumber;
         }
-        else
-        {
-            Debug.LogWarning("LevelText is not assigned in CurrentLevel.");
-        }
     }
 }

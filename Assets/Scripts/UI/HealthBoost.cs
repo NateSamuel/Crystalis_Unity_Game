@@ -19,16 +19,11 @@ public class HealthBoost : MonoBehaviour
             charTreasureScript = playerTransform.GetComponent<CharacterTreasure>();
             charHealthScript = playerTransform.GetComponent<CharacterHealth>();
         }
-        else
-        {
-            Debug.LogWarning("Player not found! Make sure Player GameObject is tagged 'Player'.");
-        }
 
     }
     public void OnButtonClick()
     {
 
-        Debug.Log("Button was clicked!");
         if (charTreasureScript.crystals >= boostCost)
         {
             charTreasureScript?.RemoveTreasure(boostCost);
