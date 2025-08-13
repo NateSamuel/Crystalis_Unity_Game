@@ -66,7 +66,7 @@ public class EnemyAttack : MonoBehaviour
     }
     public void HitPlayer()
     {
-        if(!hasPunched && isAbleToHit)
+        if(!hasPunched && isAbleToHit && characterHealth.characterHealthCurrent > 0)
         {
             animator.SetTrigger("Punch");
             hasPunched = true;

@@ -8,7 +8,7 @@ public class EnemyMovement : MonoBehaviour
     private bool isInitialized = false;
     private bool canMove = true;
 
-    public Transform[] patrolPoints;
+    public Vector3[] patrolPoints;
     private int currentPointIndex = 0;
 
     public Transform playerTransform;
@@ -18,6 +18,9 @@ public class EnemyMovement : MonoBehaviour
 
     private EnemyAttack attackScript;
     private Animator animator;
+
+    public Texture2D levelHeightTexture;
+    private Color[] validRoomColors;
 
     public void Initialize()
     {
@@ -35,25 +38,23 @@ public class EnemyMovement : MonoBehaviour
             return;
         }
 
+        validRoomColors = new Color[] {
+            LayoutColorMap.RoomLevel(0),
+            LayoutColorMap.RoomLevel(1),
+            LayoutColorMap.RoomLevel(2)
+        };
+
+        AssignPatrolPointsFromLevelTexture();
+
         agent.speed = 3.5f;
         agent.acceleration = 8f;
         agent.stoppingDistance = 3f;
-        
+
         if (patrolPoints != null && patrolPoints.Length > 0)
         {
-            for (int i = 0; i < patrolPoints.Length; i++)
-            {
-                var point = patrolPoints[i];
-                NavMeshHit hit;
-                if (NavMesh.SamplePosition(point.position, out hit, 2f, NavMesh.AllAreas))
-                {
-                    patrolPoints[i].position = hit.position;
-                }
-            }
-
-            // Set first destination
-            agent.SetDestination(patrolPoints[0].position);
+            agent.SetDestination(patrolPoints[0]);
         }
+
 
         isInitialized = true;
 
@@ -64,18 +65,119 @@ public class EnemyMovement : MonoBehaviour
         }
         attackScript = GetComponent<EnemyAttack>();
         attackScript?.SetDead(false);
-        
+    }
+    void AssignPatrolPointsFromLevelTexture()
+    {
+        if (patrolPoints == null || patrolPoints.Length == 0 || levelHeightTexture == null)
+        {
+            return;
+        }
+        patrolPoints = new Vector3[4]; 
+        for (int i = 0; i < patrolPoints.Length; i++)
+        {
+            Vector2 randomPixel = PickRandomValidPixelOnTexture();
+            Vector3 worldPos = LevelPositionToWorldPosition(randomPixel);
+
+            if (NavMesh.SamplePosition(worldPos, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            {
+                patrolPoints[i] = hit.position;
+            }
+            else
+            {
+                patrolPoints[i] = worldPos;
+            }
+        }
+    }
+
+    Vector2 PickRandomValidPixelOnTexture()
+    {
+        int width = levelHeightTexture.width;
+        int height = levelHeightTexture.height;
+
+        int maxAttempts = 1000;
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            int x = Random.Range(1, width - 1);
+            int y = Random.Range(1, height - 1);
+
+            Color centerColor = levelHeightTexture.GetPixel(x, y);
+            if (!IsValidRoomColor(centerColor)) continue;
+
+            bool allNeighborsValid = true;
+            for (int dx = -1; dx <= 1; dx++)
+            {
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    if (dx == 0 && dy == 0) continue;
+
+                    Color neighborColor = levelHeightTexture.GetPixel(x + dx, y + dy);
+                    if (!IsValidRoomColor(neighborColor))
+                    {
+                        allNeighborsValid = false;
+                        break;
+                    }
+                }
+                if (!allNeighborsValid) break;
+            }
+
+            if (allNeighborsValid)
+            {
+                return new Vector2(x, y);
+            }
+        }
+
+        return new Vector2(0, 0);
+    }
+
+    bool IsValidRoomColor(Color color)
+    {
+        foreach (var validColor in validRoomColors)
+        {
+            if (ColorsApproximatelyEqual(color, validColor))
+                return true;
+        }
+        return false;
+    }
+
+    bool ColorsApproximatelyEqual(Color a, Color b, float tolerance = 0.05f)
+    {
+        return Mathf.Abs(a.r - b.r) < tolerance &&
+               Mathf.Abs(a.g - b.g) < tolerance &&
+               Mathf.Abs(a.b - b.b) < tolerance;
+    }
+
+    Vector3 LevelPositionToWorldPosition(Vector2 pixelPos)
+    {
+        int scale = SharedLevelData.Instance.Scale;
+
+        int texX = Mathf.Clamp((int)pixelPos.x, 0, levelHeightTexture.width - 1);
+        int texY = Mathf.Clamp((int)pixelPos.y, 0, levelHeightTexture.height - 1);
+
+        Color pixel = levelHeightTexture.GetPixel(texX, texY);
+
+        float yHeight = 0f;
+
+        if (ColorsApproximatelyEqual(pixel, LayoutColorMap.RoomLevel(1)))
+            yHeight = 12f;
+        else if (ColorsApproximatelyEqual(pixel, LayoutColorMap.RoomLevel(2)))
+            yHeight = 24f;
+
+        float worldX = (pixelPos.x - 1) * scale;
+        float worldZ = (pixelPos.y - 1) * scale;
+
+        return new Vector3(worldX, yHeight, worldZ);
     }
 
     void Update()
     {
+        
         if (isDead || !isInitialized || patrolPoints == null || patrolPoints.Length == 0 || agent.pathPending || !canMove)
             return;
 
-        if (!agent.hasPath || agent.remainingDistance < 0.5f)
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
             currentPointIndex = (currentPointIndex + 1) % patrolPoints.Length;
-            agent.SetDestination(patrolPoints[currentPointIndex].position);
+            agent.SetDestination(patrolPoints[currentPointIndex]);
         }
 
         if (playerTransform != null)
@@ -128,16 +230,12 @@ public class EnemyMovement : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        Gizmos.color = canMove ? Color.green : Color.red;
-        Gizmos.DrawSphere(transform.position + Vector3.up * 1f, 0.3f);
-
         if (patrolPoints != null)
         {
-            Gizmos.color = Color.blue;
+            Gizmos.color = Color.red;
             foreach (var point in patrolPoints)
             {
-                if (point != null)
-                    Gizmos.DrawSphere(point.position, 0.2f);
+                Gizmos.DrawSphere(point, 0.2f);
             }
         }
     }

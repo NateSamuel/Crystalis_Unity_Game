@@ -62,6 +62,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6546471485912513661}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6183372321020522283
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6689234400549746805}
+  m_Layer: 0
+  m_Name: BaseSpellPosFloor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6689234400549746805
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6183372321020522283}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6546471485912513661}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6607732140755823130
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,6 +262,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5dc83bed8d8e16d4ca7fe22bb910683b,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: 6689234400549746805}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5dc83bed8d8e16d4ca7fe22bb910683b,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 2237488968401718392}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5dc83bed8d8e16d4ca7fe22bb910683b,
         type: 3}
@@ -277,9 +312,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterHealthTotal: 100
+  characterHealthCurrent: 0
   spellEffectPrefab: {fileID: 9017484664307500583, guid: 1245b8d2997d5b34fb1637be70a7eb05,
     type: 3}
   castPoint: {fileID: 2237488968401718392}
+  healthSlider: {fileID: 0}
+  PlayerDeathPanel: {fileID: 0}
 --- !u!114 &8213445626537064399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,6 +331,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   crystals: 0
+  treasureTexts: []
 --- !u!195 &1824553701037295286
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -343,13 +382,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackRange: 5
   damage: 10
+  dotDamage: 5
   enemyLayer:
     serializedVersion: 2
     m_Bits: 8
   attackPoint: {fileID: 1115942987728824127}
   spellEffectPrefab: {fileID: 7647375919561907788, guid: 035ce8c9cfc34104991ce416daf8aebe,
     type: 3}
+  powerUpEffectPrefab: {fileID: 0}
+  freezeEffectPrefab: {fileID: 0}
   castPoint: {fileID: 2237488968401718392}
+  castPointFloor: {fileID: 0}
+  normalDamageModifier: 1
+  increasedDamageModifier: 1.5
+  projectilePrefab: {fileID: 0}
 --- !u!4 &6546471485912513661 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5dc83bed8d8e16d4ca7fe22bb910683b,

@@ -7,15 +7,17 @@ using UnityEngine.UI;
 public class CharacterHealth : MonoBehaviour
 {
     public int characterHealthTotal = 100;
-    private int characterHealthCurrent;
+    public int characterHealthCurrent;
     private TextMeshProUGUI healthText;
     public GameObject spellEffectPrefab;
     public Transform castPoint;
     public Slider healthSlider;
     public GameObject PlayerDeathPanel;
+    private Animator animator;
 
     void Start()
     {
+        animator = GetComponent<Animator>();
         characterHealthCurrent = characterHealthTotal;
         UpdateHealthUI();
         GameObject healthTextObject = GameObject.Find("PlayerHealthText");
@@ -33,6 +35,7 @@ public class CharacterHealth : MonoBehaviour
 
     public void CharacterDamageTaken(int damageAmount)
     {
+        animator.SetTrigger("playerHit");
         characterHealthCurrent -= damageAmount;
         Debug.Log(characterHealthCurrent);
         UpdateHealthUI();
@@ -44,9 +47,24 @@ public class CharacterHealth : MonoBehaviour
 
     void CharacterDie()
     {
-        
-        StartCoroutine(ShowDeathMessageAndPause());
+        animator.SetTrigger("playerDeath");
+        StartCoroutine(WaitForDeathAnimationThenContinue());
 
+    }
+
+    IEnumerator WaitForDeathAnimationThenContinue()
+    {
+        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Standing React Death Backward"))
+        {
+            yield return null;
+        }
+        
+        while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+        {
+            yield return null;
+        }
+
+        StartCoroutine(ShowDeathMessageAndPause());
     }
 
     IEnumerator ShowDeathMessageAndPause()

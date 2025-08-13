@@ -2,7 +2,6 @@ using UnityEngine;
 using Unity.AI.Navigation;
 using System.Collections;
 
-//This pages' design is by both student and Barbara Reichart lecture series, 2024
 public class LevelBuilder : MonoBehaviour
 {
     [SerializeField] LayoutGeneratorRooms layoutGeneratorRooms;
@@ -12,13 +11,14 @@ public class LevelBuilder : MonoBehaviour
     [SerializeField] RoomDecorator roomDecorator;
     [SerializeField] private Texture2D levelHeightTexture;
     [SerializeField] private int levelEnemyCount = 5;
-    //Design by Barbara Reichart lecture series, 2024
+    
+    //Design by Student
     void Start()
     {
-        //Design by Student
         layoutGeneratorRooms.LevelConfig.ResetMaxRoomCount();
         GenerateRandom();
     }
+
     //Design by Barbara Reichart lecture series, 2024
     [ContextMenu("Generate Random")]
     public void GenerateRandom()
@@ -26,13 +26,13 @@ public class LevelBuilder : MonoBehaviour
         SharedLevelData.Instance.GenerateSeed();
         Generate();
     }
-    //Design by Student and Barbara Reichart lecture series, 2024
+    //Design by Student
     [ContextMenu("Generate")]
     public void Generate()
     {
         StartCoroutine(GenerateLevelRoutine());
     }
-
+    //Design by Student
     private IEnumerator GenerateLevelRoutine()
     {
         Level level = null;
@@ -68,6 +68,7 @@ public class LevelBuilder : MonoBehaviour
         PlaceBossesOnNavMesh();
         MovePlayerToStart(level);
     }
+    //Design by Student
     private void PlaceEnemiesOnNavMesh()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy1");
@@ -113,6 +114,7 @@ public class LevelBuilder : MonoBehaviour
             }
         }
     }
+    //Design by Student
     private void PlaceBossesOnNavMesh()
     {
         GameObject[] bossPositions = GameObject.FindGameObjectsWithTag("Boss1Pos");
@@ -147,7 +149,7 @@ public class LevelBuilder : MonoBehaviour
             }
         }
     }
-
+    //Design by Barbara Reichart lecture series, 2024
     private void MovePlayerToStart(Level level)
     {
         Room startRoom = level.playerStartRoom;
@@ -189,7 +191,7 @@ public class LevelBuilder : MonoBehaviour
 
         return new Vector3(worldX, yHeight, worldZ);
     }
-
+    //Design by Student
     Vector2Int WorldToGridPosition(Vector3 worldPos)
     {
         int scale = SharedLevelData.Instance.Scale;
@@ -208,6 +210,7 @@ public class LevelBuilder : MonoBehaviour
             hallway.transform.SetParent(navMeshSurface.transform);
         }
     }
+    //Design by Student
     private bool ColorsApproximatelyEqual(Color a, Color b, float tolerance = 0.05f)
     {
         return Mathf.Abs(a.r - b.r) < tolerance &&

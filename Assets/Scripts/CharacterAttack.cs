@@ -10,7 +10,10 @@ public class CharacterAttack : MonoBehaviour
     public LayerMask enemyLayer;
     public Transform attackPoint;
     public GameObject spellEffectPrefab;
+    public GameObject powerUpEffectPrefab;
+    public GameObject freezeEffectPrefab;
     public Transform castPoint;
+    public Transform castPointFloor;
     private Coroutine activePowerup;
     private Coroutine activeDamageOverTime;
     public float normalDamageModifier = 1f;
@@ -37,6 +40,7 @@ public class CharacterAttack : MonoBehaviour
             if (direction != Vector3.zero)
             {
                 FireProjectile(direction);
+                animator.SetTrigger("rangedBlastTrigger");
             }
 
             isTargeting = false;
@@ -76,6 +80,7 @@ public class CharacterAttack : MonoBehaviour
     }
     public void AOEAttack(float spellDamage)
     {
+        animator.SetTrigger("aoeAttackTrigger");
         if (spellEffectPrefab != null && castPoint != null)
         {
             GameObject effect = Instantiate(spellEffectPrefab, castPoint.position, castPoint.rotation);
@@ -111,6 +116,11 @@ public class CharacterAttack : MonoBehaviour
 
     private IEnumerator PowerUpRoutine()
     {
+        if (powerUpEffectPrefab != null && castPoint != null)
+        {
+            GameObject effect = Instantiate(powerUpEffectPrefab, castPoint.position, castPoint.rotation);
+            Destroy(effect, 1f);
+        }
         currentDamageModifier = increasedDamageModifier;
 
         yield return new WaitForSeconds(5f);
@@ -120,6 +130,12 @@ public class CharacterAttack : MonoBehaviour
 
     public void FreezeAbility()
     {
+        animator.SetTrigger("freezeTrigger");
+        if (freezeEffectPrefab != null && castPointFloor != null)
+        {
+            GameObject effect = Instantiate(freezeEffectPrefab, castPointFloor.position, castPointFloor.rotation);
+            Destroy(effect, 1f);
+        }
         Transform bestTarget = GetBestEnemyTarget();
 
         if (bestTarget != null)
