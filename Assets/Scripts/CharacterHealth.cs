@@ -47,8 +47,12 @@ public class CharacterHealth : MonoBehaviour
 
     void CharacterDie()
     {
-        animator.SetTrigger("playerDeath");
-        StartCoroutine(WaitForDeathAnimationThenContinue());
+        if( !animator.GetCurrentAnimatorStateInfo(0).IsName("Standing React Death Backward"))
+        {
+            animator.SetTrigger("playerDeath");
+            StartCoroutine(WaitForDeathAnimationThenContinue());
+            GetComponent<DirectedAgent>().canMove = false;
+        }
 
     }
 

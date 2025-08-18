@@ -157,13 +157,11 @@ public class LayoutGeneratorRooms : MonoBehaviour
             {
                 Color pixel = original.GetPixel(x, y);
 
-                // Step 1: Make anything not black pure white (preserve alpha)
                 if (pixel.r > 0.01f || pixel.g > 0.01f || pixel.b > 0.01f)
                 {
                     pixel = new Color(1f, 1f, 1f, pixel.a);
                 }
 
-                // Step 2: Apply tint only to white areas
                 Color tintedPixel = pixel * tint;
                 tintedPixel.a = pixel.a;
 

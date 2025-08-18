@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class FollowCamera : MonoBehaviour
 {
@@ -11,12 +12,20 @@ public class FollowCamera : MonoBehaviour
     public float collisionBuffer = 0.2f;
     public LayerMask collisionLayers;
 
-    public Transform startPoint;          // Camera start position & rotation
-    public float startMoveDuration = 2f;  // How long to zoom in at level start
+    [Header("Start Transition")]
+    public Transform startPoint;
+    public float startMoveDelay = 2f;
+
+    [Header("Zoom Settings")]
+    private Vector3 zoomStartPosition;
+    private Quaternion zoomStartRotation;
+    public float zoomDuration = 4f;
+    private float zoomProgress = 0f;
+    private bool isZooming = false;
+    private bool waitingToStart = true;
 
     private Vector3 currentVelocity;
-    private float startMoveTimer = 0f;
-    private bool isStarting = true;
+    private Vector3 desiredPosition;
 
     void Start()
     {
@@ -34,22 +43,19 @@ public class FollowCamera : MonoBehaviour
             transform.position = startPoint.position;
             transform.rotation = startPoint.rotation;
         }
-        else
-        {
-            isStarting = false; // no start point assigned — skip zoom in
-        }
+
+        waitingToStart = true;
+        isZooming = false;
     }
 
-    private void LateUpdate()
+    void LateUpdate()
     {
         if (target == null) return;
 
-        // Calculate desired camera position behind the player
         Quaternion desiredRotation = Quaternion.Euler(0, target.eulerAngles.y, 0);
         Vector3 offset = desiredRotation * new Vector3(0, 0, -distance);
-        Vector3 desiredPosition = target.position + Vector3.up * height + offset;
+        desiredPosition = target.position + Vector3.up * height + offset;
 
-        // Collision check with SphereCast
         Vector3 castOrigin = target.position + Vector3.up * height;
         Vector3 directionToCamera = (desiredPosition - castOrigin).normalized;
         float maxDistance = Vector3.Distance(castOrigin, desiredPosition);
@@ -59,30 +65,65 @@ public class FollowCamera : MonoBehaviour
             desiredPosition = hit.point + hit.normal * collisionBuffer;
         }
 
-        if (isStarting)
+        if (waitingToStart)
         {
-            startMoveTimer += Time.deltaTime;
-            float t = Mathf.Clamp01(startMoveTimer / startMoveDuration);
-
-            // Smoothly move camera from startPoint to desired position
-            transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref currentVelocity, 0.1f);
-
-            // Smoothly rotate towards player
             Quaternion targetRotation = Quaternion.LookRotation((target.position + Vector3.up * height) - transform.position);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, t);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationDamping);
+            return;
+        }
+        
+        if (isZooming)
+        {
+            zoomProgress += Time.deltaTime / zoomDuration;
+            float t = Mathf.SmoothStep(0, 1, zoomProgress);
 
-            if (t >= 1f)
+            transform.position = Vector3.Lerp(zoomStartPosition, desiredPosition, t);
+
+            Quaternion targetRotation = Quaternion.LookRotation((target.position + Vector3.up * height) - transform.position);
+            transform.rotation = Quaternion.Slerp(zoomStartRotation, targetRotation, t);
+
+            if (zoomProgress >= 1f)
             {
-                isStarting = false; // done zooming in
+                isZooming = false;
             }
+
+            return;
         }
         else
         {
-            // Normal follow behavior
             transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref currentVelocity, 1f / positionDamping);
 
             Quaternion targetRotation = Quaternion.LookRotation((target.position + Vector3.up * height) - transform.position);
-            transform.rotation = targetRotation; // instant rotation, no delay
+            transform.rotation = targetRotation;
+        }
+    }
+
+    public void StartFollowingAfterDelay()
+    {
+        if (!waitingToStart) return;
+        StartCoroutine(WaitThenStartFollow());
+    }
+
+    private IEnumerator WaitThenStartFollow()
+    {
+        yield return new WaitForSeconds(startMoveDelay);
+
+        zoomStartPosition = transform.position;
+        zoomStartRotation = transform.rotation;
+
+        zoomProgress = 0f;
+        isZooming = true;
+        waitingToStart = false;
+    }
+
+    public void ResetCameraToStart()
+    {
+        if (startPoint != null)
+        {
+            transform.position = startPoint.position;
+            transform.rotation = startPoint.rotation;
+            waitingToStart = true;
+            isZooming = false;
         }
     }
 }

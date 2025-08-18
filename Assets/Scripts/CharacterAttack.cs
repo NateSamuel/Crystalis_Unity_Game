@@ -7,11 +7,14 @@ public class CharacterAttack : MonoBehaviour
     public float attackRange = 5f;
     public float damage = 10f;
     public float dotDamage = 5f;
+    public float spellDamage = 40f;
     public LayerMask enemyLayer;
     public Transform attackPoint;
     public GameObject spellEffectPrefab;
     public GameObject powerUpEffectPrefab;
     public GameObject freezeEffectPrefab;
+    public GameObject forceFieldEffectPrefab;
+    public GameObject projectilePrefab;
     public Transform castPoint;
     public Transform castPointFloor;
     private Coroutine activePowerup;
@@ -19,14 +22,15 @@ public class CharacterAttack : MonoBehaviour
     public float normalDamageModifier = 1f;
     public float increasedDamageModifier = 1.5f;
     private float currentDamageModifier;
-    public GameObject projectilePrefab;
     private bool isTargeting = false;
+    private bool isAbleToDamage = true;
 
     void Awake()
     {
         animator = GetComponent<Animator>();
         currentDamageModifier = normalDamageModifier;
     }
+
     void Update()
     {
         if (isTargeting && Input.GetMouseButtonDown(0))
@@ -46,7 +50,15 @@ public class CharacterAttack : MonoBehaviour
             isTargeting = false;
         }
     }
-
+    public void IsAbleToDamageEnemy()
+    {
+        isAbleToDamage = true;
+    }
+    
+    public void IsNotAbleToDamageEnemy()
+    {
+        isAbleToDamage = false;
+    }
     private void FireProjectile(Vector3 direction)
     {
         Vector3 spawnPosition = transform.position + Vector3.up;
@@ -55,7 +67,7 @@ public class CharacterAttack : MonoBehaviour
 
         if (magic != null)
         {
-            magic.Launch(direction);
+            magic.Launch(direction, RangedBlast.CasterType.Player, spellDamage, isAbleToDamage);
         }
     }
     public void RangedBlastAttack(float spellDamage)
@@ -72,7 +84,7 @@ public class CharacterAttack : MonoBehaviour
         if (bestTarget != null)
         {
             EnemyHealth health = bestTarget.GetComponent<EnemyHealth>();
-            if (health != null)
+            if (health != null && isAbleToDamage == true)
             {
                 health.EnemyDamageTaken(Mathf.RoundToInt(damage * currentDamageModifier));
             }
@@ -98,7 +110,7 @@ public class CharacterAttack : MonoBehaviour
         foreach (Collider enemy in hitEnemies)
         {
             EnemyHealth health = enemy.GetComponent<EnemyHealth>();
-            if (health != null)
+            if (health != null && isAbleToDamage == true)
             {
                 health.EnemyDamageTaken(Mathf.RoundToInt(spellDamage * currentDamageModifier));
             }
@@ -148,8 +160,14 @@ public class CharacterAttack : MonoBehaviour
         }
     }
 
-    public void DodgeAbility()
+    public void ForceFieldAbility()
     {
+        animator.SetTrigger("aoeAttackTrigger");
+        if (forceFieldEffectPrefab != null && castPointFloor != null)
+        {
+            GameObject effect = Instantiate(forceFieldEffectPrefab, castPoint.position, castPoint.rotation);
+            Destroy(effect, 1f);
+        }
         Transform bestTarget = GetBestEnemyTarget();
 
         if (bestTarget != null)
@@ -157,7 +175,7 @@ public class CharacterAttack : MonoBehaviour
             EnemyMovement enemy = bestTarget.GetComponent<EnemyMovement>();
             if (enemy != null)
             {
-                enemy.CharacterDodges(3f);
+                enemy.BlockedByForceField(3f);
             }
         }
     }
@@ -179,7 +197,7 @@ public class CharacterAttack : MonoBehaviour
         if (bestTarget != null)
         {
             EnemyHealth health = bestTarget.GetComponent<EnemyHealth>();
-            if (health != null)
+            if (health != null && isAbleToDamage == true)
             {
                 int ticks = 5;
                 for (int i = 0; i < ticks; i++)

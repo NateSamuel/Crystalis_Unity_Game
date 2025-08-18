@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.AI.Navigation;
 using System.Collections;
+using System.Collections.Generic;
 
 public class LevelBuilder : MonoBehaviour
 {
@@ -11,7 +12,15 @@ public class LevelBuilder : MonoBehaviour
     [SerializeField] RoomDecorator roomDecorator;
     [SerializeField] private Texture2D levelHeightTexture;
     [SerializeField] private int levelEnemyCount = 5;
-    
+
+    public static List<GameObject> ActiveEnemies { get; private set; } = new List<GameObject>();
+    public static List<GameObject> InactiveEnemies { get; private set; } = new List<GameObject>();
+
+    public static List<GameObject> ActiveBosses { get; private set; } = new List<GameObject>();
+    public static List<GameObject> InactiveBosses { get; private set; } = new List<GameObject>();
+
+    public EnemyTrackerForObjectives tracker;
+
     //Design by Student
     void Start()
     {
@@ -68,28 +77,43 @@ public class LevelBuilder : MonoBehaviour
         PlaceBossesOnNavMesh();
         MovePlayerToStart(level);
     }
+
     //Design by Student
     private void PlaceEnemiesOnNavMesh()
     {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy1");
+
         GameObject[] enemyPositions = GameObject.FindGameObjectsWithTag("Enemy1Pos");
+        GameObject[] allEnemies = Resources.FindObjectsOfTypeAll<GameObject>();
+        List<GameObject> enemies = new List<GameObject>();
 
-        int spawnCount = Mathf.Min(levelEnemyCount, enemies.Length, enemyPositions.Length);
+        foreach (var go in allEnemies)
+        {
+            if (go.CompareTag("Enemy1"))
+            {
+                go.SetActive(true);
+                enemies.Add(go);
+            }
+        }
 
-        for (int i = 0; i < enemies.Length; i++)
+        ActiveEnemies.Clear();
+        InactiveEnemies.Clear();
+
+        int spawnCount = Mathf.Min(levelEnemyCount, enemies.Count, enemyPositions.Length);
+
+        for (int i = 0; i < enemies.Count; i++)
         {
             GameObject enemy = enemies[i];
             var agent = enemy.GetComponent<UnityEngine.AI.NavMeshAgent>();
-
+            tracker.RegisterEnemy(enemy);
             if (i < spawnCount)
             {
-                
                 GameObject enemyPos = enemyPositions[i];
                 Vector2Int gridPos = WorldToGridPosition(enemyPos.transform.position);
                 Vector3 correctedWorldPos = LevelPositionToWorldPosition(gridPos);
 
                 if (UnityEngine.AI.NavMesh.SamplePosition(correctedWorldPos, out UnityEngine.AI.NavMeshHit hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
                 {
+                    enemy.SetActive(true);
                     if (agent != null)
                     {
                         if (!agent.enabled)
@@ -98,57 +122,98 @@ public class LevelBuilder : MonoBehaviour
                         bool warped = agent.Warp(hit.position);
 
                         if (warped)
+                        {
                             enemy.GetComponent<EnemyMovement>()?.Initialize();
-
+                            ActiveEnemies.Add(enemy);
+                            tracker.SetEnemyActive(enemy, true);
+                        }
                     }
                 }
             }
             else
             {
-                
+                if (agent != null && !agent.enabled)
+                    agent.enabled = true;
+
+
+                agent?.Warp(new Vector3(0, -1000, 0));
+                enemy.GetComponent<EnemyMovement>()?.DisableEnemy();
+                enemy.SetActive(false);
+                InactiveEnemies.Add(enemy);
+                tracker.SetEnemyActive(enemy, false);
+            }
+        }
+    }
+
+    //Design by Student
+    private void PlaceBossesOnNavMesh()
+    {
+        
+        GameObject[] bossPositions = GameObject.FindGameObjectsWithTag("Boss1Pos");
+        GameObject[] allBosses = Resources.FindObjectsOfTypeAll<GameObject>();
+        List<GameObject> bosses = new List<GameObject>();
+
+        foreach (var go in allBosses)
+        {
+            if (go.CompareTag("Boss1"))
+            {
+                go.SetActive(true);
+                bosses.Add(go);
+            }
+        }
+        
+        ActiveBosses.Clear();
+        InactiveBosses.Clear();
+
+        int bossCount = Mathf.Min(bosses.Count, bossPositions.Length);
+
+        for (int i = 0; i < bosses.Count; i++)
+        {
+            GameObject boss = bosses[i];
+            var agent = boss.GetComponent<UnityEngine.AI.NavMeshAgent>();
+            tracker.RegisterBoss(boss);
+            if (i < bossCount)
+            {
+                GameObject bossPos = bossPositions[i];
+
+                Vector2Int gridPos = WorldToGridPosition(bossPos.transform.position);
+                Vector3 correctedWorldPos = LevelPositionToWorldPosition(gridPos);
+
+                if (UnityEngine.AI.NavMesh.SamplePosition(correctedWorldPos, out UnityEngine.AI.NavMeshHit hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
+                {
+                    boss.SetActive(true);
+                    if (agent != null)
+                    {
+                        if (!agent.enabled)
+                            agent.enabled = true;
+
+                        bool warped = agent.Warp(hit.position);
+
+                        if (warped)
+                        {
+                            var logic = boss.GetComponent<EnemyMovement>();
+                            logic?.Initialize();
+
+                            ActiveBosses.Add(boss);
+                            tracker.SetBossActive(boss, true);
+                        }
+                    }
+                }
+            }
+            else
+            {
                 if (agent != null && !agent.enabled)
                     agent.enabled = true;
 
                 agent?.Warp(new Vector3(0, -1000, 0));
-                enemy.GetComponent<EnemyMovement>()?.DisableEnemy();
+                boss.GetComponent<EnemyMovement>()?.DisableEnemy();
+                boss.SetActive(false);
+                InactiveBosses.Add(boss);
+                tracker.SetBossActive(boss, false);
             }
         }
     }
-    //Design by Student
-    private void PlaceBossesOnNavMesh()
-    {
-        GameObject[] bossPositions = GameObject.FindGameObjectsWithTag("Boss1Pos");
-        GameObject[] bosses = GameObject.FindGameObjectsWithTag("Boss1");
 
-        int bossCount = Mathf.Min(bosses.Length, bossPositions.Length);
-
-        for (int i = 0; i < bossCount; i++)
-        {
-            GameObject boss = bosses[i];
-            GameObject bossPos = bossPositions[i];
-
-            Vector2Int gridPos = WorldToGridPosition(bossPos.transform.position);
-            Vector3 correctedWorldPos = LevelPositionToWorldPosition(gridPos);
-
-            if (UnityEngine.AI.NavMesh.SamplePosition(correctedWorldPos, out UnityEngine.AI.NavMeshHit hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
-            {
-                var agent = boss.GetComponent<UnityEngine.AI.NavMeshAgent>();
-                if (agent != null)
-                {
-                    if (!agent.enabled)
-                        agent.enabled = true;
-                    bool warped = agent.Warp(hit.position);
-
-                    if (warped)
-                    {
-                        var logic = boss.GetComponent<EnemyMovement>();
-                        if (logic != null)
-                            logic.Initialize();
-                    }
-                }
-            }
-        }
-    }
     //Design by Barbara Reichart lecture series, 2024
     private void MovePlayerToStart(Level level)
     {

@@ -4,7 +4,8 @@ using TMPro;
 public class CurrentLevel : MonoBehaviour
 {
     public int currentLevelNumber = 1;
-    public TextMeshProUGUI levelText;
+
+    public TextMeshProUGUI[] levelTexts;
 
     void Start()
     {
@@ -19,9 +20,15 @@ public class CurrentLevel : MonoBehaviour
 
     public void UpdateLevelText()
     {
-        if (levelText != null)
+        if (levelTexts != null && levelTexts.Length > 0)
         {
-            levelText.text = "Level " + currentLevelNumber;
+            foreach (var text in levelTexts)
+            {
+                if (text != null)
+                {
+                    text.text = "Level " + currentLevelNumber;
+                }
+            }
         }
     }
 }

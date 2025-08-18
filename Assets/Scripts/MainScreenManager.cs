@@ -32,22 +32,26 @@ public class MainScreenManager : MonoBehaviour
     {
         LevelEntryPanel.SetActive(false);
         LevelObjectivesPanel.SetActive(true);
+        Time.timeScale = 0f;
     }
     public void ShowLevelPanel()
     {
         LevelEntryPanel.SetActive(true);
         LevelObjectivesPanel.SetActive(false);
+        Time.timeScale = 0f;
     }
     public void StartMainGameUI()
     {
         LevelObjectivesPanel.SetActive(false);
         MainUIPanel.SetActive(true);
+        Time.timeScale = 1f;
     }
     public void ShowObjectivesFromMainScreen()
     {
         MainUIPanel.SetActive(false);
         LevelEntryPanel.SetActive(false);
         LevelObjectivesPanel.SetActive(true);
+        Time.timeScale = 0f;
     }
     public void PauseGame()
     {
@@ -70,6 +74,16 @@ public class MainScreenManager : MonoBehaviour
         MainUIPanel.SetActive(true);
         PurchaseAbilities.SetActive(false);
         Time.timeScale = 1f;
+    }
+
+    public void NewLevelScreenAfterPrevLevel()
+    {
+        LevelEntryPanel.SetActive(true);
+        LevelObjectivesPanel.SetActive(false);
+        MainUIPanel.SetActive(false);
+        PlayerDeathPanel.SetActive(false);
+        PauseMenuPanel.SetActive(false);
+        PurchaseAbilities.SetActive(false);
     }
 
 }

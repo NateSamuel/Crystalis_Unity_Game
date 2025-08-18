@@ -7,6 +7,7 @@ public class EnemyHealth : MonoBehaviour
 {
     public float enemyHealthTotal = 100f;
     private float enemyHealthCurrent;
+    public EnemyTrackerForObjectives tracker;
     private CharacterTreasure charTreasureScript;
     public Slider healthSlider;
     private Transform playerTransform;
@@ -50,10 +51,15 @@ public class EnemyHealth : MonoBehaviour
     }
     void EnemyDie()
     {
-        GetComponent<EnemyAttack>()?.SetDead(true);
-        animator.SetTrigger("DeathAnimTrigger");
-        charTreasureScript?.ApplyTreasure(2);
-        StartCoroutine(WaitForDeathAnimationThenContinue());
+
+        if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Standing React Death Forward") && !animator.GetCurrentAnimatorStateInfo(0).IsName("Dying Backwards"))
+        {
+            GetComponent<EnemyAttack>()?.SetDead(true);
+            GetComponent<EnemyMovement>()?.DisableEnemy();
+            animator.SetTrigger("DeathAnimTrigger");
+            StartCoroutine(WaitForDeathAnimationThenContinue());
+        }
+
     }
 
     IEnumerator WaitForDeathAnimationThenContinue()
@@ -68,13 +74,13 @@ public class EnemyHealth : MonoBehaviour
             yield return null;
         }
 
-        DisableAndMoveEnemyAfterDeath();
+        MoveEnemyAfterDeath();
+        charTreasureScript?.ApplyTreasure(6);
     }
 
-    void DisableAndMoveEnemyAfterDeath()
+    void MoveEnemyAfterDeath()
     {
-        GetComponent<EnemyMovement>()?.DisableEnemy();
-
+        
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
         if (agent != null)
         {
@@ -90,5 +96,7 @@ public class EnemyHealth : MonoBehaviour
         {
             healthSlider.value = enemyHealthCurrent;
         }
+        gameObject.SetActive(false);
+        tracker?.SetEnemyActive(gameObject, false);
     }
 }

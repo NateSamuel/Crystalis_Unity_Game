@@ -8,6 +8,7 @@ public class DirectedAgent : MonoBehaviour
 
     public float moveSpeed = 3.5f;
     public float rotationSpeed = 200f;
+    public bool canMove = true;
 
     void Awake()
     {
@@ -19,6 +20,8 @@ public class DirectedAgent : MonoBehaviour
 
     void Update()
     {
+        if (!canMove) return;
+
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
@@ -28,7 +31,6 @@ public class DirectedAgent : MonoBehaviour
         Vector3 movement = direction * moveSpeed * Time.deltaTime;
 
         agent.Move(movement);
-
         transform.position = agent.nextPosition;
 
         float inputMagnitude = new Vector2(horizontal, vertical).magnitude;

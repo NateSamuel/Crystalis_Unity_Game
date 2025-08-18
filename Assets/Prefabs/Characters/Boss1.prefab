@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &274308345141453477
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8449967020035010364}
+  m_Layer: 0
+  m_Name: castPointFloor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8449967020035010364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 274308345141453477}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 562849512188603055}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1437547518377431723
 GameObject:
   m_ObjectHideFlags: 0
@@ -102,6 +133,37 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 562849512188603055}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2480187149328800297
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3011667342531951256}
+  m_Layer: 0
+  m_Name: attackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3011667342531951256
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2480187149328800297}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.2, z: 0.6}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 562849512188603055}
@@ -545,17 +607,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 24.013226
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 56
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
@@ -783,6 +845,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5a3f722a0700e344a60886c37d7a8ba,
+        type: 3}
       propertyPath: m_TagString
       value: Boss1
       objectReference: {fileID: 0}
@@ -980,6 +1047,14 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6692693534559700948}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8449967020035010364}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3011667342531951256}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
@@ -1049,14 +1124,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   patrolPoints:
-  - {fileID: 517279758975078435}
-  - {fileID: 3463356304816564892}
-  - {fileID: 737189422400862606}
-  - {fileID: 6692693534559700948}
+  - {x: 0.00000085379276, y: 4.2096198e+21, z: 1.3605686e+22}
+  - {x: 0.00000016410266, y: 3.3798175e+21, z: 0.00004248432}
+  - {x: 0.0000027448532, y: 0.000000010790748, z: 6.409664e-10}
+  - {x: 6.4096906e-10, y: 6.4096906e-10, z: 6.4096906e-10}
   playerTransform: {fileID: 0}
   detectionRange: 20
   attackRange: 5
+  castPointFloor: {fileID: 8449967020035010364}
   levelHeightTexture: {fileID: 2800000, guid: 8ff5832bb55ad244fa2cfeacb4a17032, type: 3}
+  teleportEffectPrefab: {fileID: 7478731271839673279, guid: 4d3c8045dd8857a4b8d34c2361c61045,
+    type: 3}
 --- !u!114 &476297890755670642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1070,6 +1148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealthTotal: 100
+  tracker: {fileID: 0}
   healthSlider: {fileID: 3968480710238094896}
 --- !u!114 &1187294093399180014
 MonoBehaviour:
@@ -1090,6 +1169,17 @@ MonoBehaviour:
   facingThePlayer: 0
   facingAngleThreshold: 5
   hitPlayerCooldown: 2
+  spellPrefab: {fileID: 5877880916578772679, guid: 0ca7b9f7b46a89646b1367d206c10ba4,
+    type: 3}
+  forceFieldEffectPrefab: {fileID: 1289543790355709915, guid: b99922c2f59b1a542bdd06ae8bee47ae,
+    type: 3}
+  aoeSpellEffectPrefab: {fileID: 161766660727748596, guid: 05ce920d629922a4eb4795ef7494ce5c,
+    type: 3}
+  spellSpeed: 10
+  spellSpawnPoint: {fileID: 8449967020035010364}
+  castPoint: {fileID: 3011667342531951256}
+  spellDamage: 30
+  aoeRadius: 5
 --- !u!136 &1869336437027486400
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -8,6 +8,9 @@ public class ExitLevel : MonoBehaviour
 
     private LevelBuilder levelBuilder;
     private CurrentLevel currentLevel;
+    private EnemyTrackerForObjectives tracker;
+    public MainScreenManager uiManager;
+
 
     void Start()
     {
@@ -19,13 +22,15 @@ public class ExitLevel : MonoBehaviour
 
         levelBuilder = FindAnyObjectByType<LevelBuilder>();
         currentLevel = FindAnyObjectByType<CurrentLevel>();
-
+        tracker = FindAnyObjectByType<EnemyTrackerForObjectives>();
+        uiManager = FindAnyObjectByType<MainScreenManager>();
         spawnPosition = transform.position;
     }
 
     void Update()
     {
-        if (playerTransform != null && Vector3.Distance(spawnPosition, playerTransform.position) < collectionRange)
+        int enemiesLeft = tracker.activeEnemies + tracker.activeBosses;
+        if (playerTransform != null && Vector3.Distance(spawnPosition, playerTransform.position) < collectionRange  && enemiesLeft == 0)
         {
             PlayerCanExit();
         }
@@ -38,5 +43,13 @@ public class ExitLevel : MonoBehaviour
             levelBuilder.GenerateRandom();
             currentLevel.IncrementLevel();
         }
+
+        FollowCamera camera = FindAnyObjectByType<FollowCamera>();
+        if (camera != null)
+        {
+            camera.ResetCameraToStart();
+        }
+
+        uiManager.NewLevelScreenAfterPrevLevel();
     }
 }

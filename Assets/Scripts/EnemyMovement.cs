@@ -15,12 +15,16 @@ public class EnemyMovement : MonoBehaviour
     public float detectionRange = 20f;
     public float attackRange = 5f;
     private bool isDead = false;
-
+    private Coroutine teleportRoutine;
+    private bool isTeleporting = false;
     private EnemyAttack attackScript;
     private Animator animator;
-
+    public Transform castPointFloor;
     public Texture2D levelHeightTexture;
     private Color[] validRoomColors;
+    public GameObject teleportEffectPrefab;
+    private float globalAbilityCooldown = 2f;
+    private float lastAbilityTime = -Mathf.Infinity;
 
     public void Initialize()
     {
@@ -65,7 +69,108 @@ public class EnemyMovement : MonoBehaviour
         }
         attackScript = GetComponent<EnemyAttack>();
         attackScript?.SetDead(false);
+
     }
+    
+    void Update()
+    {
+        
+        if (isDead || !isInitialized || patrolPoints == null || patrolPoints.Length == 0 || agent.pathPending || !canMove)
+            return;
+
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        {
+            currentPointIndex = (currentPointIndex + 1) % patrolPoints.Length;
+            agent.SetDestination(patrolPoints[currentPointIndex]);
+        }
+
+        if (playerTransform != null)
+        {
+
+            Vector3 enemyPosFlat = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            Vector3 playerPosFlat = new Vector3(playerTransform.position.x, playerTransform.position.y, playerTransform.position.z);
+
+            float distanceToPlayer = Vector3.Distance(enemyPosFlat, playerPosFlat);
+
+            if (distanceToPlayer <= detectionRange)
+            {
+                if (distanceToPlayer > agent.stoppingDistance)
+                {
+                    agent.isStopped = false;
+                    agent.SetDestination(playerTransform.position);
+                }
+                else
+                {
+                    agent.isStopped = true;
+                }
+
+                attackScript?.AttackPlayer();
+
+                if (distanceToPlayer <= attackRange)
+                {
+                    if (Time.time - lastAbilityTime >= globalAbilityCooldown)
+                    {
+                        TryRandomAbility();
+                        lastAbilityTime = Time.time;
+                    }
+                }
+                else
+                {
+                    attackScript?.IsNotAbleToHitPlayer();
+                }
+            }
+            else
+            {
+                agent.isStopped = false;
+                attackScript?.DontAttackPlayer();
+                attackScript?.IsNotAbleToHitPlayer();
+                if (isTeleporting)
+                {
+                    isTeleporting = false;
+                }
+            }
+        }
+        if (animator != null)
+        {
+            Vector3 velocity = agent.velocity;
+            velocity.y = 0f;
+
+            float forwardSpeed = velocity.magnitude / agent.speed;
+            animator.SetFloat("forwardSpeed", forwardSpeed, 0.1f, Time.deltaTime);
+        }
+    }
+
+    private void TryRandomAbility()
+    {
+        float roll = Random.Range(0f, 1f);
+
+        if (roll < 0.2f)
+        {
+            animator.SetTrigger("TeleportSpell");
+
+            if (teleportEffectPrefab != null && castPointFloor != null)
+            {
+                GameObject effect = Instantiate(teleportEffectPrefab, castPointFloor.position, castPointFloor.rotation);
+                Destroy(effect, 1f);
+            }
+
+            StartCoroutine(TeleportRoutineAfterAnimation());
+            isTeleporting = true;
+        }
+        else if (roll >= 0.2f && roll < 0.3f)
+        {
+            attackScript?.ForceFieldAbility();
+        }
+        else if (roll >= 0.3f && roll < 0.4f)
+        {
+            attackScript?.EnemyAOEAttack(10f);
+        }
+        else
+        {
+            attackScript?.IsAbleToHitPlayer();
+        }
+    }
+
     void AssignPatrolPointsFromLevelTexture()
     {
         if (patrolPoints == null || patrolPoints.Length == 0 || levelHeightTexture == null)
@@ -168,64 +273,90 @@ public class EnemyMovement : MonoBehaviour
         return new Vector3(worldX, yHeight, worldZ);
     }
 
-    void Update()
+    bool SurroundedByBlackPixels(int x, int y, int radius)
     {
+        for (int dx = -radius; dx <= radius; dx++)
+        {
+            for (int dy = -radius; dy <= radius; dy++)
+            {
+                int nx = x + dx;
+                int ny = y + dy;
+
+                if (nx >= 0 && nx < levelHeightTexture.width &&
+                    ny >= 0 && ny < levelHeightTexture.height)
+                {
+                    Color c = levelHeightTexture.GetPixel(nx, ny);
+                    if (!ColorsApproximatelyEqual(c, Color.black))
+                        return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    Vector2 WorldPositionToTexturePixel(Vector3 worldPos)
+    {
+        int scale = SharedLevelData.Instance.Scale;
+        float x = worldPos.x / scale + 1;
+        float y = worldPos.z / scale + 1;
+
+        return new Vector2(x, y);
+    }
+
+    private IEnumerator TeleportRoutineAfterAnimation()
+    {
+        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Standing 2H Cast Spell 01"))
+        {
+            yield return null;
+        }
         
-        if (isDead || !isInitialized || patrolPoints == null || patrolPoints.Length == 0 || agent.pathPending || !canMove)
-            return;
-
-        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.25f)
         {
-            currentPointIndex = (currentPointIndex + 1) % patrolPoints.Length;
-            agent.SetDestination(patrolPoints[currentPointIndex]);
+            yield return null;
         }
 
-        if (playerTransform != null)
+        if (!isDead && isInitialized)
         {
+            TeleportEnemyWithinSameRoom();
+        }
+    }
 
-            Vector3 enemyPosFlat = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-            Vector3 playerPosFlat = new Vector3(playerTransform.position.x, playerTransform.position.y, playerTransform.position.z);
+    public void TeleportEnemyWithinSameRoom()
+    {
+        Vector3 currentPos = transform.position;
+        Vector2 currentPixel = WorldPositionToTexturePixel(currentPos);
 
-            float distanceToPlayer = Vector3.Distance(enemyPosFlat, playerPosFlat);
+        Color currentRoomColor = levelHeightTexture.GetPixel((int)currentPixel.x, (int)currentPixel.y);
 
-            if (distanceToPlayer <= detectionRange)
+        int attempts = 1000;
+        for (int i = 0; i < attempts; i++)
+        {
+            int x = Random.Range(0, levelHeightTexture.width);
+            int y = Random.Range(0, levelHeightTexture.height);
+
+            Color candidateColor = levelHeightTexture.GetPixel(x, y);
+
+            if (ColorsApproximatelyEqual(candidateColor, currentRoomColor))
             {
-                if (distanceToPlayer > agent.stoppingDistance)
+                if (!SurroundedByBlackPixels(x, y, 2))
                 {
-                    agent.isStopped = false;
-                    agent.SetDestination(playerTransform.position);
-                }
-                else
-                {
-                    agent.isStopped = true;
-                }
+                    Vector3 worldTarget = LevelPositionToWorldPosition(new Vector2(x, y));
 
-                attackScript?.AttackPlayer();
-
-                if (distanceToPlayer <= attackRange)
-                {
-                    attackScript?.IsAbleToHitPlayer();
-                }
-                else
-                {
-                    attackScript?.IsNotAbleToHitPlayer();
+                    float distToPlayer = Vector3.Distance(worldTarget, playerTransform.position);
+                    if (distToPlayer >= 7f && distToPlayer <= detectionRange)
+                    {
+                        if (NavMesh.SamplePosition(worldTarget, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+                        {
+                            transform.position = hit.position;
+                            //attackScript?.ShootSpellAtPlayer();
+                            attackScript?.ShootTripleSpellAtPlayer();
+                            return;
+                        }
+                    }
                 }
             }
-            else
-            {
-                agent.isStopped = false;
-                attackScript?.DontAttackPlayer();
-                attackScript?.IsNotAbleToHitPlayer();
-            }
         }
-        if (animator != null)
-        {
-            Vector3 velocity = agent.velocity;
-            velocity.y = 0f;
-
-            float forwardSpeed = velocity.magnitude / agent.speed;
-            animator.SetFloat("forwardSpeed", forwardSpeed, 0.1f, Time.deltaTime);
-        }
+        isTeleporting = false;
     }
 
     void OnDrawGizmos()
@@ -239,6 +370,7 @@ public class EnemyMovement : MonoBehaviour
             }
         }
     }
+
     public void DisableEnemy()
     {
         isDead = true;
@@ -248,6 +380,7 @@ public class EnemyMovement : MonoBehaviour
             agent.ResetPath();
         }
     }
+
     public void Stun(float duration)
     {
         if (isDead) return;
@@ -273,13 +406,14 @@ public class EnemyMovement : MonoBehaviour
         canMove = true;
         agent.isStopped = false;
     }
-    public void CharacterDodges(float duration)
+
+    public void BlockedByForceField(float duration)
     {
         if (isDead) return;
-        StartCoroutine(DodgeCoroutine(duration));
+        StartCoroutine(ForceFieldCoroutine(duration));
     }
 
-    private IEnumerator DodgeCoroutine(float duration)
+    private IEnumerator ForceFieldCoroutine(float duration)
     {
 
         if (attackScript != null)

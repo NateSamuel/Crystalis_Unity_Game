@@ -292,6 +292,14 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 649280183358784771}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5dc83bed8d8e16d4ca7fe22bb910683b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5765383725617011375}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5dc83bed8d8e16d4ca7fe22bb910683b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4194238597840812968}
   m_SourcePrefab: {fileID: 100100000, guid: 5dc83bed8d8e16d4ca7fe22bb910683b, type: 3}
 --- !u!1 &5877880916578772679 stripped
 GameObject:
@@ -368,6 +376,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 3.5
   rotationSpeed: 600
+  canMove: 1
 --- !u!114 &649280183358784771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,6 +392,7 @@ MonoBehaviour:
   attackRange: 5
   damage: 10
   dotDamage: 5
+  spellDamage: 40
   enemyLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -391,11 +401,62 @@ MonoBehaviour:
     type: 3}
   powerUpEffectPrefab: {fileID: 0}
   freezeEffectPrefab: {fileID: 0}
+  forceFieldEffectPrefab: {fileID: 0}
   castPoint: {fileID: 2237488968401718392}
   castPointFloor: {fileID: 0}
   normalDamageModifier: 1
   increasedDamageModifier: 1.5
   projectilePrefab: {fileID: 0}
+--- !u!136 &5765383725617011375
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5877880916578772679}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.3
+  m_Height: 1.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.75, z: 0}
+--- !u!54 &4194238597840812968
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5877880916578772679}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!4 &6546471485912513661 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5dc83bed8d8e16d4ca7fe22bb910683b,

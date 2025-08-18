@@ -73,10 +73,10 @@ public class UpdatePurchasedAbilitiesButtons : MonoBehaviour
             charTreasureScript?.RemoveTreasure(spellCost);
             charAttackScript?.FreezeAbility();
         }
-        else if (spellName == "Dodge" && charTreasureScript.crystals >= spellCost)
+        else if (spellName == "ForceField" && charTreasureScript.crystals >= spellCost)
         {
             charTreasureScript?.RemoveTreasure(spellCost);
-            charAttackScript?.DodgeAbility();
+            charAttackScript?.ForceFieldAbility();
         }
         else if (spellName == "CrystalStab" && charTreasureScript.crystals >= spellCost)
         {

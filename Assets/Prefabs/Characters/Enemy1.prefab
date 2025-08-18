@@ -106,6 +106,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 562849512188603055}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2390658297549729746
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6702910277817490726}
+  m_Layer: 0
+  m_Name: attackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6702910277817490726
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2390658297549729746}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.2, z: 0.6}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 562849512188603055}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2521830807143639859
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8767920966587068550}
+  m_Layer: 0
+  m_Name: castPointFloor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8767920966587068550
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2521830807143639859}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 562849512188603055}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2834515756837208533
 GameObject:
   m_ObjectHideFlags: 0
@@ -581,7 +643,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.1
+      value: -1000
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
@@ -814,6 +876,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5a3f722a0700e344a60886c37d7a8ba,
+        type: 3}
       propertyPath: m_TagString
       value: Enemy1
       objectReference: {fileID: 0}
@@ -1004,6 +1071,14 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 243676387048999916}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8767920966587068550}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5a3f722a0700e344a60886c37d7a8ba,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6702910277817490726}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
@@ -1073,15 +1148,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   patrolPoints:
-  - {fileID: 3729095760236795015}
-  - {fileID: 3182914001137000965}
-  - {fileID: 3520134355532265695}
-  - {fileID: 8575600617428130220}
-  - {fileID: 243676387048999916}
+  - {x: -3.30135e+31, y: 9.68e-43, z: -3.3012843e+31}
+  - {x: 9.68e-43, y: -3.3013578e+31, z: 9.68e-43}
+  - {x: -3.3012843e+31, y: 9.68e-43, z: -3.3013656e+31}
+  - {x: 9.68e-43, y: -3.3012843e+31, z: 9.68e-43}
+  - {x: -3.3013733e+31, y: 9.68e-43, z: -3.3012843e+31}
   playerTransform: {fileID: 0}
   detectionRange: 20
   attackRange: 5
+  castPointFloor: {fileID: 8767920966587068550}
   levelHeightTexture: {fileID: 2800000, guid: 8ff5832bb55ad244fa2cfeacb4a17032, type: 3}
+  teleportEffectPrefab: {fileID: 7478731271839673279, guid: 4d3c8045dd8857a4b8d34c2361c61045,
+    type: 3}
 --- !u!114 &476297890755670642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1095,6 +1173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealthTotal: 100
+  tracker: {fileID: 0}
   healthSlider: {fileID: 3968480710238094896}
 --- !u!114 &1187294093399180014
 MonoBehaviour:
@@ -1115,6 +1194,17 @@ MonoBehaviour:
   facingThePlayer: 0
   facingAngleThreshold: 5
   hitPlayerCooldown: 2
+  spellPrefab: {fileID: 5877880916578772679, guid: 0ca7b9f7b46a89646b1367d206c10ba4,
+    type: 3}
+  forceFieldEffectPrefab: {fileID: 1289543790355709915, guid: b99922c2f59b1a542bdd06ae8bee47ae,
+    type: 3}
+  aoeSpellEffectPrefab: {fileID: 161766660727748596, guid: 05ce920d629922a4eb4795ef7494ce5c,
+    type: 3}
+  spellSpeed: 10
+  spellSpawnPoint: {fileID: 8767920966587068550}
+  castPoint: {fileID: 6702910277817490726}
+  spellDamage: 30
+  aoeRadius: 5
 --- !u!136 &4400861243983307106
 CapsuleCollider:
   m_ObjectHideFlags: 0
