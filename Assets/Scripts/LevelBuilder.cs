@@ -123,7 +123,7 @@ public class LevelBuilder : MonoBehaviour
 
                         if (warped)
                         {
-                            enemy.GetComponent<EnemyMovement>()?.Initialize();
+                            enemy.GetComponent<RuffianEnemyAI>()?.Initialize();
                             ActiveEnemies.Add(enemy);
                             tracker.SetEnemyActive(enemy, true);
                         }
@@ -137,7 +137,7 @@ public class LevelBuilder : MonoBehaviour
 
 
                 agent?.Warp(new Vector3(0, -1000, 0));
-                enemy.GetComponent<EnemyMovement>()?.DisableEnemy();
+                enemy.GetComponent<RuffianEnemyAI>()?.DisableEnemy();
                 enemy.SetActive(false);
                 InactiveEnemies.Add(enemy);
                 tracker.SetEnemyActive(enemy, false);
@@ -191,7 +191,7 @@ public class LevelBuilder : MonoBehaviour
 
                         if (warped)
                         {
-                            var logic = boss.GetComponent<EnemyMovement>();
+                            var logic = boss.GetComponent<BossEnemyAI>();
                             logic?.Initialize();
 
                             ActiveBosses.Add(boss);
@@ -206,7 +206,7 @@ public class LevelBuilder : MonoBehaviour
                     agent.enabled = true;
 
                 agent?.Warp(new Vector3(0, -1000, 0));
-                boss.GetComponent<EnemyMovement>()?.DisableEnemy();
+                boss.GetComponent<BossEnemyAI>()?.DisableEnemy();
                 boss.SetActive(false);
                 InactiveBosses.Add(boss);
                 tracker.SetBossActive(boss, false);

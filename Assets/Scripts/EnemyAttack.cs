@@ -25,7 +25,7 @@ public class EnemyAttack : MonoBehaviour
     public Transform spellSpawnPoint;
     public Transform castPoint;
     public float spellDamage = 30f;
-    private EnemyMovement movement;
+    private BaseEnemyAI movement;
     public float aoeRadius = 5f;
 
     void Start()
@@ -36,7 +36,7 @@ public class EnemyAttack : MonoBehaviour
         animator = GetComponent<Animator>();
         characterHealth = player.GetComponent<CharacterHealth>();
         characterAttack = player.GetComponent<CharacterAttack>();
-        EnemyMovement movement = GetComponent<EnemyMovement>();
+        movement = GetComponent<BaseEnemyAI>();
     }
 
     void Update()
@@ -242,7 +242,7 @@ public class EnemyAttack : MonoBehaviour
                 if (distance <= aoeRadius)
                 {
                     CharacterHealth playerHealth = playerTransform.GetComponent<CharacterHealth>();
-                    if (playerHealth != null)
+                    if (playerHealth != null && isAbleToDamage)
                     {
                         playerHealth.CharacterDamageTaken(Mathf.RoundToInt(spellDamage));
                     }

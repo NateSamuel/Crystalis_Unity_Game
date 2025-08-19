@@ -152,7 +152,7 @@ public class CharacterAttack : MonoBehaviour
 
         if (bestTarget != null)
         {
-            EnemyMovement enemy = bestTarget.GetComponent<EnemyMovement>();
+            BaseEnemyAI enemy = bestTarget.GetComponent<BaseEnemyAI>();
             if (enemy != null)
             {
                 enemy.Stun(5f);
@@ -172,7 +172,7 @@ public class CharacterAttack : MonoBehaviour
 
         if (bestTarget != null)
         {
-            EnemyMovement enemy = bestTarget.GetComponent<EnemyMovement>();
+            BaseEnemyAI enemy = bestTarget.GetComponent<BaseEnemyAI>();
             if (enemy != null)
             {
                 enemy.BlockedByForceField(3f);

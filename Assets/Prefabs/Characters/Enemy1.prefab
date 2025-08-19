@@ -1087,7 +1087,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1357475970801606222}
+      addedObject: {fileID: 1028399833566655761}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d5a3f722a0700e344a60886c37d7a8ba,
         type: 3}
       insertIndex: -1
@@ -1135,7 +1135,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &1357475970801606222
+--- !u!114 &1028399833566655761
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1144,22 +1144,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 901973414610251797}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10e564dc5d8d2404d87c112884866b92, type: 3}
+  m_Script: {fileID: 11500000, guid: 7b1296811e77775459cd6606de191441, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  patrolPoints:
-  - {x: -3.30135e+31, y: 9.68e-43, z: -3.3012843e+31}
-  - {x: 9.68e-43, y: -3.3013578e+31, z: 9.68e-43}
-  - {x: -3.3012843e+31, y: 9.68e-43, z: -3.3013656e+31}
-  - {x: 9.68e-43, y: -3.3012843e+31, z: 9.68e-43}
-  - {x: -3.3013733e+31, y: 9.68e-43, z: -3.3012843e+31}
-  playerTransform: {fileID: 0}
   detectionRange: 20
   attackRange: 5
-  castPointFloor: {fileID: 8767920966587068550}
+  patrolPoints:
+  - {x: -3.30135e+31, y: 9.68e-43, z: -3.301284e+31}
+  - {x: 9.68e-43, y: -3.301358e+31, z: 9.68e-43}
+  - {x: -3.301284e+31, y: 9.68e-43, z: -3.301366e+31}
+  - {x: 9.68e-43, y: -3.301284e+31, z: 9.68e-43}
+  - {x: -3.301373e+31, y: 9.68e-43, z: -3.301284e+31}
   levelHeightTexture: {fileID: 2800000, guid: 8ff5832bb55ad244fa2cfeacb4a17032, type: 3}
-  teleportEffectPrefab: {fileID: 7478731271839673279, guid: 4d3c8045dd8857a4b8d34c2361c61045,
-    type: 3}
+  levelTextureScale: 1
 --- !u!114 &476297890755670642
 MonoBehaviour:
   m_ObjectHideFlags: 0
