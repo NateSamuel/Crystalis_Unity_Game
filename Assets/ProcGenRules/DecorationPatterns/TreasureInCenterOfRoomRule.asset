@@ -16,13 +16,13 @@ MonoBehaviour:
   prefab: {fileID: 158026, guid: 1c64fbe146825d4439e21d3a3c64b4fb, type: 3}
   prefabRotation: 0
   placement:
-    array: 020000000200000002000000020000000200000002000000020000000200000002000000
-    width: 3
-    height: 3
+    array: 02000000020000000200000002000000
+    width: 2
+    height: 2
   fill:
-    array: 020000000200000002000000020000000600000002000000020000000200000002000000
-    width: 3
-    height: 3
+    array: 02000000020000000200000006000000
+    width: 2
+    height: 2
   centerHorizontally: 1
   centerVertically: 1
   levelHeightTexture: {fileID: 2800000, guid: 8ff5832bb55ad244fa2cfeacb4a17032, type: 3}

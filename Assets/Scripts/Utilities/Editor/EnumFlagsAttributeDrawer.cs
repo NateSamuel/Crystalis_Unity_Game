@@ -1,6 +1,6 @@
 using UnityEditor;
 using UnityEngine;
-
+// Used to create a better interface in the unity editor - not directly linked to project - Design by Barbara Reichart lecture series, 2024
 [CustomPropertyDrawer(typeof(EnumFlagsAttribute))]
 public class EnumFlagsAttributeDrawer : PropertyDrawer
 {

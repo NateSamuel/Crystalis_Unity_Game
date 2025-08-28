@@ -18,33 +18,52 @@ MonoBehaviour:
     - {fileID: 3262108622216265669, guid: ed3655b1ce5aa374ab91a0989e8d035e, type: 3}
     - {fileID: 8663752698871267635, guid: b351e937bddd273489580666a297028b, type: 3}
     - {fileID: 667209136394007026, guid: 42d593c95a965ff4191e0f2cc3757545, type: 3}
+    weights:
+    - 2
+    - 1
+    - 0.5
   - variants:
     - {fileID: 3701996775972964930, guid: 8b295701661f4fd4fa69f920dab769ad, type: 3}
+    weights: []
   - variants:
     - {fileID: 3701996775972964930, guid: 727ba237f3cc2204eb2961298cef4e89, type: 3}
+    weights: []
   - variants:
     - {fileID: 3701996775972964930, guid: 02fae19a0ede25440a8bb4fa3b2b06c6, type: 3}
+    weights: []
   - variants:
     - {fileID: 3701996775972964930, guid: 9267bd3154e987c499fa8e80962ac3fb, type: 3}
+    weights: []
   - variants:
     - {fileID: 3701996775972964930, guid: e8142c03119766e488ce58db2678c33d, type: 3}
+    weights: []
   - variants:
     - {fileID: 9056921675146672755, guid: 23c93aee0a0382c45aca7aa434631b58, type: 3}
+    weights: []
   - variants:
     - {fileID: 3701996775972964930, guid: 8c1936f92dcfda44db84d810cca856e9, type: 3}
+    weights: []
   - variants:
     - {fileID: 3701996775972964930, guid: 438251249e62b664cb6d901da5e3d4ee, type: 3}
+    weights: []
   - variants:
     - {fileID: 686481284915246783, guid: 875eba7ba6ac65e4c8414534d9183112, type: 3}
+    weights: []
   - variants:
     - {fileID: 3701996775972964930, guid: 57b43eb9cc0a3b4428b3cf134cc4a58d, type: 3}
+    weights: []
   - variants:
     - {fileID: 3701996775972964930, guid: e1ffb2a306fa6a547bc62126bd11aef9, type: 3}
+    weights: []
   - variants:
     - {fileID: 3701996775972964930, guid: 3c65f36053202534dafe7cc55958265b, type: 3}
+    weights: []
   - variants:
     - {fileID: 3701996775972964930, guid: 5e0fcd388b142d640bce0d262a589e25, type: 3}
+    weights: []
   - variants:
     - {fileID: 3701996775972964930, guid: 354b6c970d7f8744aac860cf3753501c, type: 3}
+    weights: []
   - variants:
     - {fileID: 0}
+    weights: []

@@ -16,3 +16,4 @@ MonoBehaviour:
   childRules:
   - {fileID: 11400000, guid: 0f002162335584544ab024f4fb8c5bec, type: 2}
   - {fileID: 11400000, guid: d922ff2060f8ed4449eb9ff80037f176, type: 2}
+  - {fileID: 11400000, guid: 37538e8e7f165994a968412908565922, type: 2}

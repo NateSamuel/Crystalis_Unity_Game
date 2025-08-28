@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.IO;
 using UnityEditor;
-
+//Helper methods for Texture2D to : Save textures as files or assets, modify pixel data (draw shapes, lines, fill), copy textures, convert colors (black & white) - This aids with drawing the texture2d in general
+// - Design by Barbara Reichart lecture series, 2024
 public static class Texture2DExtension
 {
     /// <summary>

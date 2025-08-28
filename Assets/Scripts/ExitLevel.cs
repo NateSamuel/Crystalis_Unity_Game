@@ -5,7 +5,8 @@ public class ExitLevel : MonoBehaviour
     public Transform playerTransform;
     private Vector3 spawnPosition;
     public float collectionRange = 3f;
-
+    private CharacterTreasure charTreasureScript;
+    private CharacterHealth characterHealth;
     private LevelBuilder levelBuilder;
     private CurrentLevel currentLevel;
     private EnemyTrackerForObjectives tracker;
@@ -19,7 +20,8 @@ public class ExitLevel : MonoBehaviour
         {
             playerTransform = playerObject.transform;
         }
-
+        charTreasureScript = playerTransform.GetComponent<CharacterTreasure>();
+        characterHealth = playerObject.GetComponent<CharacterHealth>();
         levelBuilder = FindAnyObjectByType<LevelBuilder>();
         currentLevel = FindAnyObjectByType<CurrentLevel>();
         tracker = FindAnyObjectByType<EnemyTrackerForObjectives>();
@@ -36,7 +38,7 @@ public class ExitLevel : MonoBehaviour
         }
     }
 
-    void PlayerCanExit()
+    public void PlayerCanExit()
     {
         if (levelBuilder != null && currentLevel != null)
         {
@@ -49,7 +51,30 @@ public class ExitLevel : MonoBehaviour
         {
             camera.ResetCameraToStart();
         }
-
+        charTreasureScript?.ApplyTreasure(10);
         uiManager.NewLevelScreenAfterPrevLevel();
+    }
+    public void PlayerCanRetry()
+    {
+        if (levelBuilder != null && currentLevel != null)
+        {
+            currentLevel?.RevertToLevelOne();
+            levelBuilder?.GenerateRandom();
+            characterHealth?.CharacterComesAliveAgain();
+            charTreasureScript?.ResetTreasure(15);
+            EnemyHealth[] allEnemies = FindObjectsOfType<EnemyHealth>();
+
+            foreach (EnemyHealth enemy in allEnemies)
+            {
+                enemy.ResetHealth();
+            }
+            
+        }
+
+        FollowCamera camera = FindAnyObjectByType<FollowCamera>();
+        if (camera != null)
+        {
+            camera.ResetCameraToStart();
+        }
     }
 }

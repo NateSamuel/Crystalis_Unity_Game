@@ -9,6 +9,10 @@ public class MainScreenManager : MonoBehaviour
     public GameObject PlayerDeathPanel;
     public GameObject PauseMenuPanel;
     public GameObject PurchaseAbilities;
+    private ExitLevel exitLevel;
+    [SerializeField] LayoutGeneratorRooms layoutGeneratorRooms;
+    public UnityEngine.UI.Button CollectKeyButton;
+    public UnityEngine.UI.Button FreePrisonerButton;
 
     void Start()
     {
@@ -27,7 +31,7 @@ public class MainScreenManager : MonoBehaviour
         }
         SceneManager.LoadScene("EntryScreen");
     }
-    
+
     public void ShowObjectives()
     {
         LevelEntryPanel.SetActive(false);
@@ -85,5 +89,55 @@ public class MainScreenManager : MonoBehaviour
         PauseMenuPanel.SetActive(false);
         PurchaseAbilities.SetActive(false);
     }
+    public void RetryScreenAfterDeath()
+    {
+        Debug.Log("RetryScreenAfterDeath() CALLED");
 
+        layoutGeneratorRooms.LevelConfig.ResetMaxRoomCount();
+
+        exitLevel = FindAnyObjectByType<ExitLevel>();
+
+        if (exitLevel != null)
+        {
+            exitLevel.PlayerCanRetry();
+        }
+        else
+        {
+            Debug.LogError("ExitLevel component NOT FOUND in the scene.");
+        }
+
+        LevelEntryPanel.SetActive(true);
+        LevelObjectivesPanel.SetActive(false);
+        MainUIPanel.SetActive(false);
+        PlayerDeathPanel.SetActive(false);
+        PauseMenuPanel.SetActive(false);
+        PurchaseAbilities.SetActive(false);
+    }
+    public void ShowCollectKeyUI(UnityEngine.Events.UnityAction onClick)
+    {
+        CollectKeyButton.gameObject.SetActive(true);
+
+        CollectKeyButton.onClick.RemoveAllListeners();
+        CollectKeyButton.onClick.AddListener(onClick);
+    }
+
+    public void HideCollectKeyUI()
+    {
+        CollectKeyButton.gameObject.SetActive(false);
+        CollectKeyButton.onClick.RemoveAllListeners();
+    }
+
+    public void ShowFreePrisonerUI(UnityEngine.Events.UnityAction onClick)
+    {
+        FreePrisonerButton.gameObject.SetActive(true);
+
+        FreePrisonerButton.onClick.RemoveAllListeners();
+        FreePrisonerButton.onClick.AddListener(onClick);
+    }
+
+    public void HideFreePrisonerUI()
+    {
+        FreePrisonerButton.gameObject.SetActive(false);
+        FreePrisonerButton.onClick.RemoveAllListeners();
+    }
 }

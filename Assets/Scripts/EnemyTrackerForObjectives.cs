@@ -11,6 +11,12 @@ public class EnemyTrackerForObjectives : MonoBehaviour
     private List<GameObject> bosses = new List<GameObject>();
     public int activeEnemies;
     public int activeBosses;
+    private TotalPrisoners totalPrisoners;
+    void Start()
+    {
+        totalPrisoners = FindAnyObjectByType<TotalPrisoners>();
+    }
+
     public void RegisterEnemy(GameObject enemy)
     {
         if (!enemies.Contains(enemy))
@@ -29,23 +35,11 @@ public class EnemyTrackerForObjectives : MonoBehaviour
 
     public void SetEnemyActive(GameObject enemy, bool isActive)
     {
-        if (enemy != null)
-        {
-
-        }
-
-
         UpdateStatusText();
     }
 
     public void SetBossActive(GameObject boss, bool isActive)
     {
-        if (boss != null)
-        {
-            
-        }
-
-
         UpdateStatusText();
     }
 
@@ -58,6 +52,7 @@ public class EnemyTrackerForObjectives : MonoBehaviour
         int inactiveBosses = bosses.Count - activeBosses;
 
         enemyStatusText.text = $"Roughians left to kill: {activeEnemies}\n" +
-                               $"Captains left to kill: {activeBosses}";
+                               $"Captains left to kill: {activeBosses}\n" +
+                               $"Prisoners left to free: {totalPrisoners.prisonersCount}";
     }
 }

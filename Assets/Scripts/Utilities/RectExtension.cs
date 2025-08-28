@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Helper class when generating the room layouts - Design by Barbara Reichart lecture series, 2024
 public static class RectExtension
 {
     /// <summary>

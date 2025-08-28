@@ -16,8 +16,6 @@ public class RuleAvailability
         maxAvailability = other.maxAvailability;
     }
 }
-
-//Design by Barbara Reichart lecture series, 2024
 public class RoomDecorator : MonoBehaviour
 {
     [SerializeField] GameObject parent;
@@ -29,6 +27,7 @@ public class RoomDecorator : MonoBehaviour
 
     Random random;
 
+    //Generates a level using LayoutGeneratorRooms, resets the random seed via SharedLevelData, and calls PlaceItems() to start decorating
     [ContextMenu("Place Items")]
     public void PlaceItemsFromMenu()
     {
@@ -36,23 +35,25 @@ public class RoomDecorator : MonoBehaviour
         Level level = layoutGenerator.GenerateLevel();
         PlaceItems(level);
     }
+    //Main method to apply decoration logic to all rooms in a given level. Initializes random generator, clears or creates the "Decorations" container, prepares a decorator tile map, and decorates each room.
     public void PlaceItems(Level level)
     {
         random = SharedLevelData.Instance.Rand;
         Transform decorationsTransform = parent.transform.Find("Decorations");
 
-        if(decorationsTransform == null)
+        if (decorationsTransform == null)
         {
             GameObject decorationsGameObject = new GameObject("Decorations");
             decorationsTransform = decorationsGameObject.transform;
             decorationsTransform.SetParent(parent.transform);
         }
-        else {
+        else
+        {
             decorationsTransform.DestroyAllChildren();
         }
 
         TileType[,] levelDecorated = InitializeDecoratorArray();
-        foreach(Room room in level.Rooms)
+        foreach (Room room in level.Rooms)
         {
             DecorateRoom(levelDecorated, room, decorationsTransform);
         }
@@ -60,6 +61,7 @@ public class RoomDecorator : MonoBehaviour
         GenerateTextureFromTileType(levelDecorated);
 
     }
+    //Handles decoration logic for a single room. Attempts to apply multiple decoration rules from the available set, stopping when a limit is hit or no valid rules remain. Rules are filtered by room type and availability.
     private void DecorateRoom(TileType[,] levelDecorated, Room room, Transform decorationsTransform)
     {
         int currentTries = 0;
@@ -70,22 +72,22 @@ public class RoomDecorator : MonoBehaviour
         List<RuleAvailability> availableRulesForRoom = CopyRuleAvailability();
         availableRulesForRoom = availableRulesForRoom.Where(
             ra => ra.rule.RoomTypes.HasFlag(room.Type)).ToList();
-        
+
 
         while (currentNumberOfDecorations < maxNumberOfDecorations && currentTries < maxTries && availableRulesForRoom.Count > 0)
         {
-            int selectedRuleIndex = random.Next(0,availableRulesForRoom.Count);
+            int selectedRuleIndex = random.Next(0, availableRulesForRoom.Count);
             RuleAvailability selectedRuleAvailability = availableRulesForRoom[selectedRuleIndex];
             BaseDecoratorRule selectedRule = selectedRuleAvailability.rule;
             if (selectedRule.CanBeApplied(levelDecorated, room))
             {
                 selectedRule.Apply(levelDecorated, room, decorationsTransform);
                 currentNumberOfDecorations++;
-                if(selectedRuleAvailability.maxAvailability > 0)
+                if (selectedRuleAvailability.maxAvailability > 0)
                 {
                     selectedRuleAvailability.maxAvailability--;
                 }
-                if(selectedRuleAvailability.maxAvailability == 0)
+                if (selectedRuleAvailability.maxAvailability == 0)
                 {
                     availableRulesForRoom.Remove(selectedRuleAvailability);
                 }
@@ -93,14 +95,14 @@ public class RoomDecorator : MonoBehaviour
             currentTries++;
         }
     }
-
+    //Returns a copy of the rule availability list. Makes sure rule counts are separate per room by copying each RuleAvailability object.
     private List<RuleAvailability> CopyRuleAvailability()
     {
         List<RuleAvailability> availableRulesForRoom = new List<RuleAvailability>();
         availableRules.ToList().ForEach(original => availableRulesForRoom.Add(new RuleAvailability(original)));
         return availableRulesForRoom;
     }
-
+    //Creates a 2D array representing the tile types of the level (wall or floor), based on pixel colors from levelTexture. Black pixels are treated as walls.
     private TileType[,] InitializeDecoratorArray()
     {
         TileType[,] levelDecorated = new TileType[levelTexture.width, levelTexture.height];
@@ -119,7 +121,8 @@ public class RoomDecorator : MonoBehaviour
         }
         return levelDecorated;
     }
-
+    
+    //Generates and applies a decorated texture that shows the level after decoration, using the tile type color data, and saves it as an asset.
     private void GenerateTextureFromTileType(TileType[,] tileTypes)
     {
         int width = tileTypes.GetLength(0);
@@ -130,7 +133,7 @@ public class RoomDecorator : MonoBehaviour
         {
             for (int x = 0; x < width; x++)
             {
-                pixels[x + y * width] = tileTypes[x,y].GetColor();
+                pixels[x + y * width] = tileTypes[x, y].GetColor();
             }
         }
 

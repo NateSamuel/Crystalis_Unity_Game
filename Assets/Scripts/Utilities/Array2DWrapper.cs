@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+//generic wrapper by others to convert a 2d array to 1d - used when creating the TileType rule in the editor - Barbara Reichart, 2024
 [Serializable]
 public class Array2DWrapper<T>
 {

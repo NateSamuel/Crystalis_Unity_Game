@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//helper extension method to destory all child objects of a transform - Barbara Reichart lecture series, 2024
 public static class MonoBehaviorExtensionMethods
 {
     #region Variables

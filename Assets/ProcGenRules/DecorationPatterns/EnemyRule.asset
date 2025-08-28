@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dc5c4b20a3a9da4888df668f2fe32bd, type: 3}
   m_Name: EnemyRule
   m_EditorClassIdentifier: 
-  roomTypes: 225
+  roomTypes: 17
   prefab: {fileID: 901973414610251797, guid: bd4da3f83e10bca4a830b4df6a505eab, type: 3}
   prefabRotation: 0
   placement:
-    array: 020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000
-    width: 4
-    height: 3
+    array: 02000000020000000200000002000000
+    width: 2
+    height: 2
   fill:
-    array: 020000000200000002000000020000000200000006000000060000000200000002000000020000000200000002000000
-    width: 4
-    height: 3
+    array: 02000000060000000200000002000000
+    width: 2
+    height: 2
   centerHorizontally: 1
   centerVertically: 1
   levelHeightTexture: {fileID: 2800000, guid: 8ff5832bb55ad244fa2cfeacb4a17032, type: 3}

@@ -9,6 +9,9 @@ TagManager:
   - Enemy1Pos
   - Boss1Pos
   - Boss1
+  - Key
+  - Prisoner
+  - PrisonerPos
   layers:
   - Default
   - TransparentFX
@@ -17,7 +20,7 @@ TagManager:
   - Water
   - UI
   - NoNavMeshSurface
-  - 
+  - Key
   - 
   - 
   - 

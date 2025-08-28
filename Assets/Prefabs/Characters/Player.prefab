@@ -295,6 +295,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5dc83bed8d8e16d4ca7fe22bb910683b,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: 8801087934472895747}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5dc83bed8d8e16d4ca7fe22bb910683b,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 5765383725617011375}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5dc83bed8d8e16d4ca7fe22bb910683b,
         type: 3}
@@ -402,11 +406,25 @@ MonoBehaviour:
   powerUpEffectPrefab: {fileID: 0}
   freezeEffectPrefab: {fileID: 0}
   forceFieldEffectPrefab: {fileID: 0}
+  projectilePrefab: {fileID: 0}
   castPoint: {fileID: 2237488968401718392}
   castPointFloor: {fileID: 0}
   normalDamageModifier: 1
   increasedDamageModifier: 1.5
-  projectilePrefab: {fileID: 0}
+--- !u!114 &8801087934472895747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5877880916578772679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81e69a519de8d554e8668b26082f1f6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  keys: 0
+  keyTexts: []
 --- !u!136 &5765383725617011375
 CapsuleCollider:
   m_ObjectHideFlags: 0
