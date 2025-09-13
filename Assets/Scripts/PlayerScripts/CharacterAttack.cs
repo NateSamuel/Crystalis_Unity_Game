@@ -7,9 +7,6 @@ public class CharacterAttack : MonoBehaviour
 {
     Animator animator;
     public float attackRange = 5f;
-    public float damage = 10f;
-    public float dotDamage = 5f;
-    public float spellDamage = 40f;
     public LayerMask enemyLayer;
     public Transform attackPoint;
     public GameObject spellEffectPrefab;
@@ -21,11 +18,14 @@ public class CharacterAttack : MonoBehaviour
     public Transform castPointFloor;
     private Coroutine activePowerup;
     private Coroutine activeDamageOverTime;
+    private float rangedBlastDamage;
     public float normalDamageModifier = 1f;
     public float increasedDamageModifier = 1.5f;
     private float currentDamageModifier;
     private bool isTargeting = false;
     private bool isAbleToDamage = true;
+
+    public CharacterLevelUps levelUp;
     
     // Initializes the Animator component and sets the default damage modifier.
     void Awake()
@@ -72,15 +72,16 @@ public class CharacterAttack : MonoBehaviour
 
         if (magic != null)
         {
-            magic.Launch(direction, RangedBlast.CasterType.Player, spellDamage, isAbleToDamage);
+            magic.Launch(direction, RangedBlast.CasterType.Player, rangedBlastDamage, isAbleToDamage);
         }
     }
     public void RangedBlastAttack(float spellDamage)
     {
+        rangedBlastDamage = spellDamage;
         isTargeting = true;
     }
 
-    public void Attack()
+    public void Attack(float hitAmount)
     {
 
         animator.SetTrigger("punch");
@@ -93,7 +94,7 @@ public class CharacterAttack : MonoBehaviour
             if (health != null && isAbleToDamage == true)
             {
 
-                health.EnemyDamageTaken(Mathf.RoundToInt(damage * currentDamageModifier));
+                health.EnemyDamageTaken(Mathf.RoundToInt(hitAmount * currentDamageModifier));
             }
         }
     }
@@ -124,30 +125,30 @@ public class CharacterAttack : MonoBehaviour
         }
     }
 
-    public void PowerUpAbility()
+    public void PowerUpAbility(float strengthIncrease)
     {
         if (activePowerup != null)
         {
             StopCoroutine(activePowerup);
         }
-        activePowerup = StartCoroutine(PowerUpRoutine());
+        activePowerup = StartCoroutine(PowerUpRoutine(strengthIncrease));
     }
 
-    private IEnumerator PowerUpRoutine()
+    private IEnumerator PowerUpRoutine(float strengthIncrease)
     {
         if (powerUpEffectPrefab != null && castPoint != null)
         {
             GameObject effect = Instantiate(powerUpEffectPrefab, castPoint.position, castPoint.rotation);
             Destroy(effect, 1f);
         }
-        currentDamageModifier = increasedDamageModifier;
+        currentDamageModifier = strengthIncrease;
 
         yield return new WaitForSeconds(5f);
 
         currentDamageModifier = normalDamageModifier;
     }
 
-    public void FreezeAbility()
+    public void FreezeAbility(float freezeLengthModified)
     {
         animator.SetTrigger("freezeTrigger");
         if (freezeEffectPrefab != null && castPointFloor != null)
@@ -162,18 +163,18 @@ public class CharacterAttack : MonoBehaviour
             BaseEnemyAI enemy = bestTarget.GetComponent<BaseEnemyAI>();
             if (enemy != null)
             {
-                enemy.Stun(5f);
+                enemy.Stun(freezeLengthModified);
             }
         }
     }
 
-    public void ForceFieldAbility()
+    public void ForceFieldAbility(float fieldFieldLengthModified)
     {
         animator.SetTrigger("aoeAttackTrigger");
         if (forceFieldEffectPrefab != null && castPointFloor != null)
         {
             GameObject effect = Instantiate(forceFieldEffectPrefab, castPoint.position, castPoint.rotation);
-            Destroy(effect, 1f);
+            Destroy(effect, fieldFieldLengthModified);
         }
         Transform bestTarget = GetBestEnemyTarget();
 
@@ -182,11 +183,11 @@ public class CharacterAttack : MonoBehaviour
             BaseEnemyAI enemy = bestTarget.GetComponent<BaseEnemyAI>();
             if (enemy != null)
             {
-                enemy.BlockedByForceField(3f);
+                enemy.BlockedByForceField(fieldFieldLengthModified);
             }
         }
     }
-    public void CrystalStabAttack()
+    public void CrystalStabAttack(float spellDamage)
     {
         animator.SetTrigger("punch");
 
@@ -196,10 +197,10 @@ public class CharacterAttack : MonoBehaviour
         {
             StopCoroutine(activeDamageOverTime);
         }
-        activeDamageOverTime = StartCoroutine(CrystalStabAttackRoutine(bestTarget));
+        activeDamageOverTime = StartCoroutine(CrystalStabAttackRoutine(bestTarget, spellDamage));
     }
 
-    private IEnumerator CrystalStabAttackRoutine(Transform bestTarget)
+    private IEnumerator CrystalStabAttackRoutine(Transform bestTarget, float spellDamage)
     {
         if (bestTarget != null)
         {
@@ -209,7 +210,7 @@ public class CharacterAttack : MonoBehaviour
                 int ticks = 5;
                 for (int i = 0; i < ticks; i++)
                 {
-                    health.EnemyDamageTaken(Mathf.RoundToInt(dotDamage * currentDamageModifier));
+                    health.EnemyDamageTaken(Mathf.RoundToInt(spellDamage * currentDamageModifier));
                     yield return new WaitForSeconds(1f);
                 }
             }

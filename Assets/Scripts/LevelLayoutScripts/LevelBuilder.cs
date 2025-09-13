@@ -112,6 +112,7 @@ public class LevelBuilder : MonoBehaviour
         MovePlayerToStart(level);
         totalPrisoners?.FindPrisoners();
     }
+    // Finds and places enemies or bosses onto the NavMesh. Deactivates if not used.
     private void PlaceUnitsOnNavMesh<T>(
         string unitTag, 
         string positionTag, 
@@ -179,6 +180,7 @@ public class LevelBuilder : MonoBehaviour
             }
         }
     }
+    // Finds and places prisoners onto the NavMesh. Deactivates if not used.
     private void PlacePrisonersOnNavMesh()
     {
         GameObject[] prisonerPositions = GameObject.FindGameObjectsWithTag("PrisonerPos");
@@ -236,143 +238,6 @@ public class LevelBuilder : MonoBehaviour
             }
         }
     }
-    // //Design by Student
-    // // Finds and places enemies onto the NavMesh. Deactivates if not used.
-    // private void PlaceEnemiesOnNavMesh()
-    // {
-
-    //     GameObject[] enemyPositions = GameObject.FindGameObjectsWithTag("Enemy1Pos");
-    //     GameObject[] allEnemies = Resources.FindObjectsOfTypeAll<GameObject>();
-    //     List<GameObject> enemies = new List<GameObject>();
-
-    //     foreach (var go in allEnemies)
-    //     {
-    //         if (go.CompareTag("Enemy1"))
-    //         {
-    //             go.SetActive(true);
-    //             enemies.Add(go);
-    //         }
-    //     }
-
-    //     ActiveEnemies.Clear();
-    //     InactiveEnemies.Clear();
-
-    //     int spawnCount = Mathf.Min(levelEnemyCount, enemies.Count, enemyPositions.Length);
-
-    //     for (int i = 0; i < enemies.Count; i++)
-    //     {
-    //         GameObject enemy = enemies[i];
-    //         var agent = enemy.GetComponent<UnityEngine.AI.NavMeshAgent>();
-    //         tracker.RegisterEnemy(enemy);
-    //         if (i < spawnCount)
-    //         {
-    //             GameObject enemyPos = enemyPositions[i];
-    //             Vector2Int gridPos = WorldToGridPosition(enemyPos.transform.position);
-    //             Vector3 correctedWorldPos = LevelPositionToWorldPosition(gridPos);
-
-    //             if (UnityEngine.AI.NavMesh.SamplePosition(correctedWorldPos, out UnityEngine.AI.NavMeshHit hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
-    //             {
-    //                 enemy.SetActive(true);
-    //                 if (agent != null)
-    //                 {
-    //                     if (!agent.enabled)
-    //                         agent.enabled = true;
-
-    //                     bool warped = agent.Warp(hit.position);
-
-    //                     if (warped)
-    //                     {
-    //                         enemy.GetComponent<RuffianEnemyAI>()?.Initialize();
-    //                         ActiveEnemies.Add(enemy);
-    //                         tracker.SetEnemyActive(enemy, true);
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //         else
-    //         {
-    //             if (agent != null && !agent.enabled)
-    //                 agent.enabled = true;
-
-
-    //             agent?.Warp(new Vector3(0, -1000, 0));
-    //             enemy.GetComponent<RuffianEnemyAI>()?.DisableEnemy();
-    //             enemy.SetActive(false);
-    //             InactiveEnemies.Add(enemy);
-    //             tracker.SetEnemyActive(enemy, false);
-    //         }
-    //     }
-    // }
-
-    // //Design by Student
-    // // Finds and places bosses onto the NavMesh. Deactivates if not used.
-    // private void PlaceBossesOnNavMesh()
-    // {
-
-    //     GameObject[] bossPositions = GameObject.FindGameObjectsWithTag("Boss1Pos");
-    //     GameObject[] allBosses = Resources.FindObjectsOfTypeAll<GameObject>();
-    //     List<GameObject> bosses = new List<GameObject>();
-
-    //     foreach (var go in allBosses)
-    //     {
-    //         if (go.CompareTag("Boss1"))
-    //         {
-    //             go.SetActive(true);
-    //             bosses.Add(go);
-    //         }
-    //     }
-
-    //     ActiveBosses.Clear();
-    //     InactiveBosses.Clear();
-
-    //     int bossCount = Mathf.Min(bosses.Count, bossPositions.Length);
-
-    //     for (int i = 0; i < bosses.Count; i++)
-    //     {
-    //         GameObject boss = bosses[i];
-    //         var agent = boss.GetComponent<UnityEngine.AI.NavMeshAgent>();
-    //         tracker.RegisterBoss(boss);
-    //         if (i < bossCount)
-    //         {
-    //             GameObject bossPos = bossPositions[i];
-
-    //             Vector2Int gridPos = WorldToGridPosition(bossPos.transform.position);
-    //             Vector3 correctedWorldPos = LevelPositionToWorldPosition(gridPos);
-
-    //             if (UnityEngine.AI.NavMesh.SamplePosition(correctedWorldPos, out UnityEngine.AI.NavMeshHit hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
-    //             {
-    //                 boss.SetActive(true);
-    //                 if (agent != null)
-    //                 {
-    //                     if (!agent.enabled)
-    //                         agent.enabled = true;
-
-    //                     bool warped = agent.Warp(hit.position);
-
-    //                     if (warped)
-    //                     {
-    //                         var logic = boss.GetComponent<BossEnemyAI>();
-    //                         logic?.Initialize();
-
-    //                         ActiveBosses.Add(boss);
-    //                         tracker.SetBossActive(boss, true);
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //         else
-    //         {
-    //             if (agent != null && !agent.enabled)
-    //                 agent.enabled = true;
-
-    //             agent?.Warp(new Vector3(0, -1000, 0));
-    //             boss.GetComponent<BossEnemyAI>()?.DisableEnemy();
-    //             boss.SetActive(false);
-    //             InactiveBosses.Add(boss);
-    //             tracker.SetBossActive(boss, false);
-    //         }
-    //     }
-    // }
 
     //Design by Barbara Reichart lecture series, 2024
     // Moves the player to the start room.

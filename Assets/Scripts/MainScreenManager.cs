@@ -9,6 +9,8 @@ public class MainScreenManager : MonoBehaviour
     public GameObject PlayerDeathPanel;
     public GameObject PauseMenuPanel;
     public GameObject PurchaseAbilities;
+    public GameObject LevelUpAbilities;
+
     private ExitLevel exitLevel;
     [SerializeField] LayoutGeneratorRooms layoutGeneratorRooms;
     public UnityEngine.UI.Button CollectKeyButton;
@@ -22,6 +24,7 @@ public class MainScreenManager : MonoBehaviour
         PlayerDeathPanel.SetActive(false);
         PauseMenuPanel.SetActive(false);
         PurchaseAbilities.SetActive(false);
+        LevelUpAbilities.SetActive(false);
     }
     public void BackToEntryScreen()
     {
@@ -88,7 +91,22 @@ public class MainScreenManager : MonoBehaviour
         PlayerDeathPanel.SetActive(false);
         PauseMenuPanel.SetActive(false);
         PurchaseAbilities.SetActive(false);
+        LevelUpAbilities.SetActive(false);
     }
+    public void ShowLevelUpAbilitiesPanel()
+    {
+        MainUIPanel.SetActive(false);
+        LevelUpAbilities.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    public void ExitLevelUpAbilitiesPanel()
+    {
+        MainUIPanel.SetActive(true);
+        LevelUpAbilities.SetActive(false);
+        Time.timeScale = 1f;
+    }
+
     public void RetryScreenAfterDeath()
     {
         Debug.Log("RetryScreenAfterDeath() CALLED");
@@ -112,7 +130,9 @@ public class MainScreenManager : MonoBehaviour
         PlayerDeathPanel.SetActive(false);
         PauseMenuPanel.SetActive(false);
         PurchaseAbilities.SetActive(false);
+        LevelUpAbilities.SetActive(false);
     }
+
     public void ShowCollectKeyUI(UnityEngine.Events.UnityAction onClick)
     {
         CollectKeyButton.gameObject.SetActive(true);

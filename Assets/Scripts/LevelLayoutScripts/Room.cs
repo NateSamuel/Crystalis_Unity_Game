@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Flags = System.FlagsAttribute;
-//Design by Barbara Reichart lecture series, 2024
+//Design by Barbara Reichart lecture series, 2024, additions by student for vertical level implentation
 
 // Enum representing different types of rooms using flag attributes for bitwise operations
 [Flags]

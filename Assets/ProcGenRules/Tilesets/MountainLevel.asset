@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4e273556640ac148a7580bd5734112b, type: 3}
+  m_Name: MountainLevel
+  m_EditorClassIdentifier: 
+  wallColor: {r: 0, g: 0, b: 0, a: 0}
+  tiles:
+  - variants:
+    - {fileID: 667209136394007026, guid: 32c067436071a1b49a88b7bafe3e44e0, type: 3}
+    - {fileID: 8663752698871267635, guid: 16094fc285395584bbf32ae9b074fc7a, type: 3}
+    - {fileID: 3262108622216265669, guid: ec8ef8603be177546a88d360a8ab9e66, type: 3}
+    weights:
+    - 2
+    - 1
+    - 0.5
+  - variants:
+    - {fileID: 3701996775972964930, guid: 1dc64018ce33c6b41a36e4c294fe3b0c, type: 3}
+    weights: []
+  - variants:
+    - {fileID: 3701996775972964930, guid: 995edcdf50971434798b5dd80447a19f, type: 3}
+    weights: []
+  - variants:
+    - {fileID: 3701996775972964930, guid: 87092a4a580a96d47b0dbd3a35a8502d, type: 3}
+    weights: []
+  - variants:
+    - {fileID: 3701996775972964930, guid: 3aff9a684a3b2ac4585020b4c512ac5b, type: 3}
+    weights: []
+  - variants:
+    - {fileID: 3701996775972964930, guid: 7904cd0b2c05c62448b89e760a5c1316, type: 3}
+    weights: []
+  - variants:
+    - {fileID: 9056921675146672755, guid: 23c93aee0a0382c45aca7aa434631b58, type: 3}
+    weights: []
+  - variants:
+    - {fileID: 3701996775972964930, guid: f111055fb58055343877c2ce0cf690d2, type: 3}
+    weights: []
+  - variants:
+    - {fileID: 3701996775972964930, guid: 554d3110c31dc4c489f72b9df587c98f, type: 3}
+    weights: []
+  - variants:
+    - {fileID: 686481284915246783, guid: 875eba7ba6ac65e4c8414534d9183112, type: 3}
+    weights: []
+  - variants:
+    - {fileID: 3701996775972964930, guid: 176328db5e0fc7e45bdbd21b764db328, type: 3}
+    weights: []
+  - variants:
+    - {fileID: 3701996775972964930, guid: 3e8ed5aaa89e6fc4bb0804080030e89a, type: 3}
+    weights: []
+  - variants:
+    - {fileID: 3701996775972964930, guid: 8154c9c7589d39f489da3ef1a1067a94, type: 3}
+    weights: []
+  - variants:
+    - {fileID: 3701996775972964930, guid: ca1e154697bb7d1468f9fc8913a3b2f8, type: 3}
+    weights: []
+  - variants:
+    - {fileID: 3701996775972964930, guid: 55e75b86bf8b4754690b3d3d37df377b, type: 3}
+    weights: []
+  - variants:
+    - {fileID: 0}
+    weights: []

@@ -6,6 +6,7 @@ public class CurrentLevel : MonoBehaviour
     public int currentLevelNumber = 1;
 
     public TextMeshProUGUI[] levelTexts;
+    public EnemyDifficultyIncrease difficultyManager;
 
     void Start()
     {
@@ -16,12 +17,15 @@ public class CurrentLevel : MonoBehaviour
     {
         currentLevelNumber++;
         UpdateLevelText();
+        difficultyManager?.UpdateLevelDifficultyInfo(currentLevelNumber);
+
     }
 
     public void RevertToLevelOne()
     {
         currentLevelNumber = 1;
         UpdateLevelText();
+        difficultyManager?.UpdateLevelDifficultyInfo(currentLevelNumber);
     }
 
     public void UpdateLevelText()

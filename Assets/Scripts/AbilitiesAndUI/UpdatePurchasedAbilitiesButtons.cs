@@ -7,6 +7,7 @@ public class UpdatePurchasedAbilitiesButtons : MonoBehaviour
     public Sprite lockedSprite;
     public Sprite purchasedSprite;
     public CharacterPurchases purchases;
+    public CharacterLevelUps levelUps;
     private Button button;
     private Image buttonImage;
     private CharacterAttack charAttackScript;
@@ -14,6 +15,10 @@ public class UpdatePurchasedAbilitiesButtons : MonoBehaviour
     private Transform playerTransform;
     public int spellCost = 2;
     public float spellDamage = 30f;
+
+    public float abilityCooldown = 2f;
+    private float lastAbilityTime = -Mathf.Infinity;
+
 
     void Start()
     {
@@ -41,16 +46,17 @@ public class UpdatePurchasedAbilitiesButtons : MonoBehaviour
     void Update()
     {
         var ability = purchases.abilities.Find(a => a.name == spellName);
-        if (ability != null)
+        if (ability == null) return;
+
+        float cooldownRemaining = abilityCooldown - (Time.time - lastAbilityTime);
+
+        if (ability.hasBeenPurchased && charTreasureScript.crystals >= spellCost && cooldownRemaining <= 0f)
         {
-            if (ability.hasBeenPurchased && charTreasureScript.crystals >= spellCost)
-            {
-                button.interactable = true;
-            }
-            else if (ability.hasBeenPurchased)
-            {
-                button.interactable = false;
-            }
+            button.interactable = true;
+        }
+        else if (ability.hasBeenPurchased)
+        {
+            button.interactable = false;
         }
     }
 
@@ -74,30 +80,36 @@ public class UpdatePurchasedAbilitiesButtons : MonoBehaviour
 
     public void OnButtonClicked()
     {
-        if (spellName == "RangedBlast" && charTreasureScript.crystals >= spellCost)
+        if (Time.time - lastAbilityTime < abilityCooldown) return;
+
+        LevelUpAbilities upgradedAbility = levelUps.abilities.Find(a => a.name == spellName);
+        if (upgradedAbility == null) return;
+
+        if (charTreasureScript.crystals >= spellCost)
         {
-            charTreasureScript?.RemoveTreasure(spellCost);
-            charAttackScript?.RangedBlastAttack(spellDamage);
-        }
-        else if (spellName == "PowerUp" && charTreasureScript.crystals >= spellCost)
-        {
-            charTreasureScript?.RemoveTreasure(spellCost);
-            charAttackScript?.PowerUpAbility();
-        }
-        else if (spellName == "Freeze" && charTreasureScript.crystals >= spellCost)
-        {
-            charTreasureScript?.RemoveTreasure(spellCost);
-            charAttackScript?.FreezeAbility();
-        }
-        else if (spellName == "ForceField" && charTreasureScript.crystals >= spellCost)
-        {
-            charTreasureScript?.RemoveTreasure(spellCost);
-            charAttackScript?.ForceFieldAbility();
-        }
-        else if (spellName == "CrystalStab" && charTreasureScript.crystals >= spellCost)
-        {
-            charTreasureScript?.RemoveTreasure(spellCost);
-            charAttackScript?.CrystalStabAttack();
+            charTreasureScript.RemoveTreasure(spellCost);
+
+            switch (spellName)
+            {
+                case "RangedBlast":
+                    charAttackScript?.RangedBlastAttack(upgradedAbility.currentStatAmount);
+                    break;
+                case "PowerUp":
+                    charAttackScript?.PowerUpAbility(upgradedAbility.currentStatAmount);
+                    break;
+                case "Freeze":
+                    charAttackScript?.FreezeAbility(upgradedAbility.currentStatAmount);
+                    break;
+                case "ForceField":
+                    charAttackScript?.ForceFieldAbility(upgradedAbility.currentStatAmount);
+                    break;
+                case "CrystalStab":
+                    charAttackScript?.CrystalStabAttack(upgradedAbility.currentStatAmount);
+                    break;
+            }
+
+            lastAbilityTime = Time.time;
+            button.interactable = false;
         }
     }
 }

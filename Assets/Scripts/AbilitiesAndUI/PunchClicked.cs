@@ -5,6 +5,7 @@ public class PunchClicked : MonoBehaviour
 {
     private CharacterAttack charAttackScript;
     private CharacterTreasure charTreasureScript;
+    public CharacterLevelUps levelUps;
     private Transform playerTransform;
 
     public float globalAbilityCooldown = 1f;
@@ -45,9 +46,11 @@ public class PunchClicked : MonoBehaviour
 
     public void OnButtonClick()
     {
+        LevelUpAbilities upgradedAbility = levelUps.abilities.Find(a => a.name == "Punch");
+
         if (Time.time - lastAbilityTime >= globalAbilityCooldown)
         {
-            charAttackScript?.Attack();
+            charAttackScript?.Attack(upgradedAbility.currentStatAmount);
             lastAbilityTime = Time.time;
 
             button.interactable = false;

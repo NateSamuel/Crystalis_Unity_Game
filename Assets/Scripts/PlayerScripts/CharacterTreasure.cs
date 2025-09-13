@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class CharacterTreasure : MonoBehaviour
 {
-    public int crystals = 15;
+    public int crystals = 200;
 
     [SerializeField] private List<TextMeshProUGUI> treasureTexts;
 

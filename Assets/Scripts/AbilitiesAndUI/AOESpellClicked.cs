@@ -5,11 +5,13 @@ public class AOESpellClicked : MonoBehaviour
 {
     private CharacterAttack charAttackScript;
     private CharacterTreasure charTreasureScript;
+    public CharacterLevelUps levelUps;
     private Transform playerTransform;
     public int spellCost = 2;
     public float spellDamage = 30f;
     private Button button;
-
+    public float globalAbilityCooldown = 1f;
+    private float lastAbilityTime = -Mathf.Infinity;
     void Start()
     {
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
@@ -23,9 +25,12 @@ public class AOESpellClicked : MonoBehaviour
         }
 
     }
+
     void Update()
     {
-        if (charTreasureScript.crystals >= spellCost)
+        float cooldownRemaining = globalAbilityCooldown - (Time.time - lastAbilityTime);
+
+        if (cooldownRemaining <= 0f && charTreasureScript.crystals >= spellCost)
         {
             button.interactable = true;
         }
@@ -34,12 +39,18 @@ public class AOESpellClicked : MonoBehaviour
             button.interactable = false;
         }
     }
+
     public void OnButtonClick()
     {
-        if (charTreasureScript.crystals >= spellCost)
+        LevelUpAbilities upgradedAbility = levelUps.abilities.Find(a => a.name == "Punch");
+
+        if (Time.time - lastAbilityTime >= globalAbilityCooldown && charTreasureScript.crystals >= spellCost)
         {
             charTreasureScript?.RemoveTreasure(spellCost);
-            charAttackScript?.AOEAttack(spellDamage);
+            charAttackScript?.AOEAttack(upgradedAbility.currentStatAmount);
+            lastAbilityTime = Time.time;
+
+            button.interactable = false;
         }
     }
 }

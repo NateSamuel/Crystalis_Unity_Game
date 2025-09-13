@@ -7,6 +7,7 @@ public class HealthBoost : MonoBehaviour
     public int boostCost = 2;
     private CharacterTreasure charTreasureScript;
     private CharacterHealth charHealthScript;
+    public CharacterLevelUps levelUps;
     private Transform playerTransform;
     private Button button;
 
@@ -36,12 +37,15 @@ public class HealthBoost : MonoBehaviour
     }
     public void OnButtonClick()
     {
+        LevelUpAbilities upgradedAbility = levelUps.abilities.Find(a => a.name == "HealthBoost");
+
 
         if (charTreasureScript.crystals >= boostCost)
         {
             charTreasureScript?.RemoveTreasure(boostCost);
 
-            charHealthScript?.AddHealth(healthBoostAmount);
+            charHealthScript?.AddHealth(upgradedAbility.currentStatAmount);
         }
     }
+    
 }

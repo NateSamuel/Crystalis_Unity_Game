@@ -2,11 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
 using System.Collections;
+using TMPro;
 
 public class EnemyHealth : MonoBehaviour
 {
-    public float enemyHealthTotal = 100f;
     public float enemyHealthCurrent;
+    public TMP_Text healthText;
+
     public EnemyTrackerForObjectives tracker;
     private CharacterTreasure charTreasureScript;
     public Slider healthSlider;
@@ -14,12 +16,14 @@ public class EnemyHealth : MonoBehaviour
     private Animator animator;
     private bool hitAnimationAvailable = true;
     protected EnemyAttack attackScript;
+
+    [SerializeField] public EnemyStats enemyStats;
     
     void Start()
     {
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         animator = GetComponent<Animator>();
-
+        attackScript = GetComponent<EnemyAttack>();
 
         if (playerObject != null)
         {
@@ -27,13 +31,58 @@ public class EnemyHealth : MonoBehaviour
             charTreasureScript = playerTransform.GetComponent<CharacterTreasure>();
         }
 
-        enemyHealthCurrent = enemyHealthTotal;
+        // 🔑 Automatically assign stats based on tag
+        var difficultyManager = FindAnyObjectByType<EnemyDifficultyIncrease>();
+        if (difficultyManager != null)
+        {
+            enemyStats = difficultyManager.GetStatsForType(gameObject.tag);
+            if (enemyStats != null)
+            {
+                // Force scale now if it hasn't been done yet
+                if (enemyStats.health.scaledValue == 0)
+                {
+                    enemyStats.ScaleStats(1); // or whatever multiplier your level uses
+                }
+
+                InitHealthFromStats();
+                UpdateHealthUIText();
+            }
+        }
+        
+    }
+
+    // void OnEnable()
+    // {
+    //     StartCoroutine(InitAfterDifficultyReady());
+    // }
+
+    // private IEnumerator InitAfterDifficultyReady()
+    // {
+    //     // Wait until the difficulty manager exists and the stats are scaled
+    //     var difficultyManager = FindObjectOfType<EnemyDifficultyIncrease>();
+    //     while (difficultyManager == null || difficultyManager.GetStatsForType(gameObject.tag)?.health.scaledValue == 0)
+    //         yield return null; // wait a frame
+
+    //     enemyStats = difficultyManager.GetStatsForType(gameObject.tag);
+    //     InitHealthFromStats();
+    //     UpdateHealthUIText();
+    // }
+
+    private void InitHealthFromStats()
+    {
+        if (enemyStats == null) return;
+        enemyHealthCurrent = enemyStats.health.scaledValue;
         if (healthSlider != null)
         {
-            healthSlider.maxValue = enemyHealthTotal;
+            healthSlider.maxValue = enemyHealthCurrent;
             healthSlider.value = enemyHealthCurrent;
         }
-        attackScript = GetComponent<EnemyAttack>();
+    }
+
+    private void UpdateHealthUIText()
+    {
+        if (healthText != null)
+            healthText.text = $"{Mathf.CeilToInt(enemyHealthCurrent)}";
     }
 
     public void isHitAnimationAvailable()
@@ -52,13 +101,8 @@ public class EnemyHealth : MonoBehaviour
 
     public void ResetHealth()
     {
-        enemyHealthCurrent = enemyHealthTotal;
-
-        if (healthSlider != null)
-        {
-            healthSlider.maxValue = enemyHealthTotal;
-            healthSlider.value = enemyHealthCurrent;
-        }
+        InitHealthFromStats();
+        UpdateHealthUIText();
     }
 
     public void EnemyDamageTaken(float damageAmount)
@@ -81,6 +125,10 @@ public class EnemyHealth : MonoBehaviour
         {
             healthSlider.value = enemyHealthCurrent;
         }
+        if (healthText != null)
+        {
+            healthText.text = $"{Mathf.CeilToInt(enemyHealthCurrent)}";
+        }
 
     }
     void EnemyDie()
@@ -91,7 +139,7 @@ public class EnemyHealth : MonoBehaviour
         if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Standing React Death Forward") && !animator.GetCurrentAnimatorStateInfo(0).IsName("Dying Backwards"))
         {
             GetComponent<EnemyAttack>()?.SetDead(true);
-            GetComponent<EnemyMovement>()?.DisableEnemy();
+            GetComponent<BaseEnemyAI>()?.DisableEnemy();
             animator.SetTrigger("DeathAnimTrigger");
             StartCoroutine(WaitForDeathAnimationThenContinue());
         }
@@ -125,12 +173,10 @@ public class EnemyHealth : MonoBehaviour
         }
 
         transform.position = new Vector3(0, -1000, 0);
-        enemyHealthCurrent = enemyHealthTotal;
-
-        if (healthSlider != null)
-        {
-            healthSlider.value = enemyHealthCurrent;
-        }
+        
+        InitHealthFromStats();
+        UpdateHealthUIText();
+        
         animator.Rebind();
         animator.Update(0f);
         gameObject.SetActive(false);

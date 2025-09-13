@@ -48,7 +48,7 @@ public class BossEnemyAI : BaseEnemyAI
         }
         else if (roll < 0.5f)
         {
-            attackScript?.EnemyAOEAttack(10f);
+            attackScript?.EnemyAOEAttack();
         }
         else
         {

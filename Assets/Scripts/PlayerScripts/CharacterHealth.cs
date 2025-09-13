@@ -16,26 +16,29 @@ public class CharacterHealth : MonoBehaviour
     private Animator animator;
     private bool hitAnimationAvailable = true;
 
+    [SerializeField] public CharacterLevelUps levelUp;
+
     void Start()
     {
         animator = GetComponent<Animator>();
         characterHealthCurrent = characterHealthTotal;
-        UpdateHealthUI();
         GameObject healthTextObject = GameObject.Find("PlayerHealthText");
         healthText = healthTextObject.GetComponent<TextMeshProUGUI>();
-        if (healthText != null)
-        {
-            healthText.text = " " + characterHealthTotal;
-        }
-        if (healthSlider != null)
-        {
-            healthSlider.maxValue = characterHealthTotal;
-            healthSlider.value = characterHealthCurrent;
-        }
+        UpdateHealthUI();
+
     }
     void Update()
     {
         isHitAnimationAvailable();
+    }
+
+
+    public void UpdateOverallHealth(float currentModifiedHealth)
+    {
+        int roundedcurrentModifiedHealth = Mathf.RoundToInt(currentModifiedHealth);
+        characterHealthCurrent += roundedcurrentModifiedHealth - characterHealthTotal;
+        characterHealthTotal = roundedcurrentModifiedHealth;
+        UpdateHealthUI();
     }
 
     public void isHitAnimationAvailable()
@@ -47,7 +50,8 @@ public class CharacterHealth : MonoBehaviour
         {
             hitAnimationAvailable = false;
         }
-        else{
+        else
+        {
             hitAnimationAvailable = true;
         }
     }
@@ -127,20 +131,21 @@ public class CharacterHealth : MonoBehaviour
         }
     }
 
-    public void AddHealth(int healthBoostAmount)
+    public void AddHealth(float healthBoostAmount)
     {
+
         if (spellEffectPrefab != null && castPoint != null)
         {
             GameObject effect = Instantiate(spellEffectPrefab, castPoint.position, castPoint.rotation);
             Destroy(effect, 1f);
         }
-        int addedHealth = healthBoostAmount + characterHealthCurrent;
-        if (addedHealth < 100)
+        int addedHealth = Mathf.RoundToInt(healthBoostAmount) + characterHealthCurrent;
+        if (addedHealth < characterHealthTotal)
         {
             characterHealthCurrent = addedHealth;
         }
         else{
-            characterHealthCurrent = 100;
+            characterHealthCurrent = characterHealthTotal;
         }
         UpdateHealthUI();
     }

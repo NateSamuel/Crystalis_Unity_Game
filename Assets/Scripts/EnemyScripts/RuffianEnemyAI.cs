@@ -12,7 +12,7 @@ public class RuffianEnemyAI : BaseEnemyAI
 
         if (roll < 0.1f)
         {
-            attackScript?.EnemyAOEAttack(10f);
+            attackScript?.EnemyAOEAttack();
         }
         else
         {

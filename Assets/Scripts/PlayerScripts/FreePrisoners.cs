@@ -2,15 +2,18 @@ using UnityEngine;
 
 public class FreePrisoners : MonoBehaviour
 {
+    private Transform playerTransform;
     private CharacterKeys charKeyScript;
     private MainScreenManager mainUI;
     private TotalPrisoners totalPrisoners;
     private bool prisonerFreed = false;
+    private CharacterTreasure charTreasureScript;
 
 
     void Start()
     {
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        playerTransform = playerObject.transform;
 
         if (playerObject != null)
         {
@@ -20,6 +23,7 @@ public class FreePrisoners : MonoBehaviour
         mainUI = FindAnyObjectByType<MainScreenManager>();
         totalPrisoners = FindAnyObjectByType<TotalPrisoners>();
         mainUI?.HideFreePrisonerUI();
+        charTreasureScript = playerTransform.GetComponent<CharacterTreasure>();
     }
     
     private void OnEnable()
@@ -59,6 +63,8 @@ public class FreePrisoners : MonoBehaviour
             transform.position = new Vector3(0, -1000, 0);
 
             gameObject.SetActive(false);
+            charTreasureScript?.ApplyTreasure(5);
+
         }
     }
 }
