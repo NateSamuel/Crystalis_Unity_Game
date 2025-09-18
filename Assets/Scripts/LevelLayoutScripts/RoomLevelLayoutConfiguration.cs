@@ -12,8 +12,8 @@ using System.Linq;
 [CreateAssetMenu(fileName = "Room Level Layout", menuName = "Custom/Procedural Generation/RoomLevelLayoutConfiguration")]
 public class RoomLevelLayoutConfiguration : ScriptableObject
 {
-    [SerializeField] int width = 64;
-    [SerializeField] int length = 64;
+    [SerializeField] int width = 128;
+    [SerializeField] int length = 128;
 
     [SerializeField] RoomTemplate[] roomTemplates;
     [SerializeField] int doorDistanceFromEdge = 1;

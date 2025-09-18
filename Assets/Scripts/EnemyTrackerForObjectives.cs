@@ -35,6 +35,14 @@ public class EnemyTrackerForObjectives : MonoBehaviour
 
     public void SetEnemyActive(GameObject enemy, bool isActive)
     {
+        if (isActive)
+        {
+            if (!enemies.Contains(enemy)) enemies.Add(enemy);
+        }
+        else
+        {
+            if (enemies.Contains(enemy)) enemies.Remove(enemy);
+        }
         UpdateStatusText();
     }
 

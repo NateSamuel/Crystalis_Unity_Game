@@ -7,7 +7,7 @@ public class DirectedAgent : MonoBehaviour
     Animator animator;
 
     public float moveSpeed = 3.5f;
-    public float rotationSpeed = 200f;
+    public float rotationSpeed = 400f;
     public bool canMove = true;
 
     void Awake()

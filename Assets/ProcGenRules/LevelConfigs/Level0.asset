@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46d5bea756de1264a82b67bdf472e310, type: 3}
   m_Name: Level0
   m_EditorClassIdentifier: 
-  width: 64
-  length: 64
+  width: 128
+  length: 128
   roomTemplates:
   - name: Small Room
     numberOfRooms: 6
@@ -74,7 +74,7 @@ MonoBehaviour:
   doorDistanceFromEdge: 1
   minHallwayLength: 5
   maxHallwayLength: 5
-  maxRoomCount: 6
+  maxRoomCount: 4
   initialMaxRoomCount: 4
   finalMaxRoomCount: 9
   minRoomDistance: 5

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dc5c4b20a3a9da4888df668f2fe32bd, type: 3}
+  m_Name: TutorialKeyRuleDefault
+  m_EditorClassIdentifier: 
+  roomTypes: 1
+  prefab: {fileID: 3701996775972964930, guid: d991c048b666e35418e911c875851920, type: 3}
+  prefabRotation: 0
+  placement:
+    array: 02000000020000000200000002000000
+    width: 2
+    height: 2
+  fill:
+    array: 02000000060000000200000002000000
+    width: 2
+    height: 2
+  centerHorizontally: 0
+  centerVertically: 0
+  levelHeightTexture: {fileID: 2800000, guid: 8ff5832bb55ad244fa2cfeacb4a17032, type: 3}

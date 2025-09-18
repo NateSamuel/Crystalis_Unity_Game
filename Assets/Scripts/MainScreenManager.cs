@@ -15,6 +15,9 @@ public class MainScreenManager : MonoBehaviour
     [SerializeField] LayoutGeneratorRooms layoutGeneratorRooms;
     public UnityEngine.UI.Button CollectKeyButton;
     public UnityEngine.UI.Button FreePrisonerButton;
+    public UnityEngine.UI.Button CollectTreasureButton;
+    public UnityEngine.UI.Button CompleteLevelButton;
+    public UnityEngine.UI.Button OpenDoorButton;
 
     void Start()
     {
@@ -25,6 +28,7 @@ public class MainScreenManager : MonoBehaviour
         PauseMenuPanel.SetActive(false);
         PurchaseAbilities.SetActive(false);
         LevelUpAbilities.SetActive(false);
+
     }
     public void BackToEntryScreen()
     {
@@ -51,6 +55,10 @@ public class MainScreenManager : MonoBehaviour
     {
         LevelObjectivesPanel.SetActive(false);
         MainUIPanel.SetActive(true);
+        FreePrisonerButton.gameObject.SetActive(false);
+        CollectKeyButton.gameObject.SetActive(false);
+        CollectTreasureButton.gameObject.SetActive(false);
+        CompleteLevelButton.gameObject.SetActive(false);
         Time.timeScale = 1f;
     }
     public void ShowObjectivesFromMainScreen()
@@ -154,10 +162,47 @@ public class MainScreenManager : MonoBehaviour
         FreePrisonerButton.onClick.RemoveAllListeners();
         FreePrisonerButton.onClick.AddListener(onClick);
     }
-
     public void HideFreePrisonerUI()
     {
         FreePrisonerButton.gameObject.SetActive(false);
         FreePrisonerButton.onClick.RemoveAllListeners();
+    }
+    public void ShowCollectTreasureUI(UnityEngine.Events.UnityAction onClick)
+    {
+        CollectTreasureButton.gameObject.SetActive(true);
+
+        CollectTreasureButton.onClick.RemoveAllListeners();
+        CollectTreasureButton.onClick.AddListener(onClick);
+    }
+
+    public void HideCollectTreasureUI()
+    {
+        CollectTreasureButton.gameObject.SetActive(false);
+        CollectTreasureButton.onClick.RemoveAllListeners();
+    }
+    public void ShowCompleteLevelUI(UnityEngine.Events.UnityAction onClick)
+    {
+        CompleteLevelButton.gameObject.SetActive(true);
+
+        CompleteLevelButton.onClick.RemoveAllListeners();
+        CompleteLevelButton.onClick.AddListener(onClick);
+    }
+
+    public void HideCompleteLevelUI()
+    {
+        CompleteLevelButton.gameObject.SetActive(false);
+        CompleteLevelButton.onClick.RemoveAllListeners();
+    }
+    public void ShowDoorOpenUI(UnityEngine.Events.UnityAction onClick)
+    {
+        OpenDoorButton.gameObject.SetActive(true);
+        
+        OpenDoorButton.onClick.RemoveAllListeners();
+        OpenDoorButton.onClick.AddListener(onClick);
+    }
+    public void HideDoorOpenUI()
+    {
+        OpenDoorButton.gameObject.SetActive(false);
+        OpenDoorButton.onClick.RemoveAllListeners();
     }
 }

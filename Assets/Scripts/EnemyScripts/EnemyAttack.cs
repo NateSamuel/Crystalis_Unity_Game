@@ -29,7 +29,7 @@ public class EnemyAttack : MonoBehaviour
 
     private BaseEnemyAI movement;
     private EnemyHealth enemyHealth;
-    public float aoeRadius = 5f;
+    public float aoeRadius = 3f;
     private Coroutine aoeCoroutine;
     private bool isAOEActive = false;
 

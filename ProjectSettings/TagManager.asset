@@ -12,6 +12,10 @@ TagManager:
   - Key
   - Prisoner
   - PrisonerPos
+  - TutorialDoor1
+  - TutorialDoor2
+  - TutorialDoor3
+  - TutorialDoor4
   layers:
   - Default
   - TransparentFX

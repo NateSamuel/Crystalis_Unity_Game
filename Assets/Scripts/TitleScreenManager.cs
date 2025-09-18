@@ -7,6 +7,10 @@ public class TitleScreenManager : MonoBehaviour
     {
         SceneManager.LoadScene("SampleScene");
     }
+    public void BeginTutorial()
+    {
+        SceneManager.LoadScene("TutorialScene");
+    }
     public void QuitGame()
     {
         Application.Quit();

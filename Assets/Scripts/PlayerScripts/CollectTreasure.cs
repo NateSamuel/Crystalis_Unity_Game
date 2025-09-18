@@ -7,12 +7,14 @@ public class CollectTreasure : MonoBehaviour
     public float collectionRange = 3f;
     private CharacterTreasure charTreasureScript;
     public int treasureAmount = 6;
+    private MainScreenManager mainUI;
 
-    
+    private bool treasureCollected = false;
+
     void Start()
     {
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-        
+
         if (playerObject != null)
         {
             playerTransform = playerObject.transform;
@@ -20,18 +22,45 @@ public class CollectTreasure : MonoBehaviour
         }
 
         spawnPosition = transform.position;
+
+        mainUI = FindAnyObjectByType<MainScreenManager>();
+
+        if (mainUI != null)
+        {
+            mainUI.HideCollectTreasureUI();
+        }
+
+        treasureCollected = false;
     }
 
-    
     void Update()
     {
-        if (Vector3.Distance(spawnPosition, playerTransform.position) < collectionRange)
+        if (treasureCollected) return;
+        if (playerTransform == null) return;
+
+        if (mainUI != null && mainUI.MainUIPanel != null && mainUI.MainUIPanel.activeSelf == false)
         {
-            PlayerCanCollect();
+            return;
+        }
+
+        float dist = Vector3.Distance(spawnPosition, playerTransform.position);
+        if (dist < collectionRange)
+        {
+            mainUI?.ShowCollectTreasureUI(PlayerCollectsTreasure);
+        }
+        else
+        {
+            mainUI?.HideCollectTreasureUI();
         }
     }
-    void PlayerCanCollect()
+
+    private void PlayerCollectsTreasure()
     {
+        if (treasureCollected) return;
+        treasureCollected = true;
+
+        mainUI?.HideCollectTreasureUI();
+
         charTreasureScript?.ApplyTreasure(treasureAmount);
         Destroy(gameObject);
     }

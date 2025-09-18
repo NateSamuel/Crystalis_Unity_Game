@@ -27,14 +27,22 @@ public class ExitLevel : MonoBehaviour
         tracker = FindAnyObjectByType<EnemyTrackerForObjectives>();
         uiManager = FindAnyObjectByType<MainScreenManager>();
         spawnPosition = transform.position;
+        if (uiManager != null)
+        {
+            uiManager.HideCollectTreasureUI();
+        }
     }
 
     void Update()
     {
         int enemiesLeft = tracker.activeEnemies + tracker.activeBosses;
-        if (playerTransform != null && Vector3.Distance(spawnPosition, playerTransform.position) < collectionRange  && enemiesLeft == 0)
+        if (playerTransform != null && Vector3.Distance(spawnPosition, playerTransform.position) < collectionRange && enemiesLeft == 0)
         {
-            PlayerCanExit();
+            uiManager?.ShowCompleteLevelUI(PlayerCanExit);
+        }
+        else
+        {
+            uiManager?.HideCompleteLevelUI();
         }
     }
 
@@ -52,6 +60,7 @@ public class ExitLevel : MonoBehaviour
             camera.ResetCameraToStart();
         }
         charTreasureScript?.ApplyTreasure(10);
+        uiManager?.HideCompleteLevelUI();
         uiManager.NewLevelScreenAfterPrevLevel();
     }
     public void PlayerCanRetry()

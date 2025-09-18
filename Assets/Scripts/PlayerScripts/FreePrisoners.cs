@@ -34,7 +34,7 @@ public class FreePrisoners : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!prisonerFreed && other.CompareTag("Player") && charKeyScript != null && charKeyScript.keys > 0)
+        if (!prisonerFreed && other.CompareTag("Player") && charKeyScript != null && charKeyScript.keys > 0 && totalPrisoners?.prisonersCount > 0)
         {
             mainUI?.ShowFreePrisonerUI(PlayerFreesPrisoner);
         }
