@@ -1289,8 +1289,9 @@ MonoBehaviour:
   healthText: {fileID: 1930616521002868173}
   tracker: {fileID: 0}
   healthSlider: {fileID: 3968480710238094896}
+  enemyTypeName: 
   enemyStats:
-    enemyType: 
+    enemyType: Boss1
     health:
       statName: 
       baseValue: 0

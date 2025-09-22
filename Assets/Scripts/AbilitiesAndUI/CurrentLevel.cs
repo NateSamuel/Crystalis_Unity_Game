@@ -23,10 +23,8 @@ public class CurrentLevel : MonoBehaviour
 
     }
 
-    public void RevertToLevelOne()
+    public void RevertToPreviousLevel()
     {
-        currentLevelNumber = 1;
-        UpdateLevelText();
         difficultyManager?.UpdateLevelDifficultyInfo(currentLevelNumber);
     }
 

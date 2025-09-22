@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomTypes: 8
   childRules:
-  - {fileID: 11400000, guid: eced01f363950f44c9834c76865deecf, type: 2}
-  - {fileID: 11400000, guid: 9e9adff437d134e42a3730aeb2b75294, type: 2}
+  - {fileID: 11400000, guid: f804196b60f3e2148a58433d9e003016, type: 2}
   - {fileID: 11400000, guid: 470ee6f99ed922b439a7dec167dfa980, type: 2}
+  - {fileID: 11400000, guid: eced01f363950f44c9834c76865deecf, type: 2}

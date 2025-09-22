@@ -14,7 +14,6 @@ public class LevelBuilder : MonoBehaviour
     [SerializeField] RoomDecorator roomDecorator;
     [SerializeField] private Texture2D levelHeightTexture;
     [SerializeField] private int levelEnemyCount = 5;
-
     private TotalPrisoners totalPrisoners;
 
     // Master lists — persist across levels
@@ -30,7 +29,6 @@ public class LevelBuilder : MonoBehaviour
     public static List<GameObject> InactivePrisoners { get; private set; } = new List<GameObject>();
 
     public EnemyTrackerForObjectives tracker;
-
     private void Awake()
     {
         // Populate master lists once — includes inactive units

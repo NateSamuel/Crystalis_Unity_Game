@@ -16,7 +16,6 @@ public class CurrentLevelTests
         gameObj = new GameObject();
         levelScript = gameObj.AddComponent<CurrentLevel>();
 
-        // create simple TMP objects
         var textGameObj1 = new GameObject();
         text1 = textGameObj1.AddComponent<TextMeshProUGUI>();
 
@@ -35,7 +34,7 @@ public class CurrentLevelTests
         Object.DestroyImmediate(text2.gameObject);
     }
 
-    // Verifies that IncrementLevel increases the currentLevelNumber by 1.
+    // Checks that IncrementLevel increases the currentLevelNumber by 1
     [Test]
     public void IncrementLevelIncreasesNumber()
     {
@@ -44,16 +43,16 @@ public class CurrentLevelTests
         Assert.AreEqual(initial + 1, levelScript.currentLevelNumber);
     }
 
-    // Verifies that RevertToLevelOne sets currentLevelNumber to 1.
+    // Checks that it goes backward 1 level
     [Test]
-    public void RevertToLevelOneSetsNumberToOne()
+    public void RevertToPreviousLevelCheck()
     {
         levelScript.currentLevelNumber = 5;
-        levelScript.RevertToLevelOne();
-        Assert.AreEqual(1, levelScript.currentLevelNumber);
+        levelScript.RevertToPreviousLevel();
+        Assert.AreEqual(5, levelScript.currentLevelNumber);
     }
 
-    // Checks that UpdateLevelText updates all linked TextMeshProUGUI fields correctly.
+    // Checks that UpdateLevelText updates all linked TextMeshProUGUI fields correctly
     [Test]
     public void UpdateLevelTextUpdatesAllTextFields()
     {
@@ -64,7 +63,7 @@ public class CurrentLevelTests
         Assert.AreEqual("Level 3", text2.text);
     }
 
-    // Ensures that IncrementLevel not only updates the number but also refreshes the text UI.
+    // Checks that IncrementLevel also refreshes the text UI
     [Test]
     public void IncrLevelAlsoUpdatesText()
     {
@@ -75,14 +74,14 @@ public class CurrentLevelTests
         Assert.AreEqual("Level 3", text2.text);
     }
 
-    // Ensures that RevertToLevelOne not only sets the number to 1 but also updates all text UI fields.
+    // Checks that RevertToPreviousLevel updates all text UI fields
     [Test]
-    public void RevertToLevelOneAlsoUpdatesText()
+    public void RevertToPreviousLevelAlsoUpdatesText()
     {
         levelScript.currentLevelNumber = 5;
-        levelScript.RevertToLevelOne();
+        levelScript.RevertToPreviousLevel();
 
-        Assert.AreEqual("Level 1", text1.text);
-        Assert.AreEqual("Level 1", text2.text);
+        Assert.AreEqual("Level 5", text1.text);
+        Assert.AreEqual("Level 5", text2.text);
     }
 }

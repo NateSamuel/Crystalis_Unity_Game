@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0dc5c4b20a3a9da4888df668f2fe32bd, type: 3}
-  m_Name: PrisonerRule
+  m_Name: PrisonerRuleBoss
   m_EditorClassIdentifier: 
-  roomTypes: 25
+  roomTypes: 8
   prefab: {fileID: 3701996775972964930, guid: 28f5f290072e8c14d822af7dd9a08b10, type: 3}
   prefabRotation: 0
   placement:
@@ -20,7 +20,7 @@ MonoBehaviour:
     width: 3
     height: 3
   fill:
-    array: 060000000600000006000000060000000600000006000000060000000600000006000000
+    array: 020000000200000002000000020000000600000002000000020000000200000002000000
     width: 3
     height: 3
   centerHorizontally: 0

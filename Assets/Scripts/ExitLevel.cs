@@ -14,6 +14,7 @@ public class ExitLevel : MonoBehaviour
     public MainScreenManager uiManager;
     private CharacterLevelUps charLevelUps;
     private CharacterPurchases charPurchases;
+    private EnemyDifficultyIncrease difficultyManager;
 
     void Start()
     {
@@ -35,6 +36,7 @@ public class ExitLevel : MonoBehaviour
         }
         charLevelUps = FindAnyObjectByType<CharacterLevelUps>();
         charPurchases = FindAnyObjectByType<CharacterPurchases>();
+        difficultyManager = FindAnyObjectByType<EnemyDifficultyIncrease>();
     }
     //if near level exit point, button appears if you have completed objectives
     void Update()
@@ -83,7 +85,7 @@ public class ExitLevel : MonoBehaviour
         if (levelBuilder != null && currentLevel != null)
         {
             levelBuilder.DeactivateAllUnits();
-            currentLevel.RevertToLevelOne();
+            currentLevel.RevertToPreviousLevel();
             levelBuilder.GenerateRandom();
             characterHealth?.CharacterComesAliveAgain();
             charTreasureScript?.ResetTreasure(15);
