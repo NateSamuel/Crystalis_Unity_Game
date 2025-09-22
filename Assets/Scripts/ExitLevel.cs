@@ -1,5 +1,6 @@
+//Full class is student creation
 using UnityEngine;
-
+//Stores methods about exiting the level
 public class ExitLevel : MonoBehaviour
 {
     public Transform playerTransform;
@@ -11,7 +12,8 @@ public class ExitLevel : MonoBehaviour
     private CurrentLevel currentLevel;
     private EnemyTrackerForObjectives tracker;
     public MainScreenManager uiManager;
-
+    private CharacterLevelUps charLevelUps;
+    private CharacterPurchases charPurchases;
 
     void Start()
     {
@@ -31,8 +33,10 @@ public class ExitLevel : MonoBehaviour
         {
             uiManager.HideCollectTreasureUI();
         }
+        charLevelUps = FindAnyObjectByType<CharacterLevelUps>();
+        charPurchases = FindAnyObjectByType<CharacterPurchases>();
     }
-
+    //if near level exit point, button appears if you have completed objectives
     void Update()
     {
         int enemiesLeft = tracker.activeEnemies + tracker.activeBosses;
@@ -45,45 +49,48 @@ public class ExitLevel : MonoBehaviour
             uiManager?.HideCompleteLevelUI();
         }
     }
-
+    //Updates available purchases and level ups for new level
     public void PlayerCanExit()
     {
+
+        charLevelUps.levelUpsPurchasablePerLevel += 3;
+        charLevelUps.UpdateAvailableLevelUps();
+        if (charPurchases.GetTotalPurchases() - 4 + charPurchases.abilitiesPurchasablePerLevel < 6)
+        {
+            int minForPurchasableAmounts = Mathf.Min(2, 5 - (charPurchases.GetTotalPurchases() - 4 + charPurchases.abilitiesPurchasablePerLevel));
+            charPurchases.abilitiesPurchasablePerLevel += minForPurchasableAmounts;
+            charPurchases.UpdateAvailablePurchasesTexts();
+        }
+
         if (levelBuilder != null && currentLevel != null)
         {
-            levelBuilder.GenerateRandom();
+            levelBuilder.DeactivateAllUnits();
             currentLevel.IncrementLevel();
+            levelBuilder.GenerateRandom();
         }
 
         FollowCamera camera = FindAnyObjectByType<FollowCamera>();
-        if (camera != null)
-        {
-            camera.ResetCameraToStart();
-        }
+        camera?.ResetCameraToStart();
         charTreasureScript?.ApplyTreasure(10);
         uiManager?.HideCompleteLevelUI();
         uiManager.NewLevelScreenAfterPrevLevel();
+
     }
+
+    //if player has died, exits level in a different way that preserves the abilities and level ups they purchased
     public void PlayerCanRetry()
     {
         if (levelBuilder != null && currentLevel != null)
         {
-            currentLevel?.RevertToLevelOne();
-            levelBuilder?.GenerateRandom();
+            levelBuilder.DeactivateAllUnits();
+            currentLevel.RevertToLevelOne();
+            levelBuilder.GenerateRandom();
             characterHealth?.CharacterComesAliveAgain();
             charTreasureScript?.ResetTreasure(15);
-            EnemyHealth[] allEnemies = FindObjectsOfType<EnemyHealth>();
-
-            foreach (EnemyHealth enemy in allEnemies)
-            {
-                enemy.ResetHealth();
-            }
-            
         }
 
         FollowCamera camera = FindAnyObjectByType<FollowCamera>();
-        if (camera != null)
-        {
-            camera.ResetCameraToStart();
-        }
+        camera?.ResetCameraToStart();
+
     }
 }

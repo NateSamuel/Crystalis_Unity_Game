@@ -21,31 +21,32 @@ public class AndDecoratorRule : BaseDecoratorRule
         }
         return true;
     }
-    //Goes through all child rules and if it’s valid, applies it, while skipping or logging warnings/errors for invalid, null, or failing rules
+    //Goes through all child rules and if it’s valid, applies it
     //student creation
     internal override void Apply(TileType[,] levelDecorated, Room room, Transform parent)
     {
+        // If any child rule cannot be applied, return
         foreach (var rule in childRules)
         {
             if (rule == null)
             {
-                Debug.LogWarning("[AndDecoratorRule] Encountered null child rule — skipping.");
-                continue;
+                return;
             }
-
             if (!rule.CanBeApplied(levelDecorated, room))
             {
-                Debug.LogWarning($"[AndDecoratorRule] Rule {rule.name} cannot be applied in room: — skipping.");
-                continue;
+                return;
             }
-
+        }
+        // All child rules are valid — apply them
+        foreach (var rule in childRules)
+        {
             try
             {
                 rule.Apply(levelDecorated, room, parent);
             }
             catch (Exception e)
             {
-                Debug.LogError($"[AndDecoratorRule] Error applying rule {rule.name} in room: {e.Message}");
+                Debug.LogError($"[AndDecoratorRule] Error applying rule {rule.name}: {e.Message}");
             }
         }
     }

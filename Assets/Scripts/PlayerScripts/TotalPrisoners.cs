@@ -1,7 +1,8 @@
+//Full class is student creation
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
-
+//Keeps info about the prisoner, adds, updates, resets and removes the prisoner 
 public class TotalPrisoners : MonoBehaviour
 {
     public int prisonersCount = 0;

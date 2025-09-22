@@ -1,5 +1,6 @@
+//Full class is student creation
 using UnityEngine;
-
+//Frees prisoners based on if they are in the collider trigger and if they have a key available
 public class FreePrisoners : MonoBehaviour
 {
     private Transform playerTransform;

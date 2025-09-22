@@ -1,11 +1,13 @@
+//Full class is student creation
+//Minimal updates from base class
 using UnityEngine;
 using System.Collections;
 
+//Stores attack ability functioning for the enemy
 public class TutorialEnemyAttack : MonoBehaviour
 {
     public Transform playerTransform;
     public float rotationSpeed = 0.5f;
-    private bool isAttacking = false;
     private bool isAbleToHit = false;
     private bool isAbleToDamage = true;
     public float toggleInterval = 1f;
@@ -14,7 +16,6 @@ public class TutorialEnemyAttack : MonoBehaviour
     public float facingAngleThreshold = 5f;
     public float hitPlayerCooldown = 2f;
     private Animator animator;
-    private bool hasPunched = false;
     private CharacterHealth characterHealth;
     private TutorialCharacterAttack characterAttack;
     private bool isDead = false;
@@ -56,16 +57,7 @@ public class TutorialEnemyAttack : MonoBehaviour
         }
     }
 
-    public void AttackPlayer()
-    {
-        isAttacking = true;
-    }
-
-    public void DontAttackPlayer()
-    {
-        isAttacking = false;
-    }
-
+    //bools to update when enemy is able to hit and damage player
     public void IsAbleToHitPlayer()
     {
         isAbleToHit = true;
@@ -86,6 +78,7 @@ public class TutorialEnemyAttack : MonoBehaviour
         isAbleToDamage = false;
     }
 
+    //this is for the generic punch ability, finds the damage amount based on the level
     public void HitPlayer()
     {
         if (isAbleToHit && characterHealth.characterHealthCurrent > 0 && enemyHealth.enemyHealthCurrent > 0)
@@ -100,16 +93,17 @@ public class TutorialEnemyAttack : MonoBehaviour
         }
     }
 
+    //Updates for if enemy is dead
     public void SetDead(bool value)
     {
         isDead = value;
         isAbleToHit = false;
-        isAttacking = false;
     }
-
+    
+    //This is the enemy version of ranged blast which sets it up with the position and gameobject and finds the damage amount
     public void ShootSpellAtPlayer()
     {
-        if(characterHealth.characterHealthCurrent > 0 && enemyHealth.enemyHealthCurrent > 0)
+        if (characterHealth.characterHealthCurrent > 0 && enemyHealth.enemyHealthCurrent > 0)
         {
             StartCoroutine(ShootSpellCoroutine(1f));
         }
@@ -146,10 +140,11 @@ public class TutorialEnemyAttack : MonoBehaviour
             movement.enabled = true;
         }
     }
-
+    
+    //A triple version of this spell that shoots three bolts at the player
     public void ShootTripleSpellAtPlayer()
     {
-        if(characterHealth.characterHealthCurrent > 0 && enemyHealth.enemyHealthCurrent > 0)
+        if (characterHealth.characterHealthCurrent > 0 && enemyHealth.enemyHealthCurrent > 0)
         {
             StartCoroutine(ShootTripleSpellCoroutine(1f));
         }
@@ -183,6 +178,7 @@ public class TutorialEnemyAttack : MonoBehaviour
         }
     }
 
+    //This calls the spell
     private void FireSpell(Vector3 direction)
     {
         GameObject spell = Instantiate(spellPrefab, spellSpawnPoint.position, Quaternion.LookRotation(direction));
@@ -194,12 +190,14 @@ public class TutorialEnemyAttack : MonoBehaviour
         }
     }
 
+    //Rotates the angle for the triple spell so they are in three directions
     private Vector3 RotateDirection(Vector3 direction, float angleDegrees)
     {
         Quaternion rotation = Quaternion.Euler(0, angleDegrees, 0);
         return rotation * direction;
     }
 
+    //A forcefield ability that stops player attacks from doing damage for a period of time base don the level
     public void ForceFieldAbility()
     {
         float duration = enemyHealth.enemyStats.damageStats.Find(a => a.statName == "ForceFieldLength")?.scaledValue ?? 2f;
@@ -213,6 +211,7 @@ public class TutorialEnemyAttack : MonoBehaviour
 
         StartCoroutine(ForceFieldCoroutine(duration));
     }
+
     private IEnumerator ForceFieldCoroutine(float duration)
     {
 
@@ -226,9 +225,10 @@ public class TutorialEnemyAttack : MonoBehaviour
         characterAttack.IsAbleToDamageEnemy();
     }
 
+    //An area of effect attack that is cast around the enemy for a specific period of time. Damage is scaled to level and is every second for 6 seconds
     public void EnemyAOEAttack()
     {
-        if (!isAOEActive && aoeSpellEffectPrefab != null && spellSpawnPoint != null 
+        if (!isAOEActive && aoeSpellEffectPrefab != null && spellSpawnPoint != null
             && characterHealth.characterHealthCurrent > 0 && enemyHealth.enemyHealthCurrent > 0)
         {
             animator.SetTrigger("TeleportSpell");

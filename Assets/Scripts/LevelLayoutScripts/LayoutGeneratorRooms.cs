@@ -183,9 +183,10 @@ public class LayoutGeneratorRooms : MonoBehaviour
     }
 
     // Draws the current level layout to a texture, including rooms, hallways, and colours/tints it based on what level height it will be/what hallway type it will be
-    void DrawLayout(Hallway selectedEntryway = null, RectInt roomCandidateRect = new RectInt(), bool isDebug = false){
+    void DrawLayout(Hallway selectedEntryway = null, RectInt roomCandidateRect = new RectInt(), bool isDebug = false)
+    {
         var renderer = levelLayoutDisplay.GetComponent<Renderer>();
-        var layoutTexture = (Texture2D) renderer.sharedMaterial.mainTexture;
+        var layoutTexture = (Texture2D)renderer.sharedMaterial.mainTexture;
 
         layoutTexture.Reinitialize(level.Width, level.Length);
         int scale = SharedLevelData.Instance.Scale;
@@ -196,11 +197,15 @@ public class LayoutGeneratorRooms : MonoBehaviour
         layoutTexture.FillWithColor(Color.black);
 
         //student creation
-        foreach (Room room in level.Rooms) {
-            if (room.LayoutTexture != null) {
+        foreach (Room room in level.Rooms)
+        {
+            if (room.LayoutTexture != null)
+            {
                 Texture2D tinted = TintTexture(room.LayoutTexture, LayoutColorMap.RoomLevel(room.VerticalLevel));
                 layoutTexture.DrawTexture(tinted, room.Area);
-            } else {
+            }
+            else
+            {
                 layoutTexture.DrawRectangle(room.Area, LayoutColorMap.RoomLevel(room.VerticalLevel));
             }
             Debug.Log(room.Area + " " + room.Connectedness + " " + room.Type);
@@ -215,17 +220,19 @@ public class LayoutGeneratorRooms : MonoBehaviour
             layoutTexture.SetPixel(hallway.EndPositionAbsolute.x, hallway.EndPositionAbsolute.y, new Color(0.87f, 0.63f, 0.87f));
         }
 
-        if (isDebug) {
+        if (isDebug)
+        {
             layoutTexture.DrawRectangle(roomCandidateRect, Color.blue);
             openDoorways.ForEach(hallway => layoutTexture.SetPixel(hallway.StartPositionAbsolute.x, hallway.StartPositionAbsolute.y, hallway.StartDirection.GetColor()));
         }
-        
-        if(isDebug && selectedEntryway != null)
+
+        if (isDebug && selectedEntryway != null)
         {
             layoutTexture.SetPixel(selectedEntryway.StartPositionAbsolute.x, selectedEntryway.StartPositionAbsolute.y, Color.red);
         }
+        //layoutTexture.SaveAsset();
+        layoutTexture.SaveToDiskRuntime("LayoutMap");
 
-        layoutTexture.SaveAsset();
     }
 
     // Selects a valid hallway position from the candidate room that suits the direction of entryway

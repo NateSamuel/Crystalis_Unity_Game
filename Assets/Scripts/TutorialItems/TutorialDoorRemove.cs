@@ -1,6 +1,8 @@
 using UnityEngine;
 using System;
-
+//Full class is student creation
+//Class removes doors based on if all objectives in that specific room have been completed.
+//If player runs up to door the button appears/ is enabled via collison detection
 public class TutorialDoorRemove : MonoBehaviour
 {
     private Transform playerTransform;

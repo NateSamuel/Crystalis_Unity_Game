@@ -1,3 +1,5 @@
+//Full class is student creation
+//Stores ability and if it has been purchased
 using UnityEngine;
 using System.Collections.Generic;
 

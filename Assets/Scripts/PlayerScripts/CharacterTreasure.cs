@@ -1,7 +1,9 @@
+//Full class is student creation
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 
+//Adds, removes, updates, resets character treasure amount
 public class CharacterTreasure : MonoBehaviour
 {
     public int crystals = 200;
@@ -29,7 +31,7 @@ public class CharacterTreasure : MonoBehaviour
     }
     public void ResetTreasure(int treasureAmount)
     {
-        if(treasureAmount > crystals)
+        if (treasureAmount > crystals)
         {
             crystals = treasureAmount;
         }

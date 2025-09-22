@@ -1,6 +1,7 @@
+//Full class is student creation
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+//Stores methods about exiting the level
 public class TutorialExitLevel : MonoBehaviour
 {
     public Transform playerTransform;
@@ -33,7 +34,7 @@ public class TutorialExitLevel : MonoBehaviour
             uiManager.HideCollectTreasureUI();
         }
     }
-
+    //Enacts exit level button
     void Update()
     {
         int enemiesLeft = tracker.activeEnemies + tracker.activeBosses;
@@ -46,11 +47,12 @@ public class TutorialExitLevel : MonoBehaviour
             uiManager?.HideCompleteLevelUI();
         }
     }
-
+    //if player exits level, goes back to title screen
     public void PlayerCanExit()
     {
         SceneManager.LoadScene("EntryScreen");
     }
+    //if player has died, reloads scene
     public void PlayerCanRetry()
     {
         SceneManager.LoadScene("TutorialScene");

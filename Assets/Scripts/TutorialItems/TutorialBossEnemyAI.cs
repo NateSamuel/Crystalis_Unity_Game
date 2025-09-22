@@ -1,3 +1,5 @@
+//Full class is student creation
+//Minimal updates from base class
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
@@ -31,7 +33,7 @@ public class TutorialBossEnemyAI : TutorialBaseEnemyAI
 
         teleportation.OnTeleportFinished += OnTeleportComplete;
     }
-
+    //Uses random weightings for the boss for when the ability works
     protected override void UseAbility()
     {
         float roll = Random.Range(0f, 1f);

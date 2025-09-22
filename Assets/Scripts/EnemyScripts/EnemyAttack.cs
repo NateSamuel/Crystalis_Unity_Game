@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.Collections;
-
+//Full class is student creation
+//Stores attack ability functioning for the enemy
 public class EnemyAttack : MonoBehaviour
 {
     public Transform playerTransform;
     public float rotationSpeed = 0.5f;
-    private bool isAttacking = false;
     private bool isAbleToHit = false;
     private bool isAbleToDamage = true;
     public float toggleInterval = 1f;
@@ -14,7 +14,6 @@ public class EnemyAttack : MonoBehaviour
     public float facingAngleThreshold = 5f;
     public float hitPlayerCooldown = 2f;
     private Animator animator;
-    private bool hasPunched = false;
     private CharacterHealth characterHealth;
     private CharacterAttack characterAttack;
     private bool isDead = false;
@@ -49,23 +48,17 @@ public class EnemyAttack : MonoBehaviour
     void Update()
     {
         if (isDead) return;
-        if(isAbleToHit)
+        if (isAbleToHit)
         {
             HitPlayer();
             isAbleToHit = false;
         }
+        if (characterHealth.characterHealthCurrent < 0)
+        {
+            enemyHealth.ResetHealth();
+        }
     }
-
-    public void AttackPlayer()
-    {
-        isAttacking = true;
-    }
-
-    public void DontAttackPlayer()
-    {
-        isAttacking = false;
-    }
-
+    //bools to update when enemy is able to hit and damage player
     public void IsAbleToHitPlayer()
     {
         isAbleToHit = true;
@@ -86,6 +79,7 @@ public class EnemyAttack : MonoBehaviour
         isAbleToDamage = false;
     }
 
+    //this is for the generic punch ability, finds the damage amount based on the level
     public void HitPlayer()
     {
         if (isAbleToHit && characterHealth.characterHealthCurrent > 0 && enemyHealth.enemyHealthCurrent > 0)
@@ -100,16 +94,17 @@ public class EnemyAttack : MonoBehaviour
         }
     }
 
+    //Updates for if enemy is dead
     public void SetDead(bool value)
     {
         isDead = value;
         isAbleToHit = false;
-        isAttacking = false;
     }
-
+    
+    //This is the enemy version of ranged blast which sets it up with the position and gameobject and finds the damage amount
     public void ShootSpellAtPlayer()
     {
-        if(characterHealth.characterHealthCurrent > 0 && enemyHealth.enemyHealthCurrent > 0)
+        if (characterHealth.characterHealthCurrent > 0 && enemyHealth.enemyHealthCurrent > 0)
         {
             StartCoroutine(ShootSpellCoroutine(1f));
         }
@@ -146,7 +141,7 @@ public class EnemyAttack : MonoBehaviour
             movement.enabled = true;
         }
     }
-
+    //A triple version of this spell that shoots three bolts at the player
     public void ShootTripleSpellAtPlayer()
     {
         if(characterHealth.characterHealthCurrent > 0 && enemyHealth.enemyHealthCurrent > 0)
@@ -183,6 +178,7 @@ public class EnemyAttack : MonoBehaviour
         }
     }
 
+    //This calls the spell
     private void FireSpell(Vector3 direction)
     {
         GameObject spell = Instantiate(spellPrefab, spellSpawnPoint.position, Quaternion.LookRotation(direction));
@@ -193,13 +189,14 @@ public class EnemyAttack : MonoBehaviour
             rangedBlast.Launch(direction, RangedBlast.CasterType.Enemy, Mathf.RoundToInt(spellDamage), isAbleToDamage);
         }
     }
-
+    //Rotates the angle for the triple spell so they are in three directions
     private Vector3 RotateDirection(Vector3 direction, float angleDegrees)
     {
         Quaternion rotation = Quaternion.Euler(0, angleDegrees, 0);
         return rotation * direction;
     }
 
+    //A forcefield ability that stops player attacks from doing damage for a period of time base don the level
     public void ForceFieldAbility()
     {
         float duration = enemyHealth.enemyStats.damageStats.Find(a => a.statName == "ForceFieldLength")?.scaledValue ?? 2f;
@@ -213,6 +210,7 @@ public class EnemyAttack : MonoBehaviour
 
         StartCoroutine(ForceFieldCoroutine(duration));
     }
+
     private IEnumerator ForceFieldCoroutine(float duration)
     {
 
@@ -225,7 +223,7 @@ public class EnemyAttack : MonoBehaviour
 
         characterAttack.IsAbleToDamageEnemy();
     }
-
+    //An area of effect attack that is cast around the enemy for a specific period of time. Damage is scaled to level and is every second for 6 seconds
     public void EnemyAOEAttack()
     {
         if (!isAOEActive && aoeSpellEffectPrefab != null && spellSpawnPoint != null 
@@ -253,7 +251,7 @@ public class EnemyAttack : MonoBehaviour
 
         for (int i = 0; i < ticks; i++)
         {
-            // Exit early if dead or deactivated
+            // Exits early if dead or deactivated
             if (enemyHealth.enemyHealthCurrent <= 0 || !gameObject.activeInHierarchy)
                 break;
 

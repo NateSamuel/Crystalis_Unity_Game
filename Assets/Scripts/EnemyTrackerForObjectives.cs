@@ -1,8 +1,9 @@
+//Full class is student creation
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-
+//Tracks enemies and outputs as text for level objectives panel with prisoner info
 public class EnemyTrackerForObjectives : MonoBehaviour
 {
     public TextMeshProUGUI enemyStatusText;
@@ -59,7 +60,7 @@ public class EnemyTrackerForObjectives : MonoBehaviour
         activeBosses = bosses.FindAll(b => b != null && b.activeSelf).Count;
         int inactiveBosses = bosses.Count - activeBosses;
 
-        enemyStatusText.text = $"Roughians left to kill: {activeEnemies}\n" +
+        enemyStatusText.text = $"Ruffians left to kill: {activeEnemies}\n" +
                                $"Captains left to kill: {activeBosses}\n" +
                                $"Prisoners left to free: {totalPrisoners.prisonersCount}";
     }

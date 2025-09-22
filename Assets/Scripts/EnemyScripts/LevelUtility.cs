@@ -1,8 +1,11 @@
+//Full class is student creation
 using UnityEngine;
 using System.Collections.Generic;
 
+//level utility for enemy placement due to dealing with differing heights for spells/ movement / pathfinding etc.
 public static class LevelUtility
 {
+    //converts position of texture to the world position
     public static Vector3 LevelPositionToWorldPosition(Vector2 pixelPos, Texture2D heightTexture, int scale)
     {
         int texX = Mathf.Clamp((int)pixelPos.x, 0, heightTexture.width - 1);
@@ -21,14 +24,14 @@ public static class LevelUtility
 
         return new Vector3(worldX, yHeight, worldZ);
     }
-
+    //converts world positon back to texture pixel position
     public static Vector2 WorldPositionToTexturePixel(Vector3 worldPos, int scale)
     {
         float x = worldPos.x / scale + 1;
         float y = worldPos.z / scale + 1;
         return new Vector2(x, y);
     }
-
+    //If input colors are roughly equal, returns true
     public static bool ColorsApproximatelyEqual(Color a, Color b, float tolerance = 0.05f)
     {
         return Mathf.Abs(a.r - b.r) < tolerance &&
@@ -36,6 +39,7 @@ public static class LevelUtility
                Mathf.Abs(a.b - b.b) < tolerance;
     }
 
+    //if one color is within one of the valid colors
     public static bool IsValidRoomColor(Color color, Color[] validColors)
     {
         foreach (var valid in validColors)
@@ -46,6 +50,7 @@ public static class LevelUtility
         return false;
     }
 
+    //
     public static Vector2 PickRandomValidPixelOnTexture(Texture2D texture, Color[] validColors, int maxAttempts = 1000)
     {
         for (int i = 0; i < maxAttempts; i++)
@@ -62,34 +67,26 @@ public static class LevelUtility
         return Vector2.zero;
     }
 
+    // Assigns the patrol points for the enemy on the level texture and then converts them to the world position
     public static Vector3[] AssignPatrolPointsFromLevelTexture(Texture2D texture, Color[] validColors, int scale, int count)
     {
         List<Vector3> points = new List<Vector3>();
         int attempts = 0;
-        while(points.Count < count && attempts < count * 10)
+        while (points.Count < count && attempts < count * 10)
         {
             attempts++;
             Vector2 pixel = PickRandomValidPixelOnTexture(texture, validColors);
-            if(pixel == Vector2.zero) 
+            if (pixel == Vector2.zero)
             {
-                Debug.LogWarning("PickRandomValidPixelOnTexture returned zero vector.");
                 break;
             }
             Vector3 worldPoint = LevelPositionToWorldPosition(pixel, texture, scale);
-            Debug.Log($"Attempt {attempts}: pixel {pixel}, worldPoint {worldPoint}");
 
             if (UnityEngine.AI.NavMesh.SamplePosition(worldPoint, out UnityEngine.AI.NavMeshHit hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
             {
-                Debug.Log($"NavMesh hit at {hit.position}");
                 points.Add(hit.position);
             }
-            else
-            {
-                Debug.Log("NavMesh.SamplePosition failed.");
-            }
         }
-        if(points.Count < count)
-            Debug.LogWarning($"Could not find enough valid patrol points on NavMesh. Found: {points.Count}");
         return points.ToArray();
     }
 }

@@ -1,9 +1,11 @@
+//Full class is student creation
+//Minimal updates from base class
 using System;
 using UnityEngine;
 using System.Collections;
 
-/// This deals with the attack abilities for the player character, including melee, ranged,
-/// AoE, power-ups, and special effects like freeze or force field.
+// This deals with the attack abilities for the player character, including melee, ranged,
+// AoE, power-ups, and special effects like freeze or force field.
 public class TutorialCharacterAttack : MonoBehaviour
 {
     public static event Action OnPunchHit;
@@ -42,7 +44,7 @@ public class TutorialCharacterAttack : MonoBehaviour
         currentDamageModifier = normalDamageModifier;
 
     }
-
+    //Checks if ranged blast is targeting or not
     void Update()
     {
         if (isTargeting && Input.GetMouseButtonDown(0))
@@ -62,7 +64,7 @@ public class TutorialCharacterAttack : MonoBehaviour
             isTargeting = false;
         }
     }
-
+    //Bools for if enemy is able to be damaged or not
     public void IsAbleToDamageEnemy()
     {
         isAbleToDamage = true;
@@ -72,6 +74,8 @@ public class TutorialCharacterAttack : MonoBehaviour
     {
         isAbleToDamage = false;
     }
+
+    //fires projectile on second click in the direction of the click
     private void FireProjectile(Vector3 direction)
     {
         Vector3 spawnPosition = transform.position + Vector3.up;
@@ -87,12 +91,15 @@ public class TutorialCharacterAttack : MonoBehaviour
             }
         }
     }
+
+    // Starts the targeting phase of ranged blast on initial button click
     public void RangedBlastAttack(float spellDamage)
     {
         rangedBlastDamage = spellDamage;
         isTargeting = true;
     }
 
+    //Standard punch attack on the closest enemy
     public void Attack(float hitAmount)
     {
 
@@ -116,6 +123,7 @@ public class TutorialCharacterAttack : MonoBehaviour
 
         }
     }
+    //Hits a burst attack on all enemies surrounding the player
     public void AOEAttack(float spellDamage)
     {
         animator.SetTrigger("aoeAttackTrigger");
@@ -144,6 +152,7 @@ public class TutorialCharacterAttack : MonoBehaviour
         }
     }
 
+    //Starts power up coroutine
     public void PowerUpAbility(float strengthIncrease)
     {
         if (activePowerup != null)
@@ -154,6 +163,7 @@ public class TutorialCharacterAttack : MonoBehaviour
 
     }
 
+    //Add increase modifier to all damage abilities so they hit for more
     private IEnumerator PowerUpRoutine(float strengthIncrease)
     {
         if (powerUpEffectPrefab != null && castPoint != null)
@@ -168,6 +178,7 @@ public class TutorialCharacterAttack : MonoBehaviour
         currentDamageModifier = normalDamageModifier;
     }
 
+    //Freezes the enemy in place for a certain period of time
     public void FreezeAbility(float freezeLengthModified)
     {
         animator.SetTrigger("freezeTrigger");
@@ -198,6 +209,7 @@ public class TutorialCharacterAttack : MonoBehaviour
         rangedBlastAvailable = false;
     }
 
+    //Creates forcefield that protects the player from damage for a certain amount of time
     public void ForceFieldAbility(float fieldFieldLengthModified)
     {
         animator.SetTrigger("aoeAttackTrigger");
@@ -217,6 +229,8 @@ public class TutorialCharacterAttack : MonoBehaviour
             }
         }
     }
+
+    //Start crystal stab attack coroutine
     public void CrystalStabAttack(float spellDamage)
     {
         animator.SetTrigger("punch");
@@ -230,6 +244,7 @@ public class TutorialCharacterAttack : MonoBehaviour
         activeDamageOverTime = StartCoroutine(CrystalStabAttackRoutine(bestTarget, spellDamage));
     }
 
+    //Hit the enemy every second for 5 ticks
     private IEnumerator CrystalStabAttackRoutine(Transform bestTarget, float spellDamage)
     {
         if (bestTarget != null)
@@ -250,7 +265,7 @@ public class TutorialCharacterAttack : MonoBehaviour
         activeDamageOverTime = null;
     }
 
-
+    //Finds the closest enemy to the player in roder to hit/ cast ability onto them
     private Transform GetBestEnemyTarget()
     {
         if (attackPoint == null)

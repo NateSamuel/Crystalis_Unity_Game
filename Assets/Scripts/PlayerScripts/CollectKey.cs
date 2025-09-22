@@ -1,3 +1,4 @@
+//Full class is student creation
 using UnityEngine;
 
 public class CollectKey : MonoBehaviour

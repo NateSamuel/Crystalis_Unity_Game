@@ -1,6 +1,8 @@
+//Full class is student creation
 using System;
 using UnityEngine;
 
+//Watches inputs from mouse away from camera to not interfer with logic. Sends info to TutoriaCurrentObjectives 
 public class TutorialInputWatcher : MonoBehaviour
 {
     public static event Action OnCameraDragged;

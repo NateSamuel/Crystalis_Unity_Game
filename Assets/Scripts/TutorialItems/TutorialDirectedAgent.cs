@@ -1,7 +1,9 @@
+//Class is student creation, adapted from Barbara Heichart 2024 base structure (different overall design but still using navmesh base)
+//Minimal updates from base class
 using System;
 using UnityEngine;
 using UnityEngine.AI;
-
+//creates agent to move around via using arrows keys
 public class TutorialDirectedAgent : MonoBehaviour
 {
     public static event Action OnPlayerMoved;

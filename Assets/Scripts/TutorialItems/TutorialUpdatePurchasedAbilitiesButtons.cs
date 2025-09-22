@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+//deals with the buttons for all abilities that are purchasable
+//i.e. if they are interactable, the cooldowns for the abilities etc.
 public class TutorialUpdatePurchasedAbilitiesButtons : MonoBehaviour
 {
     public string spellName;
@@ -43,6 +45,7 @@ public class TutorialUpdatePurchasedAbilitiesButtons : MonoBehaviour
         }
     }
 
+    //adds in cooldown for abilities
     void Update()
     {
         var ability = purchases.abilities.Find(a => a.name == spellName);
@@ -60,6 +63,7 @@ public class TutorialUpdatePurchasedAbilitiesButtons : MonoBehaviour
         }
     }
 
+    //if button has been purchased it is now iteractable and sprite changes
     public void UpdateButtonVisual()
     {
         var ability = purchases.abilities.Find(a => a.name == spellName);
@@ -77,7 +81,8 @@ public class TutorialUpdatePurchasedAbilitiesButtons : MonoBehaviour
             }
         }
     }
-
+    
+    //if specific button is clicked then it is called in character attack and crystals are removed from character treasure
     public void OnButtonClicked()
     {
         if (Time.time - lastAbilityTime < abilityCooldown) return;

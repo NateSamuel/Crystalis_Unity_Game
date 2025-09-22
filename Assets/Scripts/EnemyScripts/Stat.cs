@@ -1,6 +1,8 @@
+//Full class is student creation
 using UnityEngine;
 
 [System.Serializable]
+//Stat class for enemy attacks
 public class Stat
 {
     public string statName;
@@ -12,10 +14,7 @@ public class Stat
     [Tooltip("Growth per level (0.1 = +10% per level)")]
     public float growthRate = 0.1f;
 
-    /// <summary>
-    /// True multiplicative scaling (linear).
-    /// Example: base=10, growthRate=0.2 → Level 1=10, Level 2=12, Level 3=14...
-    /// </summary>
+    //Scales based on level
     public void Scale(int level)
     {
         float multiplier = 1f + (growthRate * (level - 1));

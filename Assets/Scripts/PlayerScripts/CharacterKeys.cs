@@ -1,7 +1,9 @@
+//Full class is student creation
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 
+//adds, removes, and resets keys
 public class CharacterKeys : MonoBehaviour
 {
     public int keys = 0;

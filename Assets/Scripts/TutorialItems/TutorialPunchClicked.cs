@@ -1,6 +1,9 @@
+//Full class is student creation
+//Minimal updates from base class
 using UnityEngine;
 using UnityEngine.UI;
 
+//Button creation and info for the punch button
 public class TutorialPunchClicked : MonoBehaviour
 {
     private TutorialCharacterAttack charAttackScript;
@@ -29,7 +32,7 @@ public class TutorialPunchClicked : MonoBehaviour
         button.interactable = true;
 
     }
-
+    //cooldowns enacted for the buttons so it gives the player animation time to play etc.
     void Update()
     {
         float cooldownRemaining = globalAbilityCooldown - (Time.time - lastAbilityTime);
@@ -43,7 +46,7 @@ public class TutorialPunchClicked : MonoBehaviour
             button.interactable = false;
         }
     }
-
+    //When button is clicked the punch is called from the character attack
     public void OnButtonClick()
     {
         LevelUpAbilities upgradedAbility = levelUps.abilities.Find(a => a.name == "Punch");

@@ -1,3 +1,5 @@
+//Full class is student creation
+//Minimal updates from base class
 using System;
 using UnityEngine;
 using System.Collections;
@@ -212,6 +214,8 @@ public class TutorialFollowCamera : MonoBehaviour
     //deals with if camera is already zoomed out
     void HandleScrollZoom()
     {
+        if (isZoomedOut) 
+            return;
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (Mathf.Abs(scroll) > 0.01f)
         {

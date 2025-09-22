@@ -1,8 +1,9 @@
+//Full class is student creation
 using UnityEngine;
 using System.Collections;
 
-/// This deals with the attack abilities for the player character, including melee, ranged,
-/// AoE, power-ups, and special effects like freeze or force field.
+// This deals with the attack abilities for the player character, including melee, ranged,
+// AoE, power-ups, and special effects like freeze or force field.
 public class CharacterAttack : MonoBehaviour
 {
     Animator animator;
@@ -26,7 +27,7 @@ public class CharacterAttack : MonoBehaviour
     private bool isAbleToDamage = true;
 
     public CharacterLevelUps levelUp;
-    
+
     // Initializes the Animator component and sets the default damage modifier.
     void Awake()
     {
@@ -34,7 +35,7 @@ public class CharacterAttack : MonoBehaviour
         currentDamageModifier = normalDamageModifier;
 
     }
-
+    //Checks if ranged blast is targeting or not
     void Update()
     {
         if (isTargeting && Input.GetMouseButtonDown(0))
@@ -54,7 +55,7 @@ public class CharacterAttack : MonoBehaviour
             isTargeting = false;
         }
     }
-
+    //Bools for if enemy is able to be damaged or not
     public void IsAbleToDamageEnemy()
     {
         isAbleToDamage = true;
@@ -64,6 +65,8 @@ public class CharacterAttack : MonoBehaviour
     {
         isAbleToDamage = false;
     }
+
+    //fires projectile on second click in the direction of the click
     private void FireProjectile(Vector3 direction)
     {
         Vector3 spawnPosition = transform.position + Vector3.up;
@@ -75,12 +78,14 @@ public class CharacterAttack : MonoBehaviour
             magic.Launch(direction, RangedBlast.CasterType.Player, rangedBlastDamage, isAbleToDamage);
         }
     }
+    // Starts the targeting phase of ranged blast on initial button click
     public void RangedBlastAttack(float spellDamage)
     {
         rangedBlastDamage = spellDamage;
         isTargeting = true;
     }
 
+    //Standard punch attack on the closest enemy
     public void Attack(float hitAmount)
     {
 
@@ -98,6 +103,8 @@ public class CharacterAttack : MonoBehaviour
             }
         }
     }
+
+    //Hits a burst attack on all enemies surrounding the player
     public void AOEAttack(float spellDamage)
     {
         animator.SetTrigger("aoeAttackTrigger");
@@ -125,6 +132,7 @@ public class CharacterAttack : MonoBehaviour
         }
     }
 
+    //Starts power up coroutine
     public void PowerUpAbility(float strengthIncrease)
     {
         if (activePowerup != null)
@@ -134,6 +142,7 @@ public class CharacterAttack : MonoBehaviour
         activePowerup = StartCoroutine(PowerUpRoutine(strengthIncrease));
     }
 
+    //Add increase modifier to all damage abilities so they hit for more
     private IEnumerator PowerUpRoutine(float strengthIncrease)
     {
         if (powerUpEffectPrefab != null && castPoint != null)
@@ -148,6 +157,7 @@ public class CharacterAttack : MonoBehaviour
         currentDamageModifier = normalDamageModifier;
     }
 
+    //Freezes the enemy in place for a certain period of time
     public void FreezeAbility(float freezeLengthModified)
     {
         animator.SetTrigger("freezeTrigger");
@@ -168,6 +178,7 @@ public class CharacterAttack : MonoBehaviour
         }
     }
 
+    //Creates forcefield that protects the player from damage for a certain amount of time
     public void ForceFieldAbility(float fieldFieldLengthModified)
     {
         animator.SetTrigger("aoeAttackTrigger");
@@ -187,6 +198,8 @@ public class CharacterAttack : MonoBehaviour
             }
         }
     }
+
+    //Start crystal stab attack coroutine
     public void CrystalStabAttack(float spellDamage)
     {
         animator.SetTrigger("punch");
@@ -200,6 +213,7 @@ public class CharacterAttack : MonoBehaviour
         activeDamageOverTime = StartCoroutine(CrystalStabAttackRoutine(bestTarget, spellDamage));
     }
 
+    //Hit the enemy every second for 5 ticks
     private IEnumerator CrystalStabAttackRoutine(Transform bestTarget, float spellDamage)
     {
         if (bestTarget != null)
@@ -219,7 +233,7 @@ public class CharacterAttack : MonoBehaviour
         activeDamageOverTime = null;
     }
 
-
+    //Finds the closest enemy to the player in roder to hit/ cast ability onto them
     private Transform GetBestEnemyTarget()
     {
         if (attackPoint == null)
@@ -252,6 +266,25 @@ public class CharacterAttack : MonoBehaviour
             }
         }
         return bestTarget;
+    }
+
+    // Stops coroutines and resets triggers so nothing interferes death animation
+    public void CancelAllAttacks()
+    {
+
+        if (activePowerup != null) StopCoroutine(activePowerup);
+        if (activeDamageOverTime != null) StopCoroutine(activeDamageOverTime);
+        activePowerup = null;
+        activeDamageOverTime = null;
+
+
+        if (animator != null)
+        {
+            animator.ResetTrigger("punch");
+            animator.ResetTrigger("rangedBlastTrigger");
+            animator.ResetTrigger("aoeAttackTrigger");
+            animator.ResetTrigger("freezeTrigger");
+        }
     }
 
 }

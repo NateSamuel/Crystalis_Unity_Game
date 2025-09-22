@@ -1,6 +1,7 @@
+//Full class is student creation
 using UnityEngine;
 using System.Collections.Generic;
-
+//Stores stats in lists for health, all abilities and damage stats
 [System.Serializable]
 public class PlayerStats
 {
@@ -21,7 +22,7 @@ public class PlayerStats
         // Health uses exponential scaling
         health.scaledValue = health.baseValue * Mathf.Pow(1f + health.growthRate, level - 1);
 
-        // Damage + Abilities use linear multiplicative scaling
+        // Damage + Abilities use scaling
         foreach (var stat in damageStats)
             stat.Scale(level);
 
@@ -35,7 +36,7 @@ public class PlayerStats
         return ability != null ? ability.scaledChance : 0f;
     }
 
-    // Optional reset
+    // Resets stats
     public void ResetStats()
     {
         health.scaledValue = health.baseValue;

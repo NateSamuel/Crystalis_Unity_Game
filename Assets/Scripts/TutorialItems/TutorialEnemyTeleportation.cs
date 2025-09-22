@@ -1,7 +1,9 @@
+//Full class is student creation
+
 using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
-
+//deals with teleportation logic for enemy when the enemy's ranged blast ability is called to teleport them further away in the room
 public class TutorialEnemyTeleportation
 {
     private Transform enemyTransform;
@@ -39,7 +41,7 @@ public class TutorialEnemyTeleportation
         this.scale = SharedLevelData.Instance.Scale;
         this.attackScript = attackScript;
     }
-
+    //starts coroutine
     public void StartTeleport(bool spellFromBoss)
     {
         isBossSpell = spellFromBoss;
@@ -64,7 +66,7 @@ public class TutorialEnemyTeleportation
 
         OnTeleportFinished?.Invoke();
     }
-
+    //Finds available position for enemy to teleport within room between distance of 7f and 20f
     public void TeleportEnemyWithinSameRoom()
     {
         Vector2 currentPixel = LevelUtility.WorldPositionToTexturePixel(enemyTransform.position, scale);
@@ -100,7 +102,7 @@ public class TutorialEnemyTeleportation
             }
         }
     }
-
+    //Checks if surrounded by black pixels (i.e. still within confines of room)
     private bool SurroundedByBlackPixels(int x, int y, int radius)
     {
         for (int dx = -radius; dx <= radius; dx++)

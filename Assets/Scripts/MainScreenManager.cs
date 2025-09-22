@@ -1,6 +1,9 @@
+//Full class is student creation
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+//This deals with enabling an disabling buttons and panels from the UI based on the states in the game
+//please see the method titles for their specific uses
 public class MainScreenManager : MonoBehaviour
 {
     public GameObject LevelEntryPanel;
@@ -43,7 +46,7 @@ public class MainScreenManager : MonoBehaviour
     {
         LevelEntryPanel.SetActive(false);
         LevelObjectivesPanel.SetActive(true);
-        Time.timeScale = 0f;
+        Time.timeScale = 1f;
     }
     public void ShowLevelPanel()
     {
@@ -196,7 +199,7 @@ public class MainScreenManager : MonoBehaviour
     public void ShowDoorOpenUI(UnityEngine.Events.UnityAction onClick)
     {
         OpenDoorButton.gameObject.SetActive(true);
-        
+
         OpenDoorButton.onClick.RemoveAllListeners();
         OpenDoorButton.onClick.AddListener(onClick);
     }

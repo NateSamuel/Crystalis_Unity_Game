@@ -1,6 +1,7 @@
+//Full class is student creation
 using UnityEngine;
 using UnityEngine.UI;
-
+//Stores info on the room and objective index for that specific button for easier button objectives
 public class TutorialObjectiveButton : MonoBehaviour
 {
     public Button button;

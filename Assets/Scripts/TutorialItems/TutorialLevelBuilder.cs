@@ -1,9 +1,10 @@
+//Minimal updates from base class
+// This class calls creation of the layout, and moves character, enemies and hallways to navmesh
+//Mostly student creation, a couple of methods partially designed by Barbara Reichhart 2024
 using UnityEngine;
 using Unity.AI.Navigation;
 using System.Collections;
 using System.Collections.Generic;
-
-//Overall: This class calls creation of the layout, and moves character, enemies and hallways to navmesh
 
 public class TutorialLevelBuilder : MonoBehaviour
 {
@@ -17,17 +18,28 @@ public class TutorialLevelBuilder : MonoBehaviour
 
     private TotalPrisoners totalPrisoners;
 
+    // Master lists — persist across levels
+    private List<GameObject> allEnemies = new List<GameObject>();
+    private List<GameObject> allBosses = new List<GameObject>();
+    private List<GameObject> allPrisoners = new List<GameObject>();
+
     public static List<GameObject> ActiveEnemies { get; private set; } = new List<GameObject>();
     public static List<GameObject> InactiveEnemies { get; private set; } = new List<GameObject>();
-
     public static List<GameObject> ActiveBosses { get; private set; } = new List<GameObject>();
     public static List<GameObject> InactiveBosses { get; private set; } = new List<GameObject>();
-
     public static List<GameObject> ActivePrisoners { get; private set; } = new List<GameObject>();
     public static List<GameObject> InactivePrisoners { get; private set; } = new List<GameObject>();
+
     public EnemyTrackerForObjectives tracker;
 
-    //Design by Student
+    private void Awake()
+    {
+        // Populate master lists once — includes inactive units
+        allEnemies.AddRange(GameObject.FindGameObjectsWithTag("Enemy1"));
+        allBosses.AddRange(GameObject.FindGameObjectsWithTag("Boss1"));
+        allPrisoners.AddRange(GameObject.FindGameObjectsWithTag("Prisoner"));
+    }
+
     void Start()
     {
         layoutGeneratorRooms.LevelConfig.ResetMaxRoomCount();
@@ -43,6 +55,7 @@ public class TutorialLevelBuilder : MonoBehaviour
         //SharedLevelData.Instance.GenerateSeed();
         Generate();
     }
+
     //Design by Student
     // Starts the level generation coroutine.
     [ContextMenu("Generate")]
@@ -50,6 +63,7 @@ public class TutorialLevelBuilder : MonoBehaviour
     {
         StartCoroutine(GenerateLevelRoutine());
     }
+
     //Design by Student
     // Tries to create a level layout and then builds it, with the navmesh added. Enemies, bosses, and the player are placed.
     private IEnumerator GenerateLevelRoutine()
@@ -65,59 +79,59 @@ public class TutorialLevelBuilder : MonoBehaviour
             attempts++;
         } while ((level.Rooms == null || level.Rooms.Length < maxRooms) && attempts < maxAttempts);
 
-        if (level == null || level.Rooms.Length < maxRooms)
-        {
-            yield break;
-        }
+        if (level == null || level.Rooms.Length < maxRooms) yield break;
 
         layoutGeneratorRooms.LevelConfig.MaxRoomCount = Mathf.Min(maxRooms + 1, layoutGeneratorRooms.LevelConfig.FinalMaxRoomCount);
 
         hallwayDetector.DetectHallway();
         marchingSquares.CreateLevelGeometry();
-        roomDecorator.PlaceItems(level);
 
+        yield return StartCoroutine(PlaceDecorationsDelayed(level));
+    }
+
+    //Delays placement of decorations for runtime
+    private IEnumerator PlaceDecorationsDelayed(Level level)
+    {
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(0.05f);
+
+        roomDecorator.PlaceItems(level);
         ParentHallwaysToNavMeshSurface();
         navMeshSurface.BuildNavMesh();
-
 
         yield return new WaitForEndOfFrame();
         yield return new WaitForSeconds(0.1f);
 
-        // PlaceEnemiesOnNavMesh();
-        // PlaceBossesOnNavMesh();
+        // Place enemies
         PlaceUnitsOnNavMesh<TutorialRuffianEnemyAI>(
-            "Enemy1", 
-            "Enemy1Pos",
-            ActiveEnemies,
-            InactiveEnemies,
-            tracker.RegisterEnemy,
-            tracker.SetEnemyActive,
-            logic => logic?.Initialize(),
-            logic => logic?.DisableEnemy(),
+            allEnemies, "Enemy1Pos", ActiveEnemies, InactiveEnemies,
+            tracker.RegisterEnemy, tracker.SetEnemyActive,
+            logic => logic?.Initialize(), logic => logic?.DisableEnemy(),
             levelEnemyCount
         );
 
+        // Place bosses
         PlaceUnitsOnNavMesh<TutorialBossEnemyAI>(
-            "Boss1",
-            "Boss1Pos",
-            ActiveBosses,
-            InactiveBosses,
-            tracker.RegisterBoss,
-            tracker.SetBossActive,
-            logic => logic?.Initialize(),
-            logic => logic?.DisableEnemy()
+            allBosses, "Boss1Pos", ActiveBosses, InactiveBosses,
+            tracker.RegisterBoss, tracker.SetBossActive,
+            logic => logic?.Initialize(), logic => logic?.DisableEnemy()
         );
+
+        // Place prisoners separately
         PlacePrisonersOnNavMesh();
 
         MovePlayerToStart(level);
         totalPrisoners?.FindPrisoners();
     }
 
+    //Designed by student
+    //Tries to position enemies from a master list onto NavMesh spawn points
+    //Activates and initializes them if placed successfully, or deactivates/hides them if not.
     private void PlaceUnitsOnNavMesh<T>(
-        string unitTag,
-        string positionTag,
-        List<GameObject> activeList,
-        List<GameObject> inactiveList,
+        List<GameObject> masterList,       // master list for enemies or bosses
+        string positionTag,                 // spawn positions tag
+        List<GameObject> activeList,       // active list to fill
+        List<GameObject> inactiveList,     // inactive list to fill
         System.Action<GameObject> registerUnit,
         System.Action<GameObject, bool> setUnitActive,
         System.Action<T> initializeUnitLogic,
@@ -125,49 +139,39 @@ public class TutorialLevelBuilder : MonoBehaviour
         int unitCountLimit = -1) where T : MonoBehaviour
     {
         GameObject[] positions = GameObject.FindGameObjectsWithTag(positionTag);
-        GameObject[] sceneUnits = GameObject.FindGameObjectsWithTag(unitTag);
-
-        List<GameObject> units = new List<GameObject>(sceneUnits);
+        if (positions.Length == 0)
+        {
+            Debug.LogWarning($"[LevelBuilder] No spawn positions found for tag {positionTag}.");
+            return;
+        }
 
         activeList.Clear();
         inactiveList.Clear();
 
-        int spawnCount = unitCountLimit > 0 ? Mathf.Min(unitCountLimit, units.Count, positions.Length) : Mathf.Min(units.Count, positions.Length);
+        int spawnCount = unitCountLimit > 0 ? Mathf.Min(unitCountLimit, masterList.Count, positions.Length) : Mathf.Min(masterList.Count, positions.Length);
 
-        for (int i = 0; i < units.Count; i++)
+        for (int i = 0; i < masterList.Count; i++)
         {
-            GameObject unit = units[i];
-            var agent = unit.GetComponent<UnityEngine.AI.NavMeshAgent>();
+            GameObject unit = masterList[i];
             T logic = unit.GetComponent<T>();
+            var agent = unit.GetComponent<UnityEngine.AI.NavMeshAgent>();
 
-            // Default: assume not active
             bool placed = false;
 
             if (i < spawnCount)
             {
-                GameObject posObj = positions[i];
-                Vector2Int gridPos = WorldToGridPosition(posObj.transform.position);
-                Vector3 correctedWorldPos = LevelPositionToWorldPosition(gridPos);
+                Vector3 targetPos = positions[i].transform.position;
 
-                const float initialMaxDist = 2f;
                 UnityEngine.AI.NavMeshHit hit;
-                bool found = UnityEngine.AI.NavMesh.SamplePosition(correctedWorldPos, out hit, initialMaxDist, UnityEngine.AI.NavMesh.AllAreas);
+                bool found = UnityEngine.AI.NavMesh.SamplePosition(targetPos, out hit, 2f, UnityEngine.AI.NavMesh.AllAreas)
+                            || UnityEngine.AI.NavMesh.SamplePosition(targetPos, out hit, 6f, UnityEngine.AI.NavMesh.AllAreas);
 
                 if (!found)
                 {
-                    found = UnityEngine.AI.NavMesh.SamplePosition(correctedWorldPos, out hit, 6f, UnityEngine.AI.NavMesh.AllAreas);
-                }
-
-                if (!found)
-                {
-                    Vector3[] offsets = new Vector3[] {
-                        new Vector3(0, -4f, 0),
-                        new Vector3(0, -8f, 0),
-                        new Vector3(0, 4f, 0)
-                    };
+                    Vector3[] offsets = { new Vector3(0, -4f, 0), new Vector3(0, 4f, 0), new Vector3(2f, 0, 0), new Vector3(-2f, 0, 0) };
                     foreach (var off in offsets)
                     {
-                        if (UnityEngine.AI.NavMesh.SamplePosition(correctedWorldPos + off, out hit, 6f, UnityEngine.AI.NavMesh.AllAreas))
+                        if (UnityEngine.AI.NavMesh.SamplePosition(targetPos + off, out hit, 6f, UnityEngine.AI.NavMesh.AllAreas))
                         {
                             found = true;
                             break;
@@ -177,109 +181,132 @@ public class TutorialLevelBuilder : MonoBehaviour
 
                 if (found)
                 {
-                    if (agent != null && !agent.enabled) agent.enabled = true;
-
-                    bool warped = agent != null ? agent.Warp(hit.position) : false;
-
-                    if (agent == null)
+                    if (agent != null)
+                    {
+                        agent.enabled = false;
+                        unit.transform.position = hit.position;
+                        agent.enabled = true;
+                        agent.Warp(hit.position);
+                    }
+                    else
                     {
                         unit.transform.position = hit.position;
-                        warped = true;
                     }
 
-                    if (warped)
-                    {
-                        registerUnit?.Invoke(unit);
+                    unit.SetActive(true);
+                    initializeUnitLogic?.Invoke(logic);
+                    registerUnit?.Invoke(unit);
 
-                        unit.SetActive(true);
-                        initializeUnitLogic?.Invoke(logic);
+                    activeList.Add(unit);
+                    setUnitActive?.Invoke(unit, true);
 
-                        activeList.Add(unit);
-                        setUnitActive?.Invoke(unit, true);
-
-                        placed = true;
-                    }
+                    placed = true;
                 }
             }
 
             if (!placed)
             {
-                if (agent != null)
-                {
-                    if (!agent.enabled) agent.enabled = true;
-                    agent.Warp(new Vector3(0, -1000, 0));
-                }
-                else
-                {
-                    unit.transform.position = new Vector3(0, -1000, 0);
-                }
-
-                disableUnitLogic?.Invoke(logic);
                 unit.SetActive(false);
-
+                if (agent != null) agent.enabled = false;
+                disableUnitLogic?.Invoke(logic);
+                unit.transform.position = new Vector3(0, -1000, 0);
 
                 inactiveList.Add(unit);
                 setUnitActive?.Invoke(unit, false);
             }
         }
     }
-    // Finds and places prisoners onto the NavMesh. Deactivates if not used.
+
+    //Designed by student
+    //Tries to position active prisoners onto NavMesh spawn points
+    //Deactivates/hides them if not possible
     private void PlacePrisonersOnNavMesh()
     {
-        GameObject[] prisonerPositions = GameObject.FindGameObjectsWithTag("PrisonerPos");
-        GameObject[] allPrisoners = Resources.FindObjectsOfTypeAll<GameObject>();
-        List<GameObject> prisoners = new List<GameObject>();
-
-        foreach (var go in allPrisoners)
+        GameObject[] positions = GameObject.FindGameObjectsWithTag("PrisonerPos");
+        if (positions.Length == 0)
         {
-            if (go.CompareTag("Prisoner"))
-            {
-                go.SetActive(true);
-                prisoners.Add(go);
-            }
+            Debug.LogWarning("[LevelBuilder] No prisoner spawn positions found.");
+            return;
         }
 
-        int spawnCount = Mathf.Min(prisoners.Count, prisonerPositions.Length);
+        ActivePrisoners.Clear();
+        InactivePrisoners.Clear();
 
-        for (int i = 0; i < prisoners.Count; i++)
+        int spawnCount = Mathf.Min(allPrisoners.Count, positions.Length);
+
+        for (int i = 0; i < allPrisoners.Count; i++)
         {
-            GameObject prisoner = prisoners[i];
+            GameObject prisoner = allPrisoners[i];
             var agent = prisoner.GetComponent<UnityEngine.AI.NavMeshAgent>();
+
+            bool placed = false;
 
             if (i < spawnCount)
             {
-                GameObject spawnPos = prisonerPositions[i];
-                Vector3 targetPos = spawnPos.transform.position;
+                Vector3 targetPos = positions[i].transform.position;
 
-                if (UnityEngine.AI.NavMesh.SamplePosition(targetPos, out UnityEngine.AI.NavMeshHit hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
+                UnityEngine.AI.NavMeshHit hit;
+                bool found = UnityEngine.AI.NavMesh.SamplePosition(targetPos, out hit, 2f, UnityEngine.AI.NavMesh.AllAreas)
+                            || UnityEngine.AI.NavMesh.SamplePosition(targetPos, out hit, 6f, UnityEngine.AI.NavMesh.AllAreas);
+
+                if (!found)
                 {
-                    prisoner.SetActive(true);
+                    Vector3[] offsets = { new Vector3(0, -4f, 0), new Vector3(0, 4f, 0), new Vector3(2f, 0, 0), new Vector3(-2f, 0, 0) };
+                    foreach (var off in offsets)
+                    {
+                        if (UnityEngine.AI.NavMesh.SamplePosition(targetPos + off, out hit, 6f, UnityEngine.AI.NavMesh.AllAreas))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (found)
+                {
                     if (agent != null)
                     {
-                        if (!agent.enabled) agent.enabled = true;
+                        agent.enabled = false;
+                        prisoner.transform.position = hit.position;
+                        agent.enabled = true;
                         agent.Warp(hit.position);
                     }
                     else
                     {
                         prisoner.transform.position = hit.position;
                     }
+
+                    prisoner.SetActive(true);
+                    ActivePrisoners.Add(prisoner);
+                    placed = true;
                 }
             }
-            else
+
+            if (!placed)
             {
-                // move unused prisoners somewhere out of the way
-                if (agent != null)
-                {
-                    if (!agent.enabled) agent.enabled = true;
-                    agent.Warp(new Vector3(0, -1000, 0));
-                }
-                else
-                {
-                    prisoner.transform.position = new Vector3(0, -1000, 0);
-                }
                 prisoner.SetActive(false);
+                if (agent != null) agent.enabled = false;
+                prisoner.transform.position = new Vector3(0, -1000, 0);
+                InactivePrisoners.Add(prisoner);
             }
         }
+
+        Debug.Log($"[LevelBuilder] Active prisoners: {ActivePrisoners.Count}, Inactive prisoners: {InactivePrisoners.Count}");
+    }
+
+    //Design by student
+    //Deactivates all enemies/prsoners and moves them when level restarts/starts
+    private void ResetUnit<T>(GameObject unit, System.Action<T> disableUnitLogic, T logic, List<GameObject> inactiveList, System.Action<GameObject, bool> setUnitActive)
+        where T : MonoBehaviour
+    {
+        var agent = unit.GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null) agent.enabled = false;
+        unit.transform.position = new Vector3(0, -1000, 0);
+        unit.SetActive(true); // Keep active so master list still finds it
+        disableUnitLogic?.Invoke(logic);
+        inactiveList.Add(unit);
+        setUnitActive?.Invoke(unit, false);
+
     }
 
     //Design by Barbara Reichart lecture series, 2024
@@ -291,15 +318,19 @@ public class TutorialLevelBuilder : MonoBehaviour
         Vector3 playerPosition = LevelPositionToWorldPosition(roomCenter);
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        UnityEngine.AI.NavMeshAgent agent = player.GetComponent<UnityEngine.AI.NavMeshAgent>();
+        var agent = player.GetComponent<UnityEngine.AI.NavMeshAgent>();
 
-        if (agent != null)
+        if (agent != null) agent.Warp(playerPosition);
+        else player.transform.position = playerPosition;
+    }
+
+    //Design by Student
+    // Add all hallway tagged objects to the navmeshsurface
+    public void ParentHallwaysToNavMeshSurface()
+    {
+        foreach (var hallway in GameObject.FindGameObjectsWithTag("Hallway"))
         {
-            bool warped = agent.Warp(playerPosition);
-        }
-        else
-        {
-            player.transform.position = playerPosition;
+            hallway.transform.SetParent(navMeshSurface.transform);
         }
     }
 
@@ -308,53 +339,23 @@ public class TutorialLevelBuilder : MonoBehaviour
     Vector3 LevelPositionToWorldPosition(Vector2 levelPosition)
     {
         int scale = SharedLevelData.Instance.Scale;
-
         int texX = Mathf.Clamp((int)levelPosition.x, 0, levelHeightTexture.width - 1);
         int texY = Mathf.Clamp((int)levelPosition.y, 0, levelHeightTexture.height - 1);
-
         Color pixel = levelHeightTexture.GetPixel(texX, texY);
-
         float yHeight = 0f;
 
-        if (ColorsApproximatelyEqual(pixel, LayoutColorMap.RoomLevel(1)))
-            yHeight = 12f;
-        else if (ColorsApproximatelyEqual(pixel, LayoutColorMap.RoomLevel(2)))
-            yHeight = 24f;
+        if (ColorsApproximatelyEqual(pixel, LayoutColorMap.RoomLevel(1))) yHeight = 12f;
+        else if (ColorsApproximatelyEqual(pixel, LayoutColorMap.RoomLevel(2))) yHeight = 24f;
 
-        float worldX = (levelPosition.x - 1) * scale;
-        float worldZ = (levelPosition.y - 1) * scale;
-
-        return new Vector3(worldX, yHeight, worldZ);
+        return new Vector3((levelPosition.x - 1) * scale, yHeight, (levelPosition.y - 1) * scale);
     }
-
+    
     //Design by Student
     // Compares two colors to check if they are almost equal.
     private bool ColorsApproximatelyEqual(Color a, Color b, float tolerance = 0.05f)
     {
         return Mathf.Abs(a.r - b.r) < tolerance &&
-            Mathf.Abs(a.g - b.g) < tolerance &&
-            Mathf.Abs(a.b - b.b) < tolerance;
-    }
-
-    //Design by Student
-    // Converts a world position into a level texture.
-    Vector2Int WorldToGridPosition(Vector3 worldPos)
-    {
-        int scale = SharedLevelData.Instance.Scale;
-        int gridX = Mathf.RoundToInt(worldPos.x / scale);
-        int gridY = Mathf.RoundToInt(worldPos.z / scale);
-        return new Vector2Int(gridX, gridY);
-    }
-
-    //Design by Student
-    // Add all hallway tagged objects to the navmeshsurface
-    public void ParentHallwaysToNavMeshSurface()
-    {
-        GameObject[] hallways = GameObject.FindGameObjectsWithTag("Hallway"); 
-
-        foreach (var hallway in hallways)
-        {
-            hallway.transform.SetParent(navMeshSurface.transform);
-        }
+               Mathf.Abs(a.g - b.g) < tolerance &&
+               Mathf.Abs(a.b - b.b) < tolerance;
     }
 }

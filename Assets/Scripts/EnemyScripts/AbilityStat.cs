@@ -1,5 +1,6 @@
+//Full class is student creation
 using UnityEngine;
-
+//stats for enemy abilities. These increase the higher the level is.
 [System.Serializable]
 public class AbilityStat
 {
@@ -12,10 +13,7 @@ public class AbilityStat
     [Tooltip("Growth per level (0.1 = +10% per level)")]
     public float growthRate = 0.1f;
 
-    /// <summary>
-    /// True multiplicative scaling (linear).
-    /// Example: base=0.2 (20%), growthRate=0.05 → Level 2=0.21, Level 3=0.22...
-    /// </summary>
+    //scales the ability up based on the level
     public void Scale(int level)
     {
         float multiplier = 1f + (growthRate * (level - 1));

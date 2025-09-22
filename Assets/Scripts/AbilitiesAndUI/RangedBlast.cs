@@ -1,5 +1,6 @@
+//Full class is student creation
 using UnityEngine;
-
+//info about the ranged blast spell - the projectile when hits the enemy or the player, damages them and is destroyed
 public class RangedBlast : MonoBehaviour
 {
     public enum CasterType { Player, Enemy }

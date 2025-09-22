@@ -1,3 +1,5 @@
+//Full class is student creation
+//Minimal updates from base class
 using System;
 using UnityEngine;
 

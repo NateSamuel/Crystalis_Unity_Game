@@ -1,6 +1,8 @@
+//Full class is student creation
+//Minimal updates from base class
 using System;
 using UnityEngine;
-
+//Frees prisoners based on if they are in the collider trigger and if they have a key available
 public class TutorialFreePrisoners : MonoBehaviour
 {
     public static event Action OnFreePrisoner;

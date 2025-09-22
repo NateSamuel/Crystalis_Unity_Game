@@ -1,6 +1,8 @@
+//Full class is student creation
+//Minimal updates from base class
 using System;
 using UnityEngine;
-
+//collects treasure from treasure chest if character is within collider trigger zone
 public class TutorialCollectTreasure : MonoBehaviour
 {
     public static event Action OnTreasureCollect;

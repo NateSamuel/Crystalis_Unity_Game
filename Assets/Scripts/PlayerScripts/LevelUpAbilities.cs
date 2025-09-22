@@ -1,6 +1,7 @@
+//Full class is student creation
 using UnityEngine;
 using System.Collections.Generic;
-
+//class to store info about level ups for abilities like original and current multipliers  how much they increase by
 [System.Serializable]
 public class LevelUpAbilities
 {

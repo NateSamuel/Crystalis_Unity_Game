@@ -1,5 +1,8 @@
+//Full class is student creation
+//Minimal updates from base class
 using UnityEngine;
 
+//Abilities for the ruffian enemy using random chance
 public class TutorialRuffianEnemyAI : TutorialBaseEnemyAI
 {
     public override void Initialize()

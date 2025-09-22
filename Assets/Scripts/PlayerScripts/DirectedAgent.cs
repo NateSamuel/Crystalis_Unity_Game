@@ -1,6 +1,8 @@
+//Class is student creation, adapted from Barbara Heichart 2024 base structure (different overall design but still using navmesh base)
 using UnityEngine;
 using UnityEngine.AI;
 
+//creates agent to move around via using arrows keys
 public class DirectedAgent : MonoBehaviour
 {
     NavMeshAgent agent;

@@ -1,3 +1,4 @@
+//Full class is student creation
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -10,10 +11,11 @@ public class UpdateLevelUpButtons : MonoBehaviour
     private CharacterTreasure charTreasureScript;
     public string spellName;
     private Button button;
+    private CharacterLevelUps charLevelUps;
 
     void Start()
     {
-        button = GetComponent<Button>(); 
+        button = GetComponent<Button>();
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
 
         if (playerObject != null)
@@ -21,8 +23,9 @@ public class UpdateLevelUpButtons : MonoBehaviour
             playerTransform = playerObject.transform;
             charTreasureScript = playerTransform.GetComponent<CharacterTreasure>();
         }
+        charLevelUps = FindAnyObjectByType<CharacterLevelUps>();
     }
-
+    //checks if button is interactable, if ability has been purchased, if player has enough crystals, and if level up is available still at this level
     void Update()
     {
 
@@ -30,7 +33,7 @@ public class UpdateLevelUpButtons : MonoBehaviour
         if (purchasedAbility != null)
         {
 
-            if (purchasedAbility.hasBeenPurchased && charTreasureScript.crystals >= levelUpCost)
+            if (purchasedAbility.hasBeenPurchased && charTreasureScript.crystals >= levelUpCost && charLevelUps.levelUpsPurchasablePerLevel > 0)
             {
                 button.interactable = true;
             }

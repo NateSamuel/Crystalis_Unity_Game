@@ -1,6 +1,9 @@
+//Full class is student creation
+//Minimal updates from base class
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+//This deals with enabling an disabling buttons and panels from the UI based on the states in the game
+//please see the method titles for their specific uses
 public class TutorialMainScreenManager : MonoBehaviour
 {
     public GameObject LevelEntryPanel;

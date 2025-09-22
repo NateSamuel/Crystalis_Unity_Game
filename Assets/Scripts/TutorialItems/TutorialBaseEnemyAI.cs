@@ -1,7 +1,9 @@
+//Full class is student creation
+//Minimal updates from base class
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
-
+//Deals with main enemy AI info such as movement and if forcefields and stuns are happening
 public class TutorialBaseEnemyAI : MonoBehaviour
 {
     protected NavMeshAgent agent;
@@ -23,6 +25,7 @@ public class TutorialBaseEnemyAI : MonoBehaviour
     protected Color[] validRoomColors;
     protected int levelTextureScale;
 
+    //Initialises enemy movement and animator items.
     public virtual void Initialize()
     {
         levelTextureScale = SharedLevelData.Instance.Scale;
@@ -71,13 +74,12 @@ public class TutorialBaseEnemyAI : MonoBehaviour
         PlayerChaseLogic();
         UpdateAnimation();
     }
-
+    //Walks around the different points chosen using Navmesh aent SetDestination to move from each point
     protected void PlayerChaseLogic()
     {
         if (playerTransform == null)
         {
             agent.isStopped = false;
-            attackScript?.DontAttackPlayer();
             attackScript?.IsNotAbleToHitPlayer();
             return;
         }
@@ -90,13 +92,11 @@ public class TutorialBaseEnemyAI : MonoBehaviour
             {
                 agent.isStopped = false;
                 agent.SetDestination(playerTransform.position);
-                attackScript?.DontAttackPlayer();
                 attackScript?.IsNotAbleToHitPlayer();
             }
             else
             {
                 agent.isStopped = true;
-                attackScript?.AttackPlayer();
 
                 if (Time.time - lastAbilityTime >= globalAbilityCooldown)
                 {
@@ -108,16 +108,15 @@ public class TutorialBaseEnemyAI : MonoBehaviour
         else
         {
             agent.isStopped = false;
-            attackScript?.DontAttackPlayer();
             attackScript?.IsNotAbleToHitPlayer();
         }
     }
-
+    //When ability is able to be used attack script is called
     protected virtual void UseAbility()
     {
         attackScript?.IsAbleToHitPlayer();
     }
-
+    //Update animation for general movement
     protected void UpdateAnimation()
     {
         if (animator == null || agent == null || !agent.isOnNavMesh) return;
@@ -125,7 +124,7 @@ public class TutorialBaseEnemyAI : MonoBehaviour
         float forwardSpeed = vel.magnitude / agent.speed;
         animator.SetFloat("forwardSpeed", forwardSpeed, 0.1f, Time.deltaTime);
     }
-
+    //If agent is stunned with the freeze from the player, it can no longer move for a specfic duration
     public void Stun(float duration)
     {
         if (isDead) return;
@@ -141,7 +140,7 @@ public class TutorialBaseEnemyAI : MonoBehaviour
         canMove = true;
         agent.isStopped = false;
     }
-
+    //If enemy dies then sets isDead and isStopped to true and resets path
     public void DisableEnemy()
     {
         isDead = true;
@@ -151,7 +150,7 @@ public class TutorialBaseEnemyAI : MonoBehaviour
             agent.ResetPath();
         }
     }
-
+    //If player has forcefield up, enemy cannot damage them for a specific period of time.
     public void BlockedByForceField(float duration)
     {
         if (isDead) return;

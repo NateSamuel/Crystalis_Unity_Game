@@ -1,6 +1,7 @@
+//Full class is student creation
 using UnityEngine;
 using UnityEngine.UI;
-
+//Button creation and info for Crystal Spiral AOE spell
 public class AOESpellClicked : MonoBehaviour
 {
     private CharacterAttack charAttackScript;
@@ -25,7 +26,7 @@ public class AOESpellClicked : MonoBehaviour
         }
 
     }
-
+    //cooldowns enacted for the buttons so it gives the player animation time to play etc.
     void Update()
     {
         float cooldownRemaining = globalAbilityCooldown - (Time.time - lastAbilityTime);
@@ -39,10 +40,10 @@ public class AOESpellClicked : MonoBehaviour
             button.interactable = false;
         }
     }
-
+    //When button is clicked the spell is called from the character attack and crystals are removed from character treasure
     public void OnButtonClick()
     {
-        LevelUpAbilities upgradedAbility = levelUps.abilities.Find(a => a.name == "Punch");
+        LevelUpAbilities upgradedAbility = levelUps.abilities.Find(a => a.name == "CrystalSpiral");
 
         if (Time.time - lastAbilityTime >= globalAbilityCooldown && charTreasureScript.crystals >= spellCost)
         {

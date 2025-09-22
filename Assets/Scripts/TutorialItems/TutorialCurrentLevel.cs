@@ -1,6 +1,9 @@
+//Full class is student creation
+//Minimal updates from base class
 using UnityEngine;
 using TMPro;
-
+//Stores the current level and updates all text components that use it
+//Also increments the level, and reverts it back to level 1 if the player has died.
 public class TutorialCurrentLevel : MonoBehaviour
 {
     public int currentLevelNumber = 1;

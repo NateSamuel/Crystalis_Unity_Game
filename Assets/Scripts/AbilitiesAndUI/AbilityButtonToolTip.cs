@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
-
+//shows info about abilities on mouse hover of specific button
 public class AbilityButtonToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public GameObject tooltipObject;

@@ -1,6 +1,7 @@
+//Full class is student creation
 using UnityEngine;
 using System.Collections.Generic;
-
+//Stats for an enemy, so it would have health, and a list of damage stats, and ability stats
 [System.Serializable]
 public class EnemyStats
 {
@@ -15,13 +16,11 @@ public class EnemyStats
     [Header("Abilities")]
     public List<AbilityStat> abilities = new List<AbilityStat>();
 
-    // Scale stats per level
+    //these are scaled based on the level number
     public void ScaleStats(int level)
     {
-        // Health uses exponential scaling
         health.scaledValue = health.baseValue * Mathf.Pow(1f + health.growthRate, level - 1);
 
-        // Damage + Abilities use linear multiplicative scaling
         foreach (var stat in damageStats)
             stat.Scale(level);
 
@@ -29,13 +28,14 @@ public class EnemyStats
             ability.Scale(level);
     }
 
+    //gets the chance that the ability will be used
     public float GetAbilityChance(string abilityName)
     {
         var ability = abilities.Find(a => a.abilityName == abilityName);
         return ability != null ? ability.scaledChance : 0f;
     }
 
-    // Optional reset
+    //stats are able to be reset i.e. if the player retrys level
     public void ResetStats()
     {
         health.scaledValue = health.baseValue;

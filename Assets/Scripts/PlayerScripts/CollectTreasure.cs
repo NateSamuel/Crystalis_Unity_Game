@@ -1,54 +1,37 @@
+//Full class is student creation
 using UnityEngine;
 
+//collects treasure from treasure chest if character is within collider trigger zone
 public class CollectTreasure : MonoBehaviour
 {
-    public Transform playerTransform;
-    Vector3 spawnPosition;
-    public float collectionRange = 3f;
     private CharacterTreasure charTreasureScript;
     public int treasureAmount = 6;
     private MainScreenManager mainUI;
-
     private bool treasureCollected = false;
 
     void Start()
     {
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-
         if (playerObject != null)
         {
-            playerTransform = playerObject.transform;
-            charTreasureScript = playerTransform.GetComponent<CharacterTreasure>();
+            charTreasureScript = playerObject.GetComponent<CharacterTreasure>();
         }
-
-        spawnPosition = transform.position;
 
         mainUI = FindAnyObjectByType<MainScreenManager>();
-
-        if (mainUI != null)
-        {
-            mainUI.HideCollectTreasureUI();
-        }
-
-        treasureCollected = false;
+        mainUI?.HideCollectTreasureUI();
     }
 
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        if (treasureCollected) return;
-        if (playerTransform == null) return;
-
-        if (mainUI != null && mainUI.MainUIPanel != null && mainUI.MainUIPanel.activeSelf == false)
-        {
-            return;
-        }
-
-        float dist = Vector3.Distance(spawnPosition, playerTransform.position);
-        if (dist < collectionRange)
+        if (!treasureCollected && other.CompareTag("Player"))
         {
             mainUI?.ShowCollectTreasureUI(PlayerCollectsTreasure);
         }
-        else
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!treasureCollected && other.CompareTag("Player"))
         {
             mainUI?.HideCollectTreasureUI();
         }
@@ -57,11 +40,10 @@ public class CollectTreasure : MonoBehaviour
     private void PlayerCollectsTreasure()
     {
         if (treasureCollected) return;
+
         treasureCollected = true;
-
-        mainUI?.HideCollectTreasureUI();
-
         charTreasureScript?.ApplyTreasure(treasureAmount);
+        mainUI?.HideCollectTreasureUI();
         Destroy(gameObject);
     }
 }

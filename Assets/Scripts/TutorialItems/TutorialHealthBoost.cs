@@ -1,7 +1,10 @@
+//Full class is student creation
+//Minimal updates from base class
 using System;
 using UnityEngine;
 using UnityEngine.UI;
 
+//Button creation and info for Health Boost spell
 public class TutorialHealthBoost : MonoBehaviour
 {
     public static event Action OnHeal;
@@ -37,6 +40,7 @@ public class TutorialHealthBoost : MonoBehaviour
             button.interactable = false;
         }
     }
+    //When button is clicked the spell is called from the character health script and crystals are removed from character treasure
     public void OnButtonClick()
     {
         LevelUpAbilities upgradedAbility = levelUps.abilities.Find(a => a.name == "HealthBoost");
